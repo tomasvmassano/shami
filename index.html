@@ -1400,6 +1400,203 @@
     font-weight: 600;
   }
 
+  /* GRAMMAR — lesson cards + cloze drills + grammar tab */
+  .gram-week {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--plum);
+    margin-bottom: 4px;
+  }
+  .gram-lesson-title {
+    font-size: 32px;
+    line-height: 1.1;
+    margin: 0 0 4px;
+    font-weight: 500;
+  }
+  .gram-lesson-sub {
+    font-style: italic;
+    opacity: 0.7;
+    margin-bottom: 18px;
+    font-size: 14px;
+  }
+  .gram-lesson-intro {
+    background: var(--paper-dim);
+    border: 1.5px solid var(--ink);
+    padding: 16px 18px;
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+  .gram-section {
+    border-bottom: 1px dashed rgba(26, 20, 16, 0.2);
+    padding: 12px 4px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 16px;
+    align-items: baseline;
+  }
+  .gram-section:last-of-type { border-bottom: none; }
+  .gram-section-rule {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--terra);
+    letter-spacing: 0.05em;
+  }
+  .gram-section-ar {
+    font-family: 'Amiri', serif;
+    font-size: 22px;
+    direction: rtl;
+    color: var(--ink);
+  }
+  .gram-section-az {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--terra-deep);
+    grid-column: 1 / -1;
+  }
+  .gram-section-en {
+    font-size: 13px;
+    grid-column: 1 / -1;
+    opacity: 0.85;
+  }
+  .gram-section-ex {
+    grid-column: 1 / -1;
+    background: #fff;
+    border-left: 3px solid var(--ochre);
+    padding: 10px 14px;
+    margin-top: 6px;
+    font-size: 13px;
+  }
+  .gram-section-ex .ar {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    direction: rtl;
+    margin-bottom: 2px;
+  }
+  .gram-section-ex .az {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--terra);
+  }
+  .gram-section-ex .en { font-size: 12px; opacity: 0.7; font-style: italic; }
+  .gram-lesson-closing {
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: var(--paper-dim);
+    border: 1px dashed var(--ink);
+    font-size: 13px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .gram-drill-prompt {
+    text-align: center;
+    font-family: 'Amiri', serif;
+    font-size: 28px;
+    direction: rtl;
+    margin: 18px 0 6px;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .gram-drill-prompt-en {
+    text-align: center;
+    font-size: 15px;
+    opacity: 0.7;
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+  .gram-drill-blank {
+    display: inline-block;
+    min-width: 60px;
+    padding: 0 10px;
+    border-bottom: 2px solid var(--terra);
+    color: var(--terra);
+  }
+  .gram-explain {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--paper-dim);
+    border-left: 3px solid var(--olive);
+    font-size: 13px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  /* Grammar tab — list of units */
+  .gram-units {
+    display: grid;
+    gap: 18px;
+  }
+  .gram-unit {
+    background: #fff;
+    border: 1.5px solid var(--ink);
+    padding: 22px 24px;
+    box-shadow: 6px 6px 0 var(--ink);
+    position: relative;
+  }
+  .gram-unit.locked { opacity: 0.45; box-shadow: 4px 4px 0 var(--ink); }
+  .gram-unit.unlocked-untaught { box-shadow: 6px 6px 0 var(--terra); }
+  .gram-unit-week {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--plum);
+    margin-bottom: 4px;
+  }
+  .gram-unit-title {
+    font-size: 22px;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .gram-unit-sub {
+    font-size: 13px;
+    font-style: italic;
+    opacity: 0.7;
+    margin-bottom: 14px;
+  }
+  .gram-unit-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--terra-deep);
+    margin-bottom: 12px;
+  }
+  .gram-unit-status.locked { color: var(--ink); opacity: 0.5; }
+  .gram-progress-bar {
+    height: 6px;
+    background: var(--paper-dim);
+    border: 1px solid var(--ink);
+    margin: 10px 0 14px;
+    position: relative;
+  }
+  .gram-progress-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--olive);
+    transform-origin: left;
+  }
+  .gram-unit-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .gram-unit .action {
+    flex: 0 1 auto;
+    padding: 10px 14px;
+    font-size: 11px;
+  }
+
+  @media (max-width: 600px) {
+    .gram-section { grid-template-columns: 1fr; gap: 6px; }
+    .gram-drill-prompt { font-size: 22px; }
+    .gram-lesson-title { font-size: 26px; }
+  }
+
   /* VOICE SETTINGS */
   .voice-section {
     background: #fff;
@@ -1818,7 +2015,8 @@
     <button class="tab active" data-panel="daily"><span class="tab-num">01</span>Today</button>
     <button class="tab" data-panel="alphabet"><span class="tab-num">02</span>Alphabet</button>
     <button class="tab" data-panel="phrasebook"><span class="tab-num">03</span>Phrasebook</button>
-    <button class="tab" data-panel="progress"><span class="tab-num">04</span>Progress</button>
+    <button class="tab" data-panel="grammar"><span class="tab-num">04</span>Grammar</button>
+    <button class="tab" data-panel="progress"><span class="tab-num">05</span>Progress</button>
   </div>
 
   <!-- DAILY PANEL -->
@@ -1853,6 +2051,15 @@
     <input type="text" class="phrasebook-search" id="phrasebook-search" placeholder="Search 600 phrases — try 'love' or 'kifak'…" />
     <div class="cat-pills" id="cat-pills"></div>
     <div id="phrasebook-content"></div>
+  </section>
+
+  <!-- GRAMMAR PANEL -->
+  <section class="panel" id="panel-grammar">
+    <div class="alpha-intro">
+      <div class="alpha-title">The <em>patterns</em> behind every sentence.</div>
+      <div class="alpha-desc">Each unit unlocks on a specific day, taught with one lesson card, then drilled gradually in your daily flow. Once a pattern lives in your bones, every word you know multiplies into many forms.</div>
+    </div>
+    <div class="gram-units" id="gram-units"></div>
   </section>
 
   <!-- PROGRESS PANEL -->
@@ -4390,6 +4597,174 @@ const CONSOLIDATIONS = [
   },
 ];
 
+// ==========================================
+// GRAMMAR UNITS — pedagogical curriculum, 5 units across weeks 2-6
+// Each unit has one lesson card (taught once on its unlockDay) and a
+// set of cloze drills that drip into the daily queue, SRS-spaced.
+// ==========================================
+const GRAMMAR_UNITS = [
+  {
+    id: 'pronouns',
+    week: 2,
+    unlockDay: 8,
+    title: 'Subject Pronouns',
+    subtitle: 'The 7 voices of every sentence',
+    lesson: {
+      intro: 'Arabic often drops pronouns because verb endings imply who is doing the action. But you will use them constantly: for emphasis, in nominal sentences with no verb (like "I am tired"), and to be perfectly clear. Here are the 7 you need.',
+      sections: [
+        { rule: 'I', ar: 'أنا', az: 'ana', en: 'Same in all Arabic.' },
+        { rule: 'You (m)', ar: 'إنت', az: 'inta', en: 'Speaking to a man.' },
+        { rule: 'You (f)', ar: 'إنتي', az: 'inti', en: 'Speaking to a woman. Same root, different ending.' },
+        { rule: 'He', ar: 'هو', az: 'huwwe', en: 'Note the soft -e ending. Distinctly Levantine.' },
+        { rule: 'She', ar: 'هي', az: 'hiyye', en: 'Same -e flavor.' },
+        { rule: 'We', ar: 'نحنا', az: 'ne7na', en: 'Levantine specific. MSA is "na7nu". Egyptians say "i7na".' },
+        { rule: 'They', ar: 'هنن', az: 'hinnen', en: 'Used for any group, regardless of gender.' },
+      ],
+      closing: 'You already know "ana" from "ana ta3ban" (I am tired). The rest follow the same pattern. Drop them when meaning is clear, keep them when emphasis matters.',
+    },
+    drills: [
+      { id: 'd1', en: '"I am tired"', cloze: '___ ta3ban', options: ['ana', 'inta', 'huwwe', 'hiyye'], answer: 'ana', explain: 'ana = I' },
+      { id: 'd2', en: '"Are you hungry? (to a man)"', cloze: '___ jou3an?', options: ['inti', 'inta', 'ne7na', 'hinnen'], answer: 'inta', explain: 'inta = you (m)' },
+      { id: 'd3', en: '"She is from Lebanon"', cloze: '___ min lubnan', options: ['huwwe', 'hiyye', 'ana', 'inti'], answer: 'hiyye', explain: 'hiyye = she' },
+      { id: 'd4', en: '"They live in Damascus"', cloze: '___ saknin bil sham', options: ['ne7na', 'hinnen', 'huwwe', 'inta'], answer: 'hinnen', explain: 'hinnen = they (any group)' },
+      { id: 'd5', en: '"He is my brother"', cloze: '___ akhi', options: ['hiyye', 'huwwe', 'ana', 'inta'], answer: 'huwwe', explain: 'huwwe = he' },
+      { id: 'd6', en: '"Are you ok? (to a woman)"', cloze: '___ mn7i7a?', options: ['inta', 'inti', 'hiyye', 'huwwe'], answer: 'inti', explain: 'inti = you (f). Note mn7i7a is feminine "ok".' },
+      { id: 'd7', en: '"We are from Syria"', cloze: '___ min surya', options: ['hum', 'ne7na', 'ana', 'inta'], answer: 'ne7na', explain: 'ne7na = we' },
+      { id: 'd8', en: '"I love you (to a man)"', cloze: '___ b7ibak', options: ['inta', 'ana', 'huwwe', 'ne7na'], answer: 'ana', explain: 'ana = I. The -ak on b7ibak handles "you".' },
+      { id: 'd9', en: '"You are precious to me (to a man)"', cloze: '___ ghali 3aleyy', options: ['inti', 'inta', 'hiyye', 'huwwe'], answer: 'inta', explain: 'inta = you (m)' },
+      { id: 'd10', en: '"She is a doctor"', cloze: '___ doctora', options: ['ana', 'huwwe', 'hiyye', 'hinnen'], answer: 'hiyye', explain: 'hiyye = she. doctora is the feminine form.' },
+    ],
+  },
+  {
+    id: 'bprefix',
+    week: 3,
+    unlockDay: 15,
+    title: 'The b- Prefix',
+    subtitle: 'How present tense really works',
+    lesson: {
+      intro: 'This is the biggest single grammar win in Levantine. Adding "b-" before a verb makes it present tense — what someone does habitually, or right now. The verb stays mostly the same; the prefix changes by person.',
+      sections: [
+        { rule: 'I', ar: 'بحكي', az: 'b7eki / be7ki', en: 'b- prefix on the verb 7eki (talk)' },
+        { rule: 'You (m/f)', ar: 'بتحكي', az: 'bte7ki', en: 'bt- prefix. Same form for both genders here.' },
+        { rule: 'He', ar: 'بيحكي', az: 'bye7ki', en: 'by- prefix' },
+        { rule: 'She', ar: 'بتحكي', az: 'bte7ki', en: 'bt- (same as "you")' },
+        { rule: 'We', ar: 'منحكي', az: 'mne7ki', en: 'mn- prefix. The big giveaway for "we".' },
+        { rule: 'They', ar: 'بيحكوا', az: 'bye7ku', en: 'by- prefix + -u ending for plural' },
+      ],
+      closing: 'You already use this every day: be7ki (I speak), bishtighel (I work), biddi (I want), bidfa3 (I will pay), bi2dar (I can). Once your ear catches the b-/bt-/by-/mn- pattern, every verb you learn multiplies into 7 forms.',
+    },
+    drills: [
+      { id: 'd1', en: 'Which means "I speak"?', cloze: '___ 3arabi shway', options: ['be7ki', 'bte7ki', 'mne7ki', 'bye7ki'], answer: 'be7ki', explain: 'b- (or be-) prefix = I' },
+      { id: 'd2', en: 'Which means "you speak (m)"?', cloze: 'inta ___ 3arabi?', options: ['be7ki', 'bte7ki', 'mne7ki', 'bye7ki'], answer: 'bte7ki', explain: 'bt- prefix = you' },
+      { id: 'd3', en: '"I want coffee"', cloze: '___ a2hwe', options: ['biddak', 'biddi', 'biddik', 'biddo'], answer: 'biddi', explain: 'bidd- + -i suffix = I want' },
+      { id: 'd4', en: 'Which prefix means "we"?', cloze: '___-...', options: ['b-', 'bt-', 'by-', 'mn-'], answer: 'mn-', explain: 'mn- is unique to "we" (ne7na)' },
+      { id: 'd5', en: '"He works at the bank"', cloze: 'huwwe ___ bil bank', options: ['bishtighel', 'mnishtighel', 'btishtighel', 'byishtighel'], answer: 'byishtighel', explain: 'by- prefix = he' },
+      { id: 'd6', en: '"Do you want water? (to f)"', cloze: 'inti ___ may?', options: ['biddi', 'biddak', 'biddik', 'biddo'], answer: 'biddik', explain: '-ik suffix = you (f)' },
+      { id: 'd7', en: 'Which prefix usually means "he"?', cloze: '___ + verb', options: ['b-', 'bt-', 'by-', 'mn-'], answer: 'by-', explain: 'by- (or bi-) marks "he" forms' },
+      { id: 'd8', en: '"I can try"', cloze: '___ jarreb', options: ['bti2dar', 'bi2dar', 'mni2dar', 'byi2dar'], answer: 'bi2dar', explain: 'b-/bi- prefix = I' },
+      { id: 'd9', en: '"They speak a little"', cloze: 'hinnen ___ shway', options: ['bte7ki', 'bye7ki', 'bye7ku', 'mne7ki'], answer: 'bye7ku', explain: 'by- prefix + -u ending = they' },
+      { id: 'd10', en: '"We work in Dubai"', cloze: 'ne7na ___ bi Dubai', options: ['bishtighel', 'btishtighel', 'mnishtighel', 'byishtighel'], answer: 'mnishtighel', explain: 'mn- prefix = we' },
+    ],
+  },
+  {
+    id: 'possessive',
+    week: 4,
+    unlockDay: 22,
+    title: 'Possessive Suffixes',
+    subtitle: 'How "my", "your", "his" really work',
+    lesson: {
+      intro: 'Arabic does not use a separate word for "my". It glues a tiny suffix onto the noun. The same suffixes attach to verbs as the object ("I love you" = b7ibak, where -ak = you). Once you know these, every noun and verb you learn unlocks new forms.',
+      sections: [
+        { rule: 'my', ar: '-ي', az: '-i', en: 'ismi (my name), 7abibi (my dear), 3umri (my life)' },
+        { rule: 'your (m)', ar: '-ك', az: '-ak', en: 'ismak (your name), b7ibak (I love you)' },
+        { rule: 'your (f)', ar: '-ك', az: '-ik', en: 'ismik, b7ibik. Same letter, different vowel.' },
+        { rule: 'his', ar: '-و', az: '-o', en: 'baito (his house), ismo (his name)' },
+        { rule: 'her', ar: '-ها', az: '-ha', en: 'baitha (her house), ismha (her name)' },
+        { rule: 'our', ar: '-نا', az: '-na', en: 'baitna (our house), ismna (our name)' },
+        { rule: 'their', ar: '-هم', az: '-hum', en: 'baithum (their house), ismhum (their name)' },
+      ],
+      closing: 'You already know these from ismi (my name), b7ibak (I love you m), 7abibti (my dear f). Once you hear -i, -ak, -ik, -o, -ha, -na as a family, you start parsing words you have never seen.',
+    },
+    drills: [
+      { id: 'd1', en: '"my name"', cloze: '___', options: ['ismi', 'ismak', 'ismik', 'ismo'], answer: 'ismi', explain: '-i = my' },
+      { id: 'd2', en: '"your name (to a man)"', cloze: '___', options: ['ismi', 'ismak', 'ismik', 'ismha'], answer: 'ismak', explain: '-ak = your (m)' },
+      { id: 'd3', en: '"her house"', cloze: '___', options: ['baito', 'baitak', 'baitha', 'baitna'], answer: 'baitha', explain: '-ha = her' },
+      { id: 'd4', en: '"our house"', cloze: '___', options: ['baiti', 'baitak', 'baitha', 'baitna'], answer: 'baitna', explain: '-na = our' },
+      { id: 'd5', en: '"his house"', cloze: '___', options: ['baito', 'baitha', 'baitak', 'baiti'], answer: 'baito', explain: '-o = his' },
+      { id: 'd6', en: 'The -i suffix means...', cloze: '7abib___', options: ['my', 'your', 'his', 'her'], answer: 'my', explain: '7abibi = my dear' },
+      { id: 'd7', en: 'The -ha suffix means...', cloze: 'bait___', options: ['my', 'your', 'his', 'her'], answer: 'her', explain: '-ha is always "her"' },
+      { id: 'd8', en: '"I love you (to a man)"', cloze: 'b7ib___', options: ['-i', '-ak', '-ik', '-o'], answer: '-ak', explain: '-ak attached to verb = "you" as object (m)' },
+      { id: 'd9', en: '"I love you (to a woman)"', cloze: 'b7ib___', options: ['-i', '-ak', '-ik', '-ha'], answer: '-ik', explain: '-ik = you (f)' },
+      { id: 'd10', en: '"their house"', cloze: '___', options: ['baitna', 'baithum', 'baitha', 'baito'], answer: 'baithum', explain: '-hum = their' },
+    ],
+  },
+  {
+    id: 'gender',
+    week: 5,
+    unlockDay: 29,
+    title: 'Gender Agreement',
+    subtitle: 'Adjectives that change with the person',
+    lesson: {
+      intro: 'Arabic adjectives match the gender of what they describe. Most masculine words become feminine by adding -a or -e at the end. "Tired" is ta3ban for a man, ta3bane for a woman. Get this right and you sound native instantly.',
+      sections: [
+        { rule: 'tired', ar: 'تعبان / تعبانة', az: 'ta3ban / ta3bane', en: 'huwwe ta3ban (he is tired) vs hiyye ta3bane (she is tired)' },
+        { rule: 'hungry', ar: 'جوعان / جوعانة', az: 'jou3an / jou3ane', en: 'Same pattern.' },
+        { rule: 'good / well', ar: 'منيح / منيحة', az: 'mn7i7 / mn7i7a', en: 'You hear this from "kifak? mn7i7" vs "kifik? mn7i7a".' },
+        { rule: 'sick', ar: 'مريض / مريضة', az: 'marid / marida', en: 'ana marid (man speaking) vs ana marida (woman).' },
+        { rule: 'busy', ar: 'مشغول / مشغولة', az: 'mashghoul / mashghoule', en: 'For making excuses politely.' },
+      ],
+      closing: 'The rule: bare = masculine, +a/+e = feminine. The gender follows the SUBJECT, not the speaker. "She is tired" = hiyye ta3bane, even if a man says it.',
+    },
+    drills: [
+      { id: 'd1', en: '"She is tired"', cloze: 'hiyye ___', options: ['ta3ban', 'ta3bane', 'ta3banin', 'ta3banat'], answer: 'ta3bane', explain: 'Feminine subject takes -e ending' },
+      { id: 'd2', en: '"He is hungry"', cloze: 'huwwe ___', options: ['jou3ane', 'jou3an', 'jou3anin', 'jou3a'], answer: 'jou3an', explain: 'Masculine takes the bare form' },
+      { id: 'd3', en: '"I am sick" (woman speaking)', cloze: 'ana ___', options: ['marid', 'marida', 'maridin', 'maridun'], answer: 'marida', explain: '-a ending agrees with female speaker' },
+      { id: 'd4', en: '"How are you? (to a woman)"', cloze: '___?', options: ['kifak', 'kifik', 'kifkun', 'kifhum'], answer: 'kifik', explain: 'Speaking to a woman uses the -ik suffix' },
+      { id: 'd5', en: '"I am busy" (man speaking)', cloze: 'ana ___', options: ['mashghoule', 'mashghoul', 'mashghoulin', 'mashghoula'], answer: 'mashghoul', explain: 'Bare masculine form' },
+      { id: 'd6', en: 'The -a / -e ending typically marks...', cloze: 'ta3ban___', options: ['masculine', 'feminine', 'plural', 'past tense'], answer: 'feminine', explain: 'Almost always the feminine signal' },
+      { id: 'd7', en: '"She is a good doctor"', cloze: 'hiyye ___ doctora', options: ['mn7i7', 'mn7i7a', 'kteer', 'fi'], answer: 'mn7i7a', explain: 'mn7i7 + a = feminine "good"' },
+      { id: 'd8', en: '"Are you hungry? (to a man)"', cloze: 'inta ___?', options: ['jou3ane', 'jou3an', 'jou3aha', 'jou3ano'], answer: 'jou3an', explain: 'Masculine "you" takes bare form' },
+      { id: 'd9', en: '"She is busy"', cloze: 'hiyye ___', options: ['mashghoul', 'mashghoule', 'mashghoulha', 'mashghoulo'], answer: 'mashghoule', explain: '-e ending for feminine' },
+      { id: 'd10', en: '"I am tired" (woman speaking)', cloze: 'ana ___', options: ['ta3ban', 'ta3bane', 'ta3banin', 'ta3banha'], answer: 'ta3bane', explain: 'Female speaker = feminine ending' },
+    ],
+  },
+  {
+    id: 'negation',
+    week: 6,
+    unlockDay: 36,
+    title: 'Negation & Questions',
+    subtitle: 'Two patterns that double your range overnight',
+    lesson: {
+      intro: 'Two short, learnable patterns. Negation uses two tiny words depending on what you negate. Questions need almost no extra grammar — usually just intonation.',
+      sections: [
+        { rule: 'ma + verb', ar: 'ما', az: 'ma', en: 'Negates verbs. ma fhemt = I did not understand. ma b7eki 3arabi = I do not speak Arabic.' },
+        { rule: 'mish + adj/noun', ar: 'مش', az: 'mish', en: 'Negates adjectives, nouns, identity. mish ta3ban = not tired. mish ana = not me.' },
+        { rule: 'Yes/no questions', ar: '...؟', az: '... ?', en: 'Just raise your tone at the end. inta ta3ban? = are you tired? No extra word needed.' },
+        { rule: 'shu', ar: 'شو', az: 'shu', en: 'what — shu ismak? = what is your name?' },
+        { rule: 'wein', ar: 'وين', az: 'wein', en: 'where — wein el 7ammam? = where is the bathroom?' },
+        { rule: 'kif', ar: 'كيف', az: 'kif', en: 'how — kifak? = how are you?' },
+        { rule: 'eimta', ar: 'إيمتى', az: 'eimta', en: 'when' },
+        { rule: 'leish', ar: 'ليش', az: 'leish', en: 'why' },
+        { rule: 'addaysh', ar: 'قديش', az: 'addaysh', en: 'how much' },
+        { rule: 'meen', ar: 'مين', az: 'meen', en: 'who — meen hayda? = who is this?' },
+      ],
+      closing: 'Two negators (ma for verbs, mish for everything else) plus a small bag of question words. With these, you can negate anything, ask anything, and respond to anything. Massive expressive jump.',
+    },
+    drills: [
+      { id: 'd1', en: '"I did not understand"', cloze: '___ fhemt', options: ['mish', 'ma', 'la', 'ba3d'], answer: 'ma', explain: 'ma negates verbs (fhemt = I understood)' },
+      { id: 'd2', en: '"Not me"', cloze: '___ ana', options: ['ma', 'mish', 'la', 'shu'], answer: 'mish', explain: 'mish negates nouns and identity' },
+      { id: 'd3', en: '"She does not speak Arabic"', cloze: 'hiyye ___ bte7ki 3arabi', options: ['mish', 'ma', 'la', 'mush'], answer: 'ma', explain: 'bte7ki is a verb, so ma' },
+      { id: 'd4', en: '"Where is the bathroom?"', cloze: '___ el 7ammam?', options: ['shu', 'kif', 'wein', 'meen'], answer: 'wein', explain: 'wein = where' },
+      { id: 'd5', en: '"What is your name?"', cloze: '___ ismak?', options: ['shu', 'kif', 'wein', 'meen'], answer: 'shu', explain: 'shu = what' },
+      { id: 'd6', en: '"Why?"', cloze: '___?', options: ['shu', 'kif', 'leish', 'eimta'], answer: 'leish', explain: 'leish = why' },
+      { id: 'd7', en: '"I am not tired"', cloze: 'ana ___ ta3ban', options: ['ma', 'mish', 'la', 'mush'], answer: 'mish', explain: 'ta3ban is an adjective, so mish' },
+      { id: 'd8', en: '"How much is this?"', cloze: '___ hayda?', options: ['shu', 'addaysh', 'kif', 'wein'], answer: 'addaysh', explain: 'addaysh = how much' },
+      { id: 'd9', en: '"When?"', cloze: '___?', options: ['eimta', 'leish', 'wein', 'shu'], answer: 'eimta', explain: 'eimta = when' },
+      { id: 'd10', en: '"Who is this?"', cloze: '___ hayda?', options: ['shu', 'meen', 'wein', 'kif'], answer: 'meen', explain: 'meen = who' },
+    ],
+  },
+];
+
 const STORE_KEY = 'shami-state-v4';
 
 // ==========================================
@@ -4416,6 +4791,8 @@ function defaultState() {
     sentenceProgress: {}, // sentenceIndex -> { attempts, completed, lastAttempt }
     letters: {}, // index -> 'learned' | 'mastered'  (alphabet panel toggle, kept for compat)
     letterCards: {}, // index -> { ef, interval, reps, due, learned, introduced, correctStreak }
+    grammarTaught: {}, // unitId -> true once lesson card finished
+    grammarCards: {}, // "unitId.drillId" -> { ef, interval, reps, due, learned }
     todayQueue: [],
     todayIndex: 0,
     todayDate: null,
@@ -4537,6 +4914,44 @@ function initLetterCard(idx) {
     state.letterCards[idx] = { ef: 2.5, interval: 0, reps: 0, due: todayStr(), learned: false, introduced: false, correctStreak: 0 };
   }
   return state.letterCards[idx];
+}
+
+// ----- Grammar SRS -----
+function grammarKey(unitId, drillId) { return unitId + '.' + drillId; }
+
+function initGrammarCard(unitId, drillId) {
+  if (!state.grammarCards) state.grammarCards = {};
+  const k = grammarKey(unitId, drillId);
+  if (!state.grammarCards[k]) {
+    state.grammarCards[k] = { ef: 2.5, interval: 0, reps: 0, due: todayStr(), learned: false };
+  }
+  return state.grammarCards[k];
+}
+
+function gradeGrammarCard(unitId, drillId, correct) {
+  const c = initGrammarCard(unitId, drillId);
+  if (correct) {
+    c.reps += 1;
+    if (c.reps === 1) c.interval = 1;
+    else if (c.reps === 2) c.interval = 3;
+    else c.interval = Math.max(1, Math.round(c.interval * c.ef));
+    c.ef = Math.min(2.8, c.ef + 0.05);
+    c.due = addDays(todayStr(), c.interval);
+    c.learned = true;
+  } else {
+    c.reps = Math.max(0, c.reps - 1);
+    c.interval = 0;
+    c.due = todayStr();
+    c.ef = Math.max(1.3, c.ef - 0.2);
+  }
+  saveState();
+}
+
+function getGrammarUnit(unitId) { return GRAMMAR_UNITS.find(u => u.id === unitId); }
+function getGrammarDrill(unitId, drillId) {
+  const u = getGrammarUnit(unitId);
+  if (!u) return null;
+  return u.drills.find(d => d.id === drillId);
 }
 
 function gradeLetterCard(idx, correct) {
@@ -4725,10 +5140,39 @@ function buildTodayQueue() {
     letterDrills.push({ type: 'letterSound', ref: idx });
   }
 
-  // Interleave: letter intros at front (so they precede related phrases),
-  // match-pairs as warm-up, then due reviews, new recall, production,
-  // scatter drills + sentences.
-  const queue = [...letterIntros, ...matchBatches, ...dueRecall, ...newRecall, ...dueProd, ...newProd];
+  // ----- GRAMMAR — lesson cards on unlock day, drills SRS-spaced after -----
+  const currentDay = state.startDate ? Math.max(1, daysBetween(state.startDate, today) + 1) : 1;
+  const grammarLessons = [];
+  const grammarDrillsDue = [];
+  const grammarDrillsNew = [];
+  for (const unit of GRAMMAR_UNITS) {
+    if (currentDay < unit.unlockDay) continue;
+    const taught = state.grammarTaught && state.grammarTaught[unit.id];
+    if (!taught) {
+      grammarLessons.push({ type: 'grammarLesson', ref: unit.id });
+      continue; // Drills come once the lesson is done
+    }
+    for (const drill of unit.drills) {
+      const k = grammarKey(unit.id, drill.id);
+      const c = state.grammarCards && state.grammarCards[k];
+      if (!c) {
+        grammarDrillsNew.push({ type: 'grammarDrill', ref: { unitId: unit.id, drillId: drill.id } });
+      } else if (c.due <= today) {
+        grammarDrillsDue.push({ type: 'grammarDrill', ref: { unitId: unit.id, drillId: drill.id } });
+      }
+    }
+  }
+  // Cap grammar drills/day: all due first, then up to (4 - dueCount) new.
+  const maxGrammarDrills = 4;
+  const grammarDrills = [
+    ...grammarDrillsDue.slice(0, maxGrammarDrills),
+    ...grammarDrillsNew.slice(0, Math.max(0, maxGrammarDrills - grammarDrillsDue.length)),
+  ];
+
+  // Interleave: lesson cards first (they unlock new pattern), letter intros,
+  // match-pairs warm-up, then due reviews, new recall, grammar drills,
+  // production, scatter drills + sentences.
+  const queue = [...grammarLessons, ...letterIntros, ...matchBatches, ...dueRecall, ...newRecall, ...grammarDrills, ...dueProd, ...newProd];
   // Scatter letter drills into middle/end
   letterDrills.forEach((card, i) => {
     if (queue.length === 0) { queue.push(card); return; }
@@ -4741,6 +5185,15 @@ function buildTodayQueue() {
     if (sentencesQueue[1]) queue.push(sentencesQueue[1]);
   } else {
     queue.push(...sentencesQueue);
+  }
+
+  // Daily cap — keep beginners from drowning. Lesson cards and due
+  // reviews are protected (kept at the front); slice off the back if too long.
+  const DAILY_CAP = 25;
+  const protectedCount = grammarLessons.length + letterIntros.length + matchBatches.length + dueRecall.length + dueProd.length + grammarDrillsDue.length;
+  if (queue.length > DAILY_CAP) {
+    const minKeep = Math.max(protectedCount, DAILY_CAP);
+    queue.length = Math.min(queue.length, minKeep);
   }
 
   state.todayQueue = queue;
@@ -4826,6 +5279,10 @@ function renderDaily() {
     renderLetterSpotCard(queueItem.ref);
   } else if (queueItem.type === 'letterBuild') {
     renderLetterBuildCard(queueItem.ref);
+  } else if (queueItem.type === 'grammarLesson') {
+    renderGrammarLessonCard(queueItem.ref);
+  } else if (queueItem.type === 'grammarDrill') {
+    renderGrammarDrillCard(queueItem.ref);
   } else {
     // unknown type, skip
     state.todayIndex++;
@@ -5926,6 +6383,172 @@ function answerListenPick(targetId, choiceId, btn) {
 }
 
 // ==========================================
+// GRAMMAR — lesson card, cloze drill card, and Grammar tab
+// ==========================================
+function renderGrammarLessonCard(unitId) {
+  const unit = getGrammarUnit(unitId);
+  if (!unit) { state.todayIndex++; saveState(); renderDaily(); return; }
+  const sectionsHtml = unit.lesson.sections.map(s => `
+    <div class="gram-section">
+      <div class="gram-section-rule">${s.rule}</div>
+      <div class="gram-section-ar">${s.ar}</div>
+      <div class="gram-section-az">${s.az}</div>
+      <div class="gram-section-en">${s.en}</div>
+    </div>
+  `).join('');
+  document.getElementById('card-stack').innerHTML = `
+    <div class="card">
+      <div class="card-corner">Lesson</div>
+      <div class="card-tag">Grammar lesson · new · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
+      <div class="gram-week">Week ${unit.week} · Day ${unit.unlockDay}</div>
+      <div class="gram-lesson-title">${unit.title}</div>
+      <div class="gram-lesson-sub">${unit.subtitle}</div>
+      <div class="gram-lesson-intro">${unit.lesson.intro}</div>
+      ${sectionsHtml}
+      <div class="gram-lesson-closing">${unit.lesson.closing}</div>
+      <div class="card-actions" style="margin-top:18px;">
+        <button class="action good" onclick="finishGrammarLesson(${JSON.stringify(unit.id)})">Got it · start drilling</button>
+      </div>
+    </div>
+  `;
+}
+
+function finishGrammarLesson(unitId) {
+  if (!state.grammarTaught) state.grammarTaught = {};
+  state.grammarTaught[unitId] = true;
+  state.todayIndex++;
+  saveState();
+  renderDaily();
+}
+
+let grammarAnswered = false;
+function renderGrammarDrillCard(ref) {
+  const unit = getGrammarUnit(ref.unitId);
+  const drill = getGrammarDrill(ref.unitId, ref.drillId);
+  if (!unit || !drill) { state.todayIndex++; saveState(); renderDaily(); return; }
+  initGrammarCard(ref.unitId, ref.drillId);
+  const card = state.grammarCards[grammarKey(ref.unitId, ref.drillId)];
+  // Shuffle options
+  const opts = [...drill.options];
+  for (let i = opts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [opts[i], opts[j]] = [opts[j], opts[i]];
+  }
+  const optsHtml = opts.map(o =>
+    `<button class="pick-option" data-val="${escapeAttr(o)}" onclick="answerGrammarDrill(${JSON.stringify(ref.unitId)}, ${JSON.stringify(ref.drillId)}, ${JSON.stringify(o)}, this)">${o}</button>`
+  ).join('');
+  // Render cloze with blank highlighted
+  const clozeHtml = drill.cloze.replace(/___/g, '<span class="gram-drill-blank">___</span>');
+  document.getElementById('card-stack').innerHTML = `
+    <div class="card">
+      <div class="card-corner">${unit.title}</div>
+      <div class="card-tag">Grammar drill${card.reps ? ' · review <span class="srs-mark">#' + card.reps + '</span>' : ' · new'} · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
+      <div class="gram-drill-prompt-en">${drill.en}</div>
+      <div class="gram-drill-prompt">${clozeHtml}</div>
+      <div class="pick-meaning-options">${optsHtml}</div>
+      <div id="gram-explain"></div>
+    </div>
+  `;
+  grammarAnswered = false;
+}
+
+function answerGrammarDrill(unitId, drillId, choice, btn) {
+  if (grammarAnswered) return;
+  grammarAnswered = true;
+  const drill = getGrammarDrill(unitId, drillId);
+  const correct = choice === drill.answer;
+  document.querySelectorAll('.pick-option').forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.pick-option').forEach(b => {
+      if (b.dataset.val === drill.answer) b.classList.add('correct');
+    });
+  }
+  if (drill.explain) {
+    document.getElementById('gram-explain').innerHTML = `<div class="gram-explain">${drill.explain}</div>`;
+  }
+  gradeGrammarCard(unitId, drillId, correct);
+  if (!correct) state.todayQueue.push(state.todayQueue[state.todayIndex]);
+  setTimeout(() => {
+    state.todayIndex++;
+    saveState();
+    renderDaily();
+  }, correct ? 900 : 2000);
+}
+
+function renderGrammar() {
+  const container = document.getElementById('gram-units');
+  if (!container) return;
+  const currentDay = state.startDate ? Math.max(1, daysBetween(state.startDate, todayStr()) + 1) : 1;
+  container.innerHTML = GRAMMAR_UNITS.map(unit => {
+    const taught = state.grammarTaught && state.grammarTaught[unit.id];
+    const locked = currentDay < unit.unlockDay;
+    const total = unit.drills.length;
+    const learned = unit.drills.filter(d => {
+      const c = state.grammarCards && state.grammarCards[grammarKey(unit.id, d.id)];
+      return c && c.learned;
+    }).length;
+    const mastered = unit.drills.filter(d => {
+      const c = state.grammarCards && state.grammarCards[grammarKey(unit.id, d.id)];
+      return c && c.learned && c.interval >= 6;
+    }).length;
+    let status, cls = '';
+    if (locked) {
+      status = `Locked · unlocks on Day ${unit.unlockDay}`;
+      cls = 'locked';
+    } else if (!taught) {
+      status = 'New · lesson available in today';
+      cls = 'unlocked-untaught';
+    } else {
+      status = `Lesson done · ${learned}/${total} drills learned · ${mastered} mastered`;
+    }
+    const fillPct = total > 0 ? Math.round((learned / total) * 100) : 0;
+    const masteredPct = total > 0 ? Math.round((mastered / total) * 100) : 0;
+    return `
+      <div class="gram-unit ${cls}">
+        <div class="gram-unit-week">Week ${unit.week} · Day ${unit.unlockDay}</div>
+        <div class="gram-unit-title">${unit.title}</div>
+        <div class="gram-unit-sub">${unit.subtitle}</div>
+        <div class="gram-unit-status ${locked ? 'locked' : ''}">${status}</div>
+        ${!locked ? `
+          <div class="gram-progress-bar"><div class="gram-progress-fill" style="transform:scaleX(${fillPct/100})"></div></div>
+          <div class="gram-unit-actions">
+            ${taught ? `<button class="action" onclick="reviewGrammarLesson(${JSON.stringify(unit.id)})">Re-read lesson</button>` : ''}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function reviewGrammarLesson(unitId) {
+  const unit = getGrammarUnit(unitId);
+  if (!unit) return;
+  const sectionsHtml = unit.lesson.sections.map(s => `
+    <div class="gram-section">
+      <div class="gram-section-rule">${s.rule}</div>
+      <div class="gram-section-ar">${s.ar}</div>
+      <div class="gram-section-az">${s.az}</div>
+      <div class="gram-section-en">${s.en}</div>
+    </div>
+  `).join('');
+  document.getElementById('day-modal-body').innerHTML = `
+    <div class="day-modal-tag">Week ${unit.week} · ${unit.title}</div>
+    <div class="day-modal-title">${unit.subtitle}</div>
+    <div class="gram-lesson-intro">${unit.lesson.intro}</div>
+    ${sectionsHtml}
+    <div class="gram-lesson-closing">${unit.lesson.closing}</div>
+    <div class="modal-actions" style="margin-top:18px;">
+      <button class="action" onclick="closeDayModal()">Close</button>
+    </div>
+  `;
+  document.getElementById('day-modal-bg').classList.add('show');
+  document.querySelector('#day-modal-bg .modal').scrollTop = 0;
+}
+
+// ==========================================
 // VOICE / TTS — browser fallback + Google Cloud TTS (BYOK, cached)
 // ==========================================
 const VOICE_KEY = 'shami-voice-config';
@@ -6476,6 +7099,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.getElementById(panelId).classList.add('active');
     if (tab.dataset.panel === 'alphabet') renderAlphabet();
     if (tab.dataset.panel === 'phrasebook') { renderCatPills(); renderPhrasebook(document.getElementById('phrasebook-search').value); }
+    if (tab.dataset.panel === 'grammar') renderGrammar();
     if (tab.dataset.panel === 'progress') renderProgress();
     if (tab.dataset.panel === 'daily') renderDaily();
   });
