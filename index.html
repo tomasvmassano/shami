@@ -1195,6 +1195,211 @@
   .letter-feedback.correct { background: var(--olive); color: var(--paper); border-color: var(--olive); }
   .letter-feedback.wrong { background: var(--terra-deep); color: var(--paper); border-color: var(--terra-deep); }
 
+  /* VOCAB VARIANTS — pickMeaning, matchPairs, translate, listenPick */
+  .pick-meaning-prompt {
+    text-align: center;
+    font-family: 'Amiri', serif;
+    font-size: 56px;
+    color: var(--terra);
+    direction: rtl;
+    margin: 18px 0 8px;
+    line-height: 1.2;
+  }
+  .pick-meaning-az {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--terra);
+    margin-bottom: 18px;
+  }
+  .pick-meaning-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .pick-option {
+    padding: 16px 18px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+    text-align: left;
+    color: var(--ink);
+  }
+  .pick-option:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--terra);
+  }
+  .pick-option.correct { background: var(--olive); color: var(--paper); border-color: var(--olive); }
+  .pick-option.wrong { background: var(--terra-deep); color: var(--paper); border-color: var(--terra-deep); }
+  .pick-option:disabled { cursor: default; }
+  .pick-option.correct:disabled, .pick-option.wrong:disabled { opacity: 1; }
+
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 18px 0;
+  }
+  .match-cell {
+    padding: 14px 10px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .match-cell:hover:not(.matched):not(.selected) {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--terra);
+  }
+  .match-cell.selected {
+    background: var(--ochre);
+    border-color: var(--ochre);
+  }
+  .match-cell.matched {
+    background: var(--olive);
+    color: var(--paper);
+    border-color: var(--olive);
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  .match-cell.error {
+    background: var(--terra-deep);
+    color: var(--paper);
+    border-color: var(--terra-deep);
+  }
+  .match-cell.match-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 22px;
+    direction: rtl;
+    line-height: 1.2;
+  }
+  .match-cell.match-en { font-size: 13px; }
+
+  .translate-source {
+    text-align: center;
+    font-family: 'Amiri', serif;
+    font-size: 36px;
+    color: var(--terra);
+    direction: rtl;
+    margin: 18px 0 4px;
+    line-height: 1.3;
+  }
+  .translate-az {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--terra);
+    margin-bottom: 14px;
+  }
+  .translate-build-area {
+    min-height: 70px;
+    background: var(--paper-dim);
+    border: 1.5px dashed var(--ink);
+    padding: 14px;
+    margin: 14px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .translate-build-area.empty {
+    color: rgba(26, 20, 16, 0.35);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .translate-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  .translate-tile {
+    padding: 9px 14px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.12s, box-shadow 0.12s, opacity 0.12s;
+    color: var(--ink);
+  }
+  .translate-tile:hover:not(.used) { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--terra); }
+  .translate-tile.used { opacity: 0.25; pointer-events: none; }
+  .translate-tile.placed { background: var(--paper-dim); }
+
+  .listen-prompt {
+    text-align: center;
+    margin: 16px 0 22px;
+  }
+  .listen-big-btn {
+    background: var(--terra);
+    color: var(--paper);
+    border: 1.5px solid var(--ink);
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    font-size: 32px;
+    cursor: pointer;
+    box-shadow: 5px 5px 0 var(--ink);
+    transition: transform 0.15s, box-shadow 0.15s;
+    line-height: 1;
+  }
+  .listen-big-btn:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--ink); }
+  .listen-hint {
+    margin-top: 8px;
+    font-size: 11px;
+    opacity: 0.6;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .listen-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .listen-option {
+    padding: 18px 12px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    font-family: 'Amiri', serif;
+    font-size: 22px;
+    direction: rtl;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .listen-option:hover:not(:disabled) { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--terra); }
+  .listen-option.correct { background: var(--olive); color: var(--paper); border-color: var(--olive); }
+  .listen-option.wrong { background: var(--terra-deep); color: var(--paper); border-color: var(--terra-deep); }
+  .listen-option:disabled { cursor: default; }
+  .listen-option.correct:disabled, .listen-option.wrong:disabled { opacity: 1; }
+
+  /* SRS marker — small inline review-count badge on tags */
+  .srs-mark {
+    color: var(--terra-deep);
+    font-weight: 600;
+  }
+
   /* VOICE SETTINGS */
   .voice-section {
     background: #fff;
@@ -4390,10 +4595,32 @@ function buildTodayQueue() {
     else if (gap > 1) state.streak = 0;
   }
 
-  // Due recognition reviews
-  const dueRecall = Object.entries(state.cards)
+  // Due recognition reviews — rotate exercise variants by maturity (reps).
+  // reps 1 → pickMeaning, reps >= 2 → mix of translate/listenPick/pickMeaning.
+  // Up to 2 matchPairs batches consume 5 due cards each (reviews >= 1).
+  const dueAll = Object.entries(state.cards)
     .filter(([id, c]) => c.learned && c.due <= today)
-    .map(([id]) => ({ type: 'recall', ref: id }));
+    .map(([id, c]) => ({ id, reps: c.reps || 1 }));
+  const matchPool = dueAll.filter(x => x.reps >= 1).slice();
+  const matchBatches = [];
+  const consumedByMatch = new Set();
+  while (matchPool.length >= 5 && matchBatches.length < 2) {
+    const batch = matchPool.splice(0, 5).map(x => x.id);
+    batch.forEach(id => consumedByMatch.add(id));
+    matchBatches.push({ type: 'matchPairs', ref: batch });
+  }
+  const dueRecall = dueAll
+    .filter(x => !consumedByMatch.has(x.id))
+    .map(x => {
+      if (x.reps <= 1) return { type: 'pickMeaning', ref: x.id };
+      const variants = ['translate', 'listenPick', 'pickMeaning'];
+      const v = variants[Math.floor(Math.random() * variants.length)];
+      if (v === 'translate') {
+        const p = PHRASES.find(P => P.id === x.id);
+        if (!p || translatableTokens(p.en).length < 3) return { type: 'pickMeaning', ref: x.id };
+      }
+      return { type: v, ref: x.id };
+    });
 
   // Due production reviews — only ones that are unlocked
   const dueProd = state.settings.productionEnabled ? Object.entries(state.prodCards)
@@ -4466,9 +4693,13 @@ function buildTodayQueue() {
   }
   const knownPhrases = PHRASES.filter(p => state.cards[p.id] && state.cards[p.id].learned);
   const letterDrills = [];
-  const drillTypes = ['letterSound', 'letterSpot', 'letterBuild'];
+  const drillTypes = ['letterSound', 'letterFromSound', 'letterSpot', 'letterBuild'];
   for (const idx of drillCandidates.slice(0, 3)) {
     let type = drillTypes[Math.floor(Math.random() * drillTypes.length)];
+    if (type === 'letterSound' || type === 'letterFromSound') {
+      letterDrills.push({ type, ref: idx });
+      continue;
+    }
     if (type === 'letterSpot') {
       const cands = knownPhrases.filter(p => letterCharsInPhrase(p.ar).some(x => x.idx === idx));
       if (cands.length > 0) {
@@ -4495,8 +4726,9 @@ function buildTodayQueue() {
   }
 
   // Interleave: letter intros at front (so they precede related phrases),
-  // then due reviews, new recall, production, scatter drills + sentences.
-  const queue = [...letterIntros, ...dueRecall, ...newRecall, ...dueProd, ...newProd];
+  // match-pairs as warm-up, then due reviews, new recall, production,
+  // scatter drills + sentences.
+  const queue = [...letterIntros, ...matchBatches, ...dueRecall, ...newRecall, ...dueProd, ...newProd];
   // Scatter letter drills into middle/end
   letterDrills.forEach((card, i) => {
     if (queue.length === 0) { queue.push(card); return; }
@@ -4576,10 +4808,20 @@ function renderDaily() {
     renderProdCard(queueItem.ref);
   } else if (queueItem.type === 'sentence') {
     renderSentenceCard(queueItem.ref);
+  } else if (queueItem.type === 'pickMeaning') {
+    renderPickMeaningCard(queueItem.ref);
+  } else if (queueItem.type === 'matchPairs') {
+    renderMatchPairsCard(queueItem.ref);
+  } else if (queueItem.type === 'translate') {
+    renderTranslateCard(queueItem.ref);
+  } else if (queueItem.type === 'listenPick') {
+    renderListenPickCard(queueItem.ref);
   } else if (queueItem.type === 'letterIntro') {
     renderLetterIntroCard(queueItem.ref);
   } else if (queueItem.type === 'letterSound') {
     renderLetterSoundCard(queueItem.ref);
+  } else if (queueItem.type === 'letterFromSound') {
+    renderLetterFromSoundCard(queueItem.ref);
   } else if (queueItem.type === 'letterSpot') {
     renderLetterSpotCard(queueItem.ref);
   } else if (queueItem.type === 'letterBuild') {
@@ -4689,7 +4931,8 @@ function renderRecallCard(id) {
 
   const card = initCard(id);
   const isReview = card.learned;
-  const tagText = isReview ? `Recall · review · ${state.todayIndex + 1}/${state.todayQueue.length}` : `Recall · new · ${state.todayIndex + 1}/${state.todayQueue.length}`;
+  const repTag = card.reps ? ' <span class="srs-mark">#' + card.reps + '</span>' : '';
+  const tagText = isReview ? `Recall · review${repTag} · ${state.todayIndex + 1}/${state.todayQueue.length}` : `Recall · new · ${state.todayIndex + 1}/${state.todayQueue.length}`;
 
   stack.innerHTML = `
     <div class="card">
@@ -4729,7 +4972,8 @@ function renderProdCard(id) {
 
   const card = initProdCard(id);
   const isReview = card.learned;
-  const tagText = isReview ? `Production · review · ${state.todayIndex + 1}/${state.todayQueue.length}` : `Production · new · ${state.todayIndex + 1}/${state.todayQueue.length}`;
+  const repTag = card.reps ? ' <span class="srs-mark">#' + card.reps + '</span>' : '';
+  const tagText = isReview ? `Production · review${repTag} · ${state.todayIndex + 1}/${state.todayQueue.length}` : `Production · new · ${state.todayIndex + 1}/${state.todayQueue.length}`;
 
   stack.innerHTML = `
     <div class="card prod-card">
@@ -5276,6 +5520,409 @@ function finishLetterBuild(correct) {
     saveState();
     renderDaily();
   }, correct ? 1100 : 2200);
+}
+
+function renderLetterFromSoundCard(idx) {
+  const stack = document.getElementById('card-stack');
+  const letter = ALPHABET[idx];
+  if (!letter) { state.todayIndex++; saveState(); renderDaily(); return; }
+  const otherIdxs = ALPHABET.map((_, i) => i).filter(i => i !== idx);
+  for (let i = otherIdxs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [otherIdxs[i], otherIdxs[j]] = [otherIdxs[j], otherIdxs[i]];
+  }
+  const opts = [idx, ...otherIdxs.slice(0, 3)];
+  for (let i = opts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [opts[i], opts[j]] = [opts[j], opts[i]];
+  }
+  const optsHtml = opts.map(i =>
+    `<button class="letter-option" style="font-family:'Amiri',serif;font-size:36px;direction:rtl;padding:14px;" onclick="answerLetterFromSound(${idx}, ${i}, this)">${ALPHABET[i].l}</button>`
+  ).join('');
+  stack.innerHTML = `
+    <div class="card">
+      <div class="card-corner">Alphabet</div>
+      <div class="card-tag">Sound to letter · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
+      <div class="letter-drill-prompt">Which letter sounds like <strong>${letter.arabizi}</strong>?</div>
+      <div class="letter-drill-hear" style="margin-top:6px;margin-bottom:14px;">
+        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(letter.l)})">▶ Hear it</button>
+      </div>
+      <div class="letter-options">${optsHtml}</div>
+    </div>
+  `;
+  letterDrillAnswered = false;
+}
+
+function answerLetterFromSound(targetIdx, chosenIdx, btn) {
+  if (letterDrillAnswered) return;
+  letterDrillAnswered = true;
+  const correct = targetIdx === chosenIdx;
+  document.querySelectorAll('.letter-option').forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.letter-option').forEach(b => {
+      if (b.textContent.trim() === ALPHABET[targetIdx].l) b.classList.add('correct');
+    });
+  }
+  finishLetterDrill(targetIdx, correct);
+}
+
+// ==========================================
+// VOCAB EXERCISE VARIANTS — pickMeaning, matchPairs, translate, listenPick
+// All work on existing recall cards with c.learned = true; they grade
+// the same SRS slot via gradeCard, replacing the free-recall format
+// once a card has been seen at least once.
+// ==========================================
+function translatableTokens(en) {
+  const cleaned = String(en || '').replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+  const first = cleaned.split(/\s*\/\s*/)[0].trim();
+  return first.split(/\s+/).filter(t => t.length > 0);
+}
+
+function pickMeaningOptions(phraseId) {
+  const correct = PHRASES.find(p => p.id === phraseId);
+  if (!correct) return [];
+  let candidates = PHRASES.filter(p => p.id !== phraseId && p.cat === correct.cat);
+  if (candidates.length < 5) candidates = candidates.concat(PHRASES.filter(p => p.id !== phraseId && p.cat !== correct.cat));
+  for (let i = candidates.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+  }
+  const seen = new Set([correct.en.toLowerCase()]);
+  const distractors = [];
+  for (const c of candidates) {
+    const k = c.en.toLowerCase();
+    if (seen.has(k)) continue;
+    seen.add(k);
+    distractors.push(c);
+    if (distractors.length === 3) break;
+  }
+  const opts = [correct, ...distractors];
+  for (let i = opts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [opts[i], opts[j]] = [opts[j], opts[i]];
+  }
+  return opts;
+}
+
+let variantAnswered = false;
+
+function finishVariant(id, correct) {
+  gradeCard(id, correct ? 2 : 0, false);
+  if (!correct) state.todayQueue.push(state.todayQueue[state.todayIndex]);
+  setTimeout(() => {
+    state.todayIndex++;
+    saveState();
+    renderDaily();
+  }, correct ? 700 : 1400);
+}
+
+function renderPickMeaningCard(id) {
+  const phrase = PHRASES.find(p => p.id === id);
+  if (!phrase) { state.todayIndex++; saveState(); renderDaily(); return; }
+  initCard(id);
+  const card = state.cards[id];
+  const opts = pickMeaningOptions(id);
+  const optsHtml = opts.map(p =>
+    `<button class="pick-option" data-en="${escapeAttr(p.en)}" onclick="answerPickMeaning(${JSON.stringify(id)}, ${JSON.stringify(p.id)}, this)">${p.en}</button>`
+  ).join('');
+  document.getElementById('card-stack').innerHTML = `
+    <div class="card">
+      <div class="card-corner">${phrase.cat}</div>
+      <div class="card-tag">Meaning · review${card.reps ? ' <span class="srs-mark">#' + card.reps + '</span>' : ''} · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
+      <div class="pick-meaning-prompt">${phrase.ar}</div>
+      <div class="pick-meaning-az">${phrase.az}</div>
+      <div style="text-align:center;margin-bottom:18px;">
+        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(phrase.ar)})">▶ Hear it</button>
+      </div>
+      <div class="pick-meaning-options">${optsHtml}</div>
+    </div>
+  `;
+  variantAnswered = false;
+}
+
+function answerPickMeaning(targetId, choiceId, btn) {
+  if (variantAnswered) return;
+  variantAnswered = true;
+  const correct = targetId === choiceId;
+  const target = PHRASES.find(p => p.id === targetId);
+  document.querySelectorAll('.pick-option').forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.pick-option').forEach(b => {
+      if (target && b.dataset.en === target.en) b.classList.add('correct');
+    });
+  }
+  finishVariant(targetId, correct);
+}
+
+let matchState = null;
+
+function renderMatchPairsCard(ids) {
+  const phrases = ids.map(id => PHRASES.find(p => p.id === id)).filter(Boolean);
+  if (phrases.length === 0) { state.todayIndex++; saveState(); renderDaily(); return; }
+  const left = phrases.map((p, i) => ({ key: 'L' + i, side: 'L', id: p.id, text: p.ar, ar: true }));
+  const right = phrases.map((p, i) => ({ key: 'R' + i, side: 'R', id: p.id, text: p.en, ar: false }));
+  for (let i = left.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [left[i], left[j]] = [left[j], left[i]]; }
+  for (let i = right.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [right[i], right[j]] = [right[j], right[i]]; }
+  matchState = { left, right, selected: null, matched: new Set(), wrongIds: new Set(), totalPairs: phrases.length, ids };
+
+  let rowsHtml = '';
+  for (let i = 0; i < phrases.length; i++) {
+    rowsHtml += `
+      <div class="match-cell match-arabic" data-key="${left[i].key}" data-id="${left[i].id}" data-side="L" onclick="matchTap(this)">${left[i].text}</div>
+      <div class="match-cell match-en" data-key="${right[i].key}" data-id="${right[i].id}" data-side="R" onclick="matchTap(this)">${right[i].text}</div>
+    `;
+  }
+  document.getElementById('card-stack').innerHTML = `
+    <div class="card">
+      <div class="card-corner">Review</div>
+      <div class="card-tag">Match the pairs · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
+      <div style="text-align:center;margin-bottom:14px;font-size:13px;font-style:italic;opacity:0.7;">Tap an Arabic word and its English meaning to pair them.</div>
+      <div class="match-grid">${rowsHtml}</div>
+    </div>
+  `;
+}
+
+function matchTap(el) {
+  if (el.classList.contains('matched')) return;
+  if (matchState.selected === null) {
+    el.classList.add('selected');
+    matchState.selected = el;
+    return;
+  }
+  const a = matchState.selected;
+  const b = el;
+  if (a === b) {
+    a.classList.remove('selected');
+    matchState.selected = null;
+    return;
+  }
+  if (a.dataset.side === b.dataset.side) {
+    a.classList.remove('selected');
+    b.classList.add('selected');
+    matchState.selected = b;
+    return;
+  }
+  if (a.dataset.id === b.dataset.id) {
+    a.classList.remove('selected');
+    a.classList.add('matched');
+    b.classList.add('matched');
+    matchState.matched.add(a.dataset.id);
+    matchState.selected = null;
+    if (matchState.matched.size === matchState.totalPairs) finishMatch();
+  } else {
+    a.classList.remove('selected');
+    a.classList.add('error');
+    b.classList.add('error');
+    matchState.wrongIds.add(a.dataset.id);
+    matchState.wrongIds.add(b.dataset.id);
+    matchState.selected = null;
+    setTimeout(() => { a.classList.remove('error'); b.classList.remove('error'); }, 600);
+  }
+}
+
+function finishMatch() {
+  matchState.ids.forEach(id => {
+    const wasWrong = matchState.wrongIds.has(id);
+    gradeCard(id, wasWrong ? 1 : 2, false);
+  });
+  setTimeout(() => {
+    state.todayIndex++;
+    saveState();
+    renderDaily();
+  }, 1100);
+}
+
+let translateState = null;
+
+function pickEnglishDistractors(targetId, count) {
+  const target = PHRASES.find(p => p.id === targetId);
+  if (!target) return [];
+  const targetTokens = new Set(translatableTokens(target.en).map(t => t.toLowerCase()));
+  const pool = [];
+  for (const p of PHRASES) {
+    if (p.id === targetId) continue;
+    for (const tok of translatableTokens(p.en)) {
+      const k = tok.toLowerCase();
+      if (!targetTokens.has(k) && tok.length > 1) pool.push(tok);
+    }
+  }
+  const seen = new Set();
+  const unique = [];
+  for (const t of pool) {
+    const k = t.toLowerCase();
+    if (seen.has(k)) continue;
+    seen.add(k);
+    unique.push(t);
+  }
+  for (let i = unique.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [unique[i], unique[j]] = [unique[j], unique[i]];
+  }
+  return unique.slice(0, count);
+}
+
+function renderTranslateCard(id) {
+  const phrase = PHRASES.find(p => p.id === id);
+  if (!phrase) { state.todayIndex++; saveState(); renderDaily(); return; }
+  const targetTokens = translatableTokens(phrase.en);
+  if (targetTokens.length < 2) {
+    // fall through to pickMeaning
+    renderPickMeaningCard(id);
+    return;
+  }
+  const distractors = pickEnglishDistractors(id, Math.min(3, Math.max(1, 6 - targetTokens.length)));
+  const allTiles = [
+    ...targetTokens.map((t, i) => ({ t, key: 'r' + i })),
+    ...distractors.map((t, i) => ({ t, key: 'd' + i })),
+  ];
+  for (let i = allTiles.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allTiles[i], allTiles[j]] = [allTiles[j], allTiles[i]];
+  }
+  initCard(id);
+  const card = state.cards[id];
+  translateState = { id, target: targetTokens, placed: [], pool: allTiles, mistakes: 0, done: false };
+  document.getElementById('card-stack').innerHTML = `
+    <div class="card">
+      <div class="card-corner">${phrase.cat}</div>
+      <div class="card-tag">Translate · review${card.reps ? ' <span class="srs-mark">#' + card.reps + '</span>' : ''} · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
+      <div class="translate-source">${phrase.ar}</div>
+      <div class="translate-az">${phrase.az}</div>
+      <div style="text-align:center;margin-bottom:14px;">
+        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(phrase.ar)})">▶ Hear it</button>
+      </div>
+      <div class="translate-build-area" id="t-area" onclick="translatePop()"></div>
+      <div class="translate-pool" id="t-pool"></div>
+      <div class="card-actions" style="margin-top:14px;">
+        <button class="action" onclick="translateClear()">Clear</button>
+        <button class="action good" onclick="translateCheck()">Check</button>
+        <button class="action" onclick="translateReveal()">Show answer</button>
+      </div>
+      <div id="t-feedback"></div>
+    </div>
+  `;
+  renderTranslateTiles();
+}
+
+function renderTranslateTiles() {
+  const area = document.getElementById('t-area');
+  const pool = document.getElementById('t-pool');
+  if (!area || !pool) return;
+  if (translateState.placed.length === 0) {
+    area.classList.add('empty');
+    area.textContent = 'Tap English words in the right order';
+  } else {
+    area.classList.remove('empty');
+    area.innerHTML = translateState.placed.map(t => `<span class="translate-tile placed">${t.t}</span>`).join('');
+  }
+  pool.innerHTML = translateState.pool.map(t => {
+    const used = translateState.placed.some(p => p.key === t.key);
+    return `<button class="translate-tile ${used ? 'used' : ''}" onclick="translateTap(${JSON.stringify(t.key)})">${t.t}</button>`;
+  }).join('');
+}
+
+function translateTap(key) {
+  if (translateState.done) return;
+  const tile = translateState.pool.find(t => t.key === key);
+  if (!tile) return;
+  if (translateState.placed.some(p => p.key === key)) return;
+  translateState.placed.push(tile);
+  renderTranslateTiles();
+}
+
+function translatePop() {
+  if (translateState.done || translateState.placed.length === 0) return;
+  translateState.placed.pop();
+  renderTranslateTiles();
+}
+
+function translateClear() {
+  if (translateState.done) return;
+  translateState.placed = [];
+  renderTranslateTiles();
+}
+
+function translateCheck() {
+  if (translateState.done) return;
+  const got = translateState.placed.map(t => t.t.toLowerCase());
+  const target = translateState.target.map(t => t.toLowerCase());
+  const fb = document.getElementById('t-feedback');
+  const correct = got.length === target.length && got.every((t, i) => t === target[i]);
+  if (correct) {
+    translateState.done = true;
+    fb.innerHTML = `<div class="letter-feedback correct">Right!</div>`;
+    finishVariant(translateState.id, translateState.mistakes === 0);
+  } else {
+    translateState.mistakes++;
+    fb.innerHTML = `<div class="letter-feedback wrong">Not quite. Try again, or hit "Show answer".</div>`;
+  }
+}
+
+function translateReveal() {
+  if (translateState.done) return;
+  translateState.done = true;
+  const fb = document.getElementById('t-feedback');
+  fb.innerHTML = `<div class="letter-feedback wrong">Answer: <strong>${translateState.target.join(' ')}</strong></div>`;
+  finishVariant(translateState.id, false);
+}
+
+function renderListenPickCard(id) {
+  const phrase = PHRASES.find(p => p.id === id);
+  if (!phrase) { state.todayIndex++; saveState(); renderDaily(); return; }
+  let candidates = PHRASES.filter(p => p.id !== id && p.cat === phrase.cat);
+  if (candidates.length < 5) candidates = candidates.concat(PHRASES.filter(p => p.id !== id && p.cat !== phrase.cat));
+  for (let i = candidates.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [candidates[i], candidates[j]] = [candidates[j], candidates[i]]; }
+  const seenAr = new Set([phrase.ar]);
+  const distractors = [];
+  for (const c of candidates) {
+    if (seenAr.has(c.ar)) continue;
+    seenAr.add(c.ar);
+    distractors.push(c);
+    if (distractors.length === 3) break;
+  }
+  const opts = [phrase, ...distractors];
+  for (let i = opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [opts[i], opts[j]] = [opts[j], opts[i]]; }
+  initCard(id);
+  const card = state.cards[id];
+  const optsHtml = opts.map(p =>
+    `<button class="listen-option" data-ar="${escapeAttr(p.ar)}" onclick="answerListenPick(${JSON.stringify(id)}, ${JSON.stringify(p.id)}, this)">${p.ar}</button>`
+  ).join('');
+  document.getElementById('card-stack').innerHTML = `
+    <div class="card">
+      <div class="card-corner">${phrase.cat}</div>
+      <div class="card-tag">Listen · review${card.reps ? ' <span class="srs-mark">#' + card.reps + '</span>' : ''} · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
+      <div class="listen-prompt">
+        <button class="listen-big-btn" onclick="speakArabic(${JSON.stringify(phrase.ar)})">▶</button>
+        <div class="listen-hint">Tap to play again</div>
+      </div>
+      <div class="listen-options">${optsHtml}</div>
+    </div>
+  `;
+  variantAnswered = false;
+  setTimeout(() => speakArabic(phrase.ar), 250);
+}
+
+function answerListenPick(targetId, choiceId, btn) {
+  if (variantAnswered) return;
+  variantAnswered = true;
+  const correct = targetId === choiceId;
+  const target = PHRASES.find(p => p.id === targetId);
+  document.querySelectorAll('.listen-option').forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.listen-option').forEach(b => {
+      if (target && b.dataset.ar === target.ar) b.classList.add('correct');
+    });
+  }
+  finishVariant(targetId, correct);
 }
 
 // ==========================================
