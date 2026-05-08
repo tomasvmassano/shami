@@ -923,6 +923,170 @@
     display: flex;
     gap: 10px;
   }
+  .modal-wide {
+    max-width: 720px;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+    padding: 32px;
+  }
+  .day-modal-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 6px;
+  }
+  .day-modal-title {
+    font-size: 32px;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+  .day-modal-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.6;
+    margin: 24px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .day-phrase {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1.2fr;
+    gap: 16px;
+    align-items: baseline;
+    padding: 14px 8px;
+    border-bottom: 1px dashed rgba(26, 20, 16, 0.18);
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  .day-phrase:last-of-type { border-bottom: none; }
+  .day-phrase:hover { background: rgba(212, 162, 74, 0.08); }
+  .day-phrase-ar {
+    font-family: 'Amiri', serif;
+    direction: rtl;
+    font-size: 24px;
+    text-align: right;
+    line-height: 1.3;
+  }
+  .day-phrase-az {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--terra);
+  }
+  .day-phrase-en { font-size: 14px; }
+  .day-phrase-note {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    color: var(--ink);
+    opacity: 0.6;
+    font-style: italic;
+    margin-top: 4px;
+  }
+  @media (max-width: 600px) {
+    .day-phrase { grid-template-columns: 1fr; gap: 4px; padding: 12px 4px; }
+    .day-phrase-ar { text-align: right; }
+    .modal-wide { padding: 24px 20px; }
+    .day-modal-title { font-size: 24px; }
+  }
+
+  /* VOICE SETTINGS */
+  .voice-section {
+    background: #fff;
+    border: 1.5px solid var(--ink);
+    padding: 24px 28px;
+    box-shadow: 6px 6px 0 var(--ink);
+    margin-top: 30px;
+  }
+  .voice-section h3 {
+    font-size: 22px;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .voice-status {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    opacity: 0.85;
+  }
+  .voice-status strong { color: var(--terra-deep); }
+  .voice-status a { color: var(--terra); }
+  .voice-form-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.7;
+    margin: 18px 0 6px;
+  }
+  .voice-input,
+  .voice-select {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    box-sizing: border-box;
+  }
+  .voice-input:focus,
+  .voice-select:focus {
+    outline: 2px solid var(--terra);
+    outline-offset: 2px;
+  }
+  .voice-help {
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 14px 0 18px;
+    opacity: 0.8;
+  }
+  .voice-help-details {
+    background: var(--paper-dim);
+    border: 1px dashed var(--ink);
+    padding: 14px 16px;
+    margin: 14px 0;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .voice-help-details summary {
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--terra);
+  }
+  .voice-help-details ol { margin: 12px 0 0 20px; padding: 0; }
+  .voice-help-details li { margin-bottom: 6px; }
+  .voice-help-details a { color: var(--terra-deep); }
+  .voice-test-status {
+    font-size: 13px;
+    font-style: italic;
+    margin-top: 14px;
+    min-height: 18px;
+    color: var(--terra-deep);
+  }
+  .voice-cache-line {
+    margin-top: 18px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.6;
+  }
+  .voice-cache-line a {
+    color: var(--terra);
+    cursor: pointer;
+    text-decoration: underline;
+  }
 
   /* PHRASEBOOK */
   .phrasebook-search {
@@ -1328,6 +1492,11 @@
         <div class="legend-item"><div class="legend-swatch" style="background:var(--paper)"></div>Future</div>
       </div>
     </div>
+    <div class="voice-section">
+      <h3>Voice</h3>
+      <div class="voice-status" id="voice-status"></div>
+      <button class="action" onclick="openVoiceSettings()">Voice settings</button>
+    </div>
     <button class="reset-btn" onclick="if(confirm('This wipes all your progress. Sure?')) { resetAll(); }">Reset all progress</button>
   </section>
 </main>
@@ -1347,6 +1516,51 @@
     <div class="modal-actions">
       <button class="action" onclick="speakLetter()">▶ Hear it</button>
       <button class="action good" onclick="markLetterLearned()">Mark learned</button>
+    </div>
+  </div>
+</div>
+
+<!-- DAY DETAIL MODAL -->
+<div class="modal-bg" id="day-modal-bg" onclick="if(event.target===this)closeDayModal()">
+  <div class="modal modal-wide">
+    <button class="modal-close" onclick="closeDayModal()">×</button>
+    <div id="day-modal-body"></div>
+  </div>
+</div>
+
+<!-- VOICE SETTINGS MODAL -->
+<div class="modal-bg" id="voice-modal-bg" onclick="if(event.target===this)closeVoiceSettings()">
+  <div class="modal modal-wide">
+    <button class="modal-close" onclick="closeVoiceSettings()">×</button>
+    <div class="day-modal-tag">Voice</div>
+    <div class="day-modal-title">Use a real voice</div>
+    <p class="voice-help">By default Shami uses your browser's built-in voice, which sounds robotic. Add a free Google Cloud Text-to-Speech key for a near-human Arabic voice. Your key stays in this browser only and never leaves your device. Audio is cached after first use, so you'll never re-pay for the same phrase.</p>
+    <details class="voice-help-details">
+      <summary>How to get a free key (3 minutes)</summary>
+      <ol>
+        <li>Go to <a href="https://console.cloud.google.com" target="_blank" rel="noopener">console.cloud.google.com</a> and create a project (needs a Google account and a credit card for verification, but the free tier covers ~30,000 phrases/month).</li>
+        <li>In the search bar, find <em>"Cloud Text-to-Speech API"</em> and click <em>Enable</em>.</li>
+        <li>Go to <em>APIs &amp; Services → Credentials → Create credentials → API key</em>.</li>
+        <li>Copy the key (starts with <code>AIza...</code>) and paste it below.</li>
+        <li>Optional: restrict the key to the Text-to-Speech API for safety.</li>
+      </ol>
+    </details>
+    <label class="voice-form-label">Google Cloud TTS API key</label>
+    <input type="password" id="voice-api-key" class="voice-input" placeholder="AIza..." autocomplete="off" />
+    <label class="voice-form-label">Voice</label>
+    <select id="voice-select" class="voice-select">
+      <option value="ar-XA-Wavenet-B">Wavenet B · male</option>
+      <option value="ar-XA-Wavenet-C">Wavenet C · male, deeper</option>
+      <option value="ar-XA-Wavenet-A">Wavenet A · female</option>
+      <option value="ar-XA-Wavenet-D">Wavenet D · female</option>
+    </select>
+    <div class="voice-test-status" id="voice-test-status"></div>
+    <div class="modal-actions" style="margin-top:18px;">
+      <button class="action" onclick="testVoice()">▶ Test voice</button>
+      <button class="action good" onclick="saveVoiceSettings()">Save</button>
+    </div>
+    <div class="voice-cache-line">
+      <a onclick="useBrowserVoice()">Use browser voice instead</a> · <a onclick="clearVoiceCache()">Clear cached audio</a>
     </div>
   </div>
 </div>
@@ -4093,36 +4307,24 @@ function escapeAttr(s) {
 }
 
 let consolPlaying = false;
-function playConsolidation() {
+let consolAbort = false;
+async function playConsolidation() {
   if (consolPlaying) {
-    window.speechSynthesis.cancel();
+    consolAbort = true;
+    stopCurrentAudio();
     consolPlaying = false;
     return;
   }
   consolPlaying = true;
+  consolAbort = false;
   const lines = Array.from(document.querySelectorAll('.consol-arabic'));
-  let i = 0;
-  function speakNext() {
-    if (i >= lines.length || !consolPlaying) {
-      consolPlaying = false;
-      return;
-    }
-    const text = lines[i].dataset.ar;
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.lang = 'ar-SA';
-    utt.rate = 0.8;
-    const voices = window.speechSynthesis.getVoices();
-    const arVoice = voices.find(v => v.lang && v.lang.startsWith('ar'));
-    if (arVoice) utt.voice = arVoice;
-    utt.onend = () => {
-      i++;
-      // Small pause between lines
-      setTimeout(speakNext, 350);
-    };
-    utt.onerror = () => { i++; setTimeout(speakNext, 200); };
-    window.speechSynthesis.speak(utt);
+  for (const line of lines) {
+    if (consolAbort) break;
+    await speakArabic(line.dataset.ar);
+    if (consolAbort) break;
+    await new Promise(r => setTimeout(r, 350));
   }
-  speakNext();
+  consolPlaying = false;
 }
 
 function renderRecallCard(id) {
@@ -4436,17 +4638,235 @@ function gradeAndAdvance(g, isProd) {
   renderDaily();
 }
 
-function speakArabic(text) {
-  if (!('speechSynthesis' in window)) return;
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.lang = 'ar-SA';
-  utt.rate = 0.85;
-  // Try to find Arabic voice
-  const voices = window.speechSynthesis.getVoices();
-  const arVoice = voices.find(v => v.lang && v.lang.startsWith('ar'));
-  if (arVoice) utt.voice = arVoice;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(utt);
+// ==========================================
+// VOICE / TTS — browser fallback + Google Cloud TTS (BYOK, cached)
+// ==========================================
+const VOICE_KEY = 'shami-voice-config';
+const TTS_DB = 'shami-tts-cache';
+const TTS_STORE = 'audio';
+let currentAudio = null;
+let _ttsDbPromise = null;
+
+function defaultVoiceConfig() {
+  return { provider: 'browser', googleApiKey: '', voice: 'ar-XA-Wavenet-B' };
+}
+
+function getVoiceConfig() {
+  try {
+    const raw = localStorage.getItem(VOICE_KEY);
+    if (raw) return Object.assign(defaultVoiceConfig(), JSON.parse(raw));
+  } catch (e) {}
+  return defaultVoiceConfig();
+}
+
+function saveVoiceConfig(c) {
+  try { localStorage.setItem(VOICE_KEY, JSON.stringify(c)); } catch (e) {}
+}
+
+function openTTSDB() {
+  if (_ttsDbPromise) return _ttsDbPromise;
+  _ttsDbPromise = new Promise((resolve, reject) => {
+    if (!('indexedDB' in window)) { reject(new Error('no IndexedDB')); return; }
+    const req = indexedDB.open(TTS_DB, 1);
+    req.onupgradeneeded = () => {
+      req.result.createObjectStore(TTS_STORE, { keyPath: 'key' });
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+  return _ttsDbPromise;
+}
+
+async function getCachedAudio(key) {
+  try {
+    const db = await openTTSDB();
+    return await new Promise((resolve) => {
+      const tx = db.transaction(TTS_STORE, 'readonly');
+      const req = tx.objectStore(TTS_STORE).get(key);
+      req.onsuccess = () => resolve(req.result ? req.result.blob : null);
+      req.onerror = () => resolve(null);
+    });
+  } catch (e) { return null; }
+}
+
+async function setCachedAudio(key, blob) {
+  try {
+    const db = await openTTSDB();
+    await new Promise((resolve) => {
+      const tx = db.transaction(TTS_STORE, 'readwrite');
+      tx.objectStore(TTS_STORE).put({ key, blob, createdAt: Date.now() });
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    });
+  } catch (e) {}
+}
+
+async function clearTTSCache() {
+  try {
+    const db = await openTTSDB();
+    await new Promise((resolve) => {
+      const tx = db.transaction(TTS_STORE, 'readwrite');
+      tx.objectStore(TTS_STORE).clear();
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    });
+  } catch (e) {}
+}
+
+async function googleTTSFetch(text, voice, apiKey) {
+  const res = await fetch(
+    `https://texttospeech.googleapis.com/v1/text:synthesize?key=${encodeURIComponent(apiKey)}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: { text },
+        voice: { languageCode: 'ar-XA', name: voice },
+        audioConfig: { audioEncoding: 'MP3', speakingRate: 0.92 }
+      })
+    }
+  );
+  if (!res.ok) {
+    let msg = 'request failed (' + res.status + ')';
+    try { const err = await res.json(); if (err.error && err.error.message) msg = err.error.message; } catch (e) {}
+    throw new Error(msg);
+  }
+  const data = await res.json();
+  if (!data.audioContent) throw new Error('empty response');
+  const binary = atob(data.audioContent);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new Blob([bytes], { type: 'audio/mp3' });
+}
+
+function stopCurrentAudio() {
+  if (currentAudio) {
+    try { currentAudio.pause(); currentAudio.currentTime = 0; } catch (e) {}
+    currentAudio = null;
+  }
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+}
+
+async function playGoogleAudio(text, config) {
+  const cacheKey = `${config.voice}:${text}`;
+  let blob = await getCachedAudio(cacheKey);
+  if (!blob) {
+    blob = await googleTTSFetch(text, config.voice, config.googleApiKey);
+    await setCachedAudio(cacheKey, blob);
+  }
+  const url = URL.createObjectURL(blob);
+  const audio = new Audio(url);
+  currentAudio = audio;
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = () => { if (done) return; done = true; URL.revokeObjectURL(url); resolve(); };
+    audio.onended = finish;
+    audio.onerror = finish;
+    audio.onpause = finish;
+    audio.play().catch(finish);
+  });
+}
+
+function playBrowserSpeech(text) {
+  return new Promise((resolve) => {
+    if (!('speechSynthesis' in window)) { resolve(); return; }
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'ar-SA';
+    utt.rate = 0.85;
+    const voices = window.speechSynthesis.getVoices();
+    // Prefer known higher-quality Arabic voices when present
+    const preferred = ['Maged', 'Tarik', 'Majed', 'Laila'];
+    let arVoice = voices.find(v => preferred.some(p => v.name && v.name.includes(p)));
+    if (!arVoice) arVoice = voices.find(v => v.lang && v.lang.startsWith('ar'));
+    if (arVoice) utt.voice = arVoice;
+    utt.onend = resolve;
+    utt.onerror = resolve;
+    window.speechSynthesis.speak(utt);
+  });
+}
+
+async function speakArabic(text) {
+  if (!text || !String(text).trim()) return;
+  stopCurrentAudio();
+  const config = getVoiceConfig();
+  if (config.provider === 'google' && config.googleApiKey) {
+    try { await playGoogleAudio(text, config); return; }
+    catch (e) { console.warn('Google TTS failed, falling back to browser voice:', e.message); }
+  }
+  await playBrowserSpeech(text);
+}
+
+// ----- Voice settings UI -----
+function openVoiceSettings() {
+  const c = getVoiceConfig();
+  document.getElementById('voice-api-key').value = c.googleApiKey || '';
+  document.getElementById('voice-select').value = c.voice || 'ar-XA-Wavenet-B';
+  document.getElementById('voice-test-status').textContent = '';
+  document.getElementById('voice-modal-bg').classList.add('show');
+  document.querySelector('#voice-modal-bg .modal').scrollTop = 0;
+}
+
+function closeVoiceSettings() {
+  document.getElementById('voice-modal-bg').classList.remove('show');
+}
+
+async function testVoice() {
+  const key = document.getElementById('voice-api-key').value.trim();
+  const voice = document.getElementById('voice-select').value;
+  const status = document.getElementById('voice-test-status');
+  if (!key) { status.textContent = 'Paste a key first.'; return; }
+  status.textContent = 'Testing...';
+  try {
+    const blob = await googleTTSFetch('مرحبا، أهلا وسهلا فيك بشامي', voice, key);
+    stopCurrentAudio();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    currentAudio = audio;
+    audio.onended = () => URL.revokeObjectURL(url);
+    await audio.play();
+    status.textContent = 'Sounds good? Save to use it everywhere.';
+  } catch (e) {
+    status.textContent = 'Failed: ' + (e.message || 'check the key and try again');
+  }
+}
+
+function saveVoiceSettings() {
+  const key = document.getElementById('voice-api-key').value.trim();
+  const voice = document.getElementById('voice-select').value;
+  saveVoiceConfig({ provider: key ? 'google' : 'browser', googleApiKey: key, voice });
+  renderVoiceStatus();
+  closeVoiceSettings();
+}
+
+function useBrowserVoice() {
+  const c = getVoiceConfig();
+  saveVoiceConfig(Object.assign(c, { provider: 'browser' }));
+  renderVoiceStatus();
+  closeVoiceSettings();
+}
+
+async function clearVoiceCache() {
+  if (!confirm('Clear all cached audio? Phrases will be regenerated next time you tap them.')) return;
+  await clearTTSCache();
+  const status = document.getElementById('voice-test-status');
+  if (status) status.textContent = 'Cache cleared.';
+}
+
+function renderVoiceStatus() {
+  const el = document.getElementById('voice-status');
+  if (!el) return;
+  const c = getVoiceConfig();
+  if (c.provider === 'google' && c.googleApiKey) {
+    const labels = {
+      'ar-XA-Wavenet-A': 'Wavenet A · female',
+      'ar-XA-Wavenet-B': 'Wavenet B · male',
+      'ar-XA-Wavenet-C': 'Wavenet C · male',
+      'ar-XA-Wavenet-D': 'Wavenet D · female',
+    };
+    el.innerHTML = `Using <strong>Google Cloud TTS · ${labels[c.voice] || c.voice}</strong>. Audio is cached after first play, so most phrases load instantly and never re-bill.`;
+  } else {
+    el.innerHTML = `Using your <strong>browser's built-in voice</strong>. Sounds robotic. Add a free Google Cloud key below for a near-human Arabic voice.`;
+  }
 }
 
 // ==========================================
@@ -4639,6 +5059,7 @@ function renderProgress() {
   }
 
   renderCurriculum();
+  renderVoiceStatus();
 }
 
 function renderCurriculum() {
@@ -4657,9 +5078,79 @@ function renderCurriculum() {
     else if (learnedCount > 0) cls += ' partial';
     else if (d > currentDay) cls += ' future';
     const clickable = d <= currentDay;
-    html += `<div class="${cls}" ${clickable ? `onclick="jumpToDay(${d})"` : ''} title="Day ${d}${learnedCount > 0 ? ` · ${learnedCount}/5 learned` : ''}">${d}</div>`;
+    html += `<div class="${cls}" ${clickable ? `onclick="openDay(${d})"` : ''} title="Day ${d}${learnedCount > 0 ? ` · ${learnedCount}/5 learned` : ''}">${d}</div>`;
   }
   grid.innerHTML = html;
+}
+
+function openDay(day) {
+  const startIdx = (day - 1) * 5;
+  const dayPhrases = PHRASES.slice(startIdx, startIdx + 5);
+  if (dayPhrases.length === 0) return;
+  const consol = getConsolidationForDay(day);
+  const currentDay = getCurrentDay();
+  const isToday = day === currentDay;
+
+  let dateLabel = '';
+  if (state.startDate) {
+    const d = new Date(state.startDate);
+    d.setDate(d.getDate() + (day - 1));
+    dateLabel = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  const phrasesHtml = dayPhrases.map(p => {
+    const learned = state.cards[p.id] && state.cards[p.id].learned;
+    const status = learned ? '<span style="color:var(--olive);font-family:JetBrains Mono,monospace;font-size:11px;">✓ learned</span>' : '';
+    return `
+      <div class="day-phrase" onclick="speakArabic(this.dataset.ar)" data-ar="${escapeAttr(p.ar)}">
+        <div class="day-phrase-ar">${p.ar}</div>
+        <div class="day-phrase-az">${p.az}</div>
+        <div class="day-phrase-en">${p.en} ${status}</div>
+        ${p.note ? `<div class="day-phrase-note">${p.note}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  let consolHtml = '';
+  if (consol) {
+    const linesHtml = consol.lines.map(line => `
+      <div class="consol-line ${line.speaker || ''}">
+        ${line.speaker ? `<div class="consol-speaker">${line.speaker}</div>` : ''}
+        <div class="consol-arabic" onclick="speakArabic(this.dataset.ar)" data-ar="${escapeAttr(line.ar)}">${line.ar}</div>
+        <div class="consol-arabizi">${line.az}</div>
+        <div class="consol-en">${line.en}</div>
+      </div>
+    `).join('');
+    const tagLabel = consol.type === 'dialogue' ? 'In context · dialogue' : 'In context · saying';
+    consolHtml = `
+      <div class="day-modal-section-title">${tagLabel}</div>
+      <div style="font-size:18px;margin-bottom:14px;font-style:italic;">${consol.title}</div>
+      ${linesHtml}
+      ${consol.note ? `<div class="consol-note">${consol.note}</div>` : ''}
+    `;
+  }
+
+  const reviewBtn = isToday
+    ? ''
+    : `<button class="action" onclick="jumpToDay(${day})">Review these now</button>`;
+
+  document.getElementById('day-modal-body').innerHTML = `
+    <div class="day-modal-tag">Day ${String(day).padStart(2, '0')}${dateLabel ? ' · ' + dateLabel : ''}${isToday ? ' · today' : ''}</div>
+    <div class="day-modal-title">5 phrases${consol ? ' + a piece of context' : ''}</div>
+    <div class="day-modal-section-title">Phrases · tap to hear</div>
+    ${phrasesHtml}
+    ${consolHtml}
+    <div class="modal-actions" style="margin-top:24px;">
+      ${reviewBtn}
+      <button class="action" onclick="closeDayModal()">Close</button>
+    </div>
+  `;
+  document.getElementById('day-modal-bg').classList.add('show');
+  document.querySelector('#day-modal-bg .modal').scrollTop = 0;
+}
+
+function closeDayModal() {
+  document.getElementById('day-modal-bg').classList.remove('show');
 }
 
 function jumpToDay(day) {
@@ -4672,6 +5163,7 @@ function jumpToDay(day) {
   state.todayQueue = [...new Set([...state.todayQueue.slice(state.todayIndex), ...ids])];
   state.todayIndex = 0;
   saveState();
+  closeDayModal();
   // Switch to daily tab
   document.querySelector('.tab[data-panel="daily"]').click();
 }
