@@ -994,6 +994,207 @@
     .day-modal-title { font-size: 24px; }
   }
 
+  /* LETTER CARDS — intro + 3 drill types */
+  .letter-intro-big {
+    font-family: 'Amiri', serif;
+    font-size: 130px;
+    color: var(--terra);
+    text-align: center;
+    line-height: 1;
+    margin: 14px 0 10px;
+  }
+  .letter-intro-name {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .letter-intro-arabizi {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--terra);
+    letter-spacing: 0.06em;
+    margin-bottom: 18px;
+  }
+  .letter-intro-sound {
+    background: var(--paper-dim);
+    border: 1.5px solid var(--ink);
+    padding: 14px 18px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+  .letter-intro-hint {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--terra-deep);
+    margin-bottom: 10px;
+  }
+
+  .letter-drill-prompt {
+    text-align: center;
+    font-size: 15px;
+    margin-bottom: 8px;
+    opacity: 0.7;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .letter-drill-prompt strong {
+    color: var(--terra-deep);
+    font-weight: 600;
+    font-family: inherit;
+  }
+  .letter-drill-big {
+    font-family: 'Amiri', serif;
+    font-size: 110px;
+    color: var(--terra);
+    text-align: center;
+    line-height: 1;
+    margin: 18px 0 12px;
+  }
+  .letter-drill-hear {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .letter-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .letter-option {
+    padding: 18px 12px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.12s, box-shadow 0.12s, background 0.12s, color 0.12s;
+    color: var(--ink);
+  }
+  .letter-option:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--terra);
+  }
+  .letter-option.correct {
+    background: var(--olive);
+    color: var(--paper);
+    border-color: var(--olive);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .letter-option.wrong {
+    background: var(--terra-deep);
+    color: var(--paper);
+    border-color: var(--terra-deep);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .letter-option:disabled { cursor: default; opacity: 0.7; }
+  .letter-option.correct:disabled, .letter-option.wrong:disabled { opacity: 1; }
+
+  .letter-spot-word {
+    font-family: 'Amiri', serif;
+    font-size: 64px;
+    text-align: center;
+    direction: rtl;
+    line-height: 1.3;
+    margin: 24px 0 8px;
+  }
+  .letter-spot-char {
+    display: inline-block;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .letter-spot-char:hover { color: var(--terra); }
+  .letter-spot-char.correct { background: var(--olive); color: var(--paper); }
+  .letter-spot-char.wrong { background: var(--terra-deep); color: var(--paper); }
+  .letter-spot-char.disabled { cursor: default; pointer-events: none; }
+  .letter-spot-meaning {
+    text-align: center;
+    font-size: 14px;
+    font-style: italic;
+    opacity: 0.7;
+    margin-bottom: 14px;
+  }
+
+  .letter-build-prompt {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .letter-build-azhint {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--terra);
+    margin-bottom: 18px;
+  }
+  .letter-build-area {
+    min-height: 90px;
+    background: var(--paper-dim);
+    border: 1.5px dashed var(--ink);
+    padding: 18px;
+    margin: 14px 0;
+    text-align: center;
+    font-family: 'Amiri', serif;
+    font-size: 44px;
+    direction: rtl;
+    line-height: 1.2;
+    cursor: pointer;
+  }
+  .letter-build-area.empty {
+    color: rgba(26, 20, 16, 0.35);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding-top: 32px;
+  }
+  .letter-build-area .built-tile {
+    display: inline-block;
+    margin: 0 2px;
+    padding: 0 4px;
+  }
+  .letter-build-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 14px;
+  }
+  .letter-tile {
+    padding: 10px 16px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    font-family: 'Amiri', serif;
+    font-size: 26px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.12s, box-shadow 0.12s, opacity 0.12s;
+    min-width: 48px;
+    text-align: center;
+    line-height: 1.1;
+  }
+  .letter-tile:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--terra); }
+  .letter-tile.used { opacity: 0.25; pointer-events: none; }
+  .letter-feedback {
+    margin-top: 16px;
+    padding: 14px 16px;
+    font-size: 14px;
+    text-align: center;
+    border: 1.5px solid var(--ink);
+  }
+  .letter-feedback.correct { background: var(--olive); color: var(--paper); border-color: var(--olive); }
+  .letter-feedback.wrong { background: var(--terra-deep); color: var(--paper); border-color: var(--terra-deep); }
+
   /* VOICE SETTINGS */
   .voice-section {
     background: #fff;
@@ -4008,8 +4209,9 @@ function defaultState() {
     cards: {}, // id -> { ef, interval, reps, due }  (recognition cards)
     prodCards: {}, // id -> { ef, interval, reps, due, unlocked }  (production cards)
     sentenceProgress: {}, // sentenceIndex -> { attempts, completed, lastAttempt }
-    letters: {}, // index -> 'learned' | 'mastered'
-    todayQueue: [], // array of { type: 'recall'|'prod'|'sentence', ref: id or sentenceIdx }
+    letters: {}, // index -> 'learned' | 'mastered'  (alphabet panel toggle, kept for compat)
+    letterCards: {}, // index -> { ef, interval, reps, due, learned, introduced, correctStreak }
+    todayQueue: [],
     todayIndex: 0,
     todayDate: null,
     settings: {
@@ -4072,6 +4274,85 @@ function gradeCard(id, grade, isProd = false) {
         pc.unlocked = true;
       }
     }
+  }
+  saveState();
+}
+
+// ----- Letter SRS + parsing -----
+const LETTER_NORMALIZE = {
+  'أ': 'ا', 'إ': 'ا', 'آ': 'ا', 'ٱ': 'ا',
+  'ى': 'ي',
+  'ة': 'ت',
+  'ؤ': 'و', 'ئ': 'ي',
+};
+const LETTER_DIACRITICS = /[ً-ْٰـ]/g;
+const LETTER_LIGATURES = { 'ﻻ': 'لا', 'ﻷ': 'لا', 'ﻹ': 'لا', 'ﻵ': 'لا' };
+
+function letterIdxByChar(ch) {
+  const norm = LETTER_NORMALIZE[ch] || ch;
+  return ALPHABET.findIndex(L => L.l === norm);
+}
+
+function lettersInPhrase(arText) {
+  let s = arText.replace(LETTER_DIACRITICS, '');
+  for (const lig in LETTER_LIGATURES) s = s.split(lig).join(LETTER_LIGATURES[lig]);
+  const out = [];
+  const seen = new Set();
+  for (const ch of s) {
+    const idx = letterIdxByChar(ch);
+    if (idx >= 0 && !seen.has(idx)) { seen.add(idx); out.push(idx); }
+  }
+  return out;
+}
+
+function letterCharsInPhrase(arText) {
+  // Returns array of { ch, idx }, in original order, only for actual alphabet letters (skips diacritics/spaces/punct)
+  let s = arText.replace(LETTER_DIACRITICS, '');
+  for (const lig in LETTER_LIGATURES) s = s.split(lig).join(LETTER_LIGATURES[lig]);
+  const out = [];
+  for (const ch of s) {
+    const idx = letterIdxByChar(ch);
+    if (idx >= 0) out.push({ ch, idx });
+  }
+  return out;
+}
+
+function arabiziPrimary(letter) {
+  return letter.arabizi.split('/')[0].trim();
+}
+
+function arabiziMatches(answer, letter) {
+  const opts = letter.arabizi.split('/').map(s => s.trim().toLowerCase());
+  return opts.includes(String(answer).toLowerCase());
+}
+
+function initLetterCard(idx) {
+  if (!state.letterCards) state.letterCards = {};
+  if (!state.letterCards[idx]) {
+    state.letterCards[idx] = { ef: 2.5, interval: 0, reps: 0, due: todayStr(), learned: false, introduced: false, correctStreak: 0 };
+  }
+  return state.letterCards[idx];
+}
+
+function gradeLetterCard(idx, correct) {
+  const c = initLetterCard(idx);
+  if (correct) {
+    c.reps += 1;
+    c.correctStreak = (c.correctStreak || 0) + 1;
+    if (c.reps === 1) c.interval = 1;
+    else if (c.reps === 2) c.interval = 3;
+    else c.interval = Math.max(1, Math.round(c.interval * c.ef));
+    c.ef = Math.min(2.8, c.ef + 0.05);
+    c.due = addDays(todayStr(), c.interval);
+    c.learned = true;
+    if (!state.letters[idx]) state.letters[idx] = 'learned';
+    if (c.correctStreak >= 4 && c.interval >= 6) state.letters[idx] = 'mastered';
+  } else {
+    c.correctStreak = 0;
+    c.reps = Math.max(0, c.reps - 1);
+    c.interval = 0;
+    c.due = todayStr();
+    c.ef = Math.max(1.3, c.ef - 0.2);
   }
   saveState();
 }
@@ -4157,12 +4438,73 @@ function buildTodayQueue() {
     }
   }
 
-  // Interleave: due reviews first, new recall, then production, then sentences at the end
-  // But scatter sentences into the middle for variety
-  const queue = [...dueRecall, ...newRecall, ...dueProd, ...newProd];
+  // ----- LETTERS — intros from today's new phrases + drills from already-introduced -----
+  const letterIntros = [];
+  const introducedToday = new Set();
+  const newPhraseRefs = newRecall.map(x => PHRASES.find(p => p.id === x.ref)).filter(Boolean);
+  for (const phrase of newPhraseRefs) {
+    for (const idx of lettersInPhrase(phrase.ar)) {
+      const lc = initLetterCard(idx);
+      if (!lc.introduced && !introducedToday.has(idx) && letterIntros.length < 4) {
+        introducedToday.add(idx);
+        letterIntros.push({ type: 'letterIntro', ref: idx });
+      }
+    }
+    if (letterIntros.length >= 4) break;
+  }
+
+  const introducedSet = new Set();
+  Object.entries(state.letterCards || {}).forEach(([i, c]) => { if (c.introduced) introducedSet.add(Number(i)); });
+  introducedToday.forEach(i => introducedSet.add(i));
+
+  const drillCandidates = Object.entries(state.letterCards || {})
+    .filter(([idx, c]) => c.introduced && (c.due || today) <= today && !introducedToday.has(Number(idx)))
+    .map(([idx]) => Number(idx));
+  for (let i = drillCandidates.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [drillCandidates[i], drillCandidates[j]] = [drillCandidates[j], drillCandidates[i]];
+  }
+  const knownPhrases = PHRASES.filter(p => state.cards[p.id] && state.cards[p.id].learned);
+  const letterDrills = [];
+  const drillTypes = ['letterSound', 'letterSpot', 'letterBuild'];
+  for (const idx of drillCandidates.slice(0, 3)) {
+    let type = drillTypes[Math.floor(Math.random() * drillTypes.length)];
+    if (type === 'letterSpot') {
+      const cands = knownPhrases.filter(p => letterCharsInPhrase(p.ar).some(x => x.idx === idx));
+      if (cands.length > 0) {
+        const p = cands[Math.floor(Math.random() * cands.length)];
+        letterDrills.push({ type: 'letterSpot', ref: { letterIdx: idx, phraseId: p.id } });
+        continue;
+      }
+      type = 'letterSound';
+    }
+    if (type === 'letterBuild') {
+      const cands = knownPhrases.filter(p => {
+        const chars = letterCharsInPhrase(p.ar);
+        if (chars.length < 2 || chars.length > 5) return false;
+        return chars.every(x => introducedSet.has(x.idx));
+      });
+      if (cands.length > 0) {
+        const p = cands[Math.floor(Math.random() * cands.length)];
+        letterDrills.push({ type: 'letterBuild', ref: p.id });
+        continue;
+      }
+      type = 'letterSound';
+    }
+    letterDrills.push({ type: 'letterSound', ref: idx });
+  }
+
+  // Interleave: letter intros at front (so they precede related phrases),
+  // then due reviews, new recall, production, scatter drills + sentences.
+  const queue = [...letterIntros, ...dueRecall, ...newRecall, ...dueProd, ...newProd];
+  // Scatter letter drills into middle/end
+  letterDrills.forEach((card, i) => {
+    if (queue.length === 0) { queue.push(card); return; }
+    const pos = Math.min(queue.length, Math.floor(queue.length * (0.55 + i * 0.15)) + i);
+    queue.splice(pos, 0, card);
+  });
   if (sentencesQueue.length > 0 && queue.length > 2) {
-    // Insert sentences at roughly 60% and 90% of queue
-    const insertAt1 = Math.floor(queue.length * 0.6);
+    const insertAt1 = Math.floor(queue.length * 0.7);
     queue.splice(insertAt1, 0, sentencesQueue[0]);
     if (sentencesQueue[1]) queue.push(sentencesQueue[1]);
   } else {
@@ -4234,6 +4576,14 @@ function renderDaily() {
     renderProdCard(queueItem.ref);
   } else if (queueItem.type === 'sentence') {
     renderSentenceCard(queueItem.ref);
+  } else if (queueItem.type === 'letterIntro') {
+    renderLetterIntroCard(queueItem.ref);
+  } else if (queueItem.type === 'letterSound') {
+    renderLetterSoundCard(queueItem.ref);
+  } else if (queueItem.type === 'letterSpot') {
+    renderLetterSpotCard(queueItem.ref);
+  } else if (queueItem.type === 'letterBuild') {
+    renderLetterBuildCard(queueItem.ref);
   } else {
     // unknown type, skip
     state.todayIndex++;
@@ -4636,6 +4986,296 @@ function gradeAndAdvance(g, isProd) {
   state.todayIndex++;
   saveState();
   renderDaily();
+}
+
+// ==========================================
+// LETTER CARDS — intro + 3 drill types
+// ==========================================
+function tagFor(label) {
+  return `${label} · ${state.todayIndex + 1}/${state.todayQueue.length}`;
+}
+
+function renderLetterIntroCard(idx) {
+  const stack = document.getElementById('card-stack');
+  const letter = ALPHABET[idx];
+  if (!letter) { state.todayIndex++; saveState(); renderDaily(); return; }
+  initLetterCard(idx).introduced = true;
+  saveState();
+  stack.innerHTML = `
+    <div class="card">
+      <div class="card-corner">Alphabet</div>
+      <div class="card-tag">${tagFor('New letter')}</div>
+      <div class="letter-intro-hint">A new letter from today's words</div>
+      <div class="letter-intro-big">${letter.l}</div>
+      <div class="letter-intro-name">${letter.name}</div>
+      <div class="letter-intro-arabizi">Arabizi: ${letter.arabizi}</div>
+      <div class="letter-intro-sound">${letter.sound}</div>
+      <div style="text-align:center;margin-bottom:18px;">
+        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(letter.l)})">▶ Hear it</button>
+      </div>
+      <div class="card-actions">
+        <button class="action good" onclick="advanceLetterIntro(${idx})">Got it</button>
+      </div>
+    </div>
+  `;
+}
+
+function advanceLetterIntro(idx) {
+  initLetterCard(idx).introduced = true;
+  saveState();
+  state.todayIndex++;
+  saveState();
+  renderDaily();
+}
+
+function pickLetterDistractors(targetIdx, count) {
+  const targetPrim = arabiziPrimary(ALPHABET[targetIdx]).toLowerCase();
+  const pool = ALPHABET
+    .map((L, i) => ({ idx: i, prim: arabiziPrimary(L).toLowerCase() }))
+    .filter(x => x.idx !== targetIdx && x.prim !== targetPrim);
+  // shuffle
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  const seen = new Set([targetPrim]);
+  const out = [];
+  for (const x of pool) {
+    if (seen.has(x.prim)) continue;
+    seen.add(x.prim);
+    out.push(arabiziPrimary(ALPHABET[x.idx]));
+    if (out.length >= count) break;
+  }
+  return out;
+}
+
+function renderLetterSoundCard(idx) {
+  const stack = document.getElementById('card-stack');
+  const letter = ALPHABET[idx];
+  if (!letter) { state.todayIndex++; saveState(); renderDaily(); return; }
+  const correct = arabiziPrimary(letter);
+  const distractors = pickLetterDistractors(idx, 3);
+  const opts = [correct, ...distractors];
+  for (let i = opts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [opts[i], opts[j]] = [opts[j], opts[i]];
+  }
+  const optsHtml = opts.map(o => `<button class="letter-option" onclick="answerLetterSound(${idx}, ${JSON.stringify(o)}, this)">${o}</button>`).join('');
+  stack.innerHTML = `
+    <div class="card">
+      <div class="card-corner">Alphabet</div>
+      <div class="card-tag">${tagFor('Letter sound')}</div>
+      <div class="letter-drill-prompt">Which sound is this?</div>
+      <div class="letter-drill-big">${letter.l}</div>
+      <div class="letter-drill-hear">
+        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(letter.l)})">▶ Hear it</button>
+      </div>
+      <div class="letter-options">${optsHtml}</div>
+    </div>
+  `;
+  letterDrillAnswered = false;
+}
+
+let letterDrillAnswered = false;
+function answerLetterSound(idx, answer, btn) {
+  if (letterDrillAnswered) return;
+  letterDrillAnswered = true;
+  const letter = ALPHABET[idx];
+  const correct = arabiziMatches(answer, letter);
+  document.querySelectorAll('.letter-option').forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.letter-option').forEach(b => {
+      const txt = b.textContent.trim();
+      if (arabiziMatches(txt, letter)) b.classList.add('correct');
+    });
+  }
+  finishLetterDrill(idx, correct);
+}
+
+function renderLetterSpotCard(ref) {
+  const stack = document.getElementById('card-stack');
+  const phrase = PHRASES.find(p => p.id === ref.phraseId);
+  const letter = ALPHABET[ref.letterIdx];
+  if (!phrase || !letter) { state.todayIndex++; saveState(); renderDaily(); return; }
+  const chars = letterCharsInPhrase(phrase.ar);
+  const charsHtml = chars.map((x, i) =>
+    `<span class="letter-spot-char" data-i="${i}" data-idx="${x.idx}" onclick="answerLetterSpot(${ref.letterIdx}, ${x.idx}, this)">${x.ch}</span>`
+  ).join('');
+  stack.innerHTML = `
+    <div class="card">
+      <div class="card-corner">Alphabet</div>
+      <div class="card-tag">${tagFor('Spot the letter')}</div>
+      <div class="letter-drill-prompt">Tap <strong>${letter.name}</strong> · <strong>${letter.arabizi}</strong> · <strong>${letter.l}</strong></div>
+      <div class="letter-spot-word">${charsHtml}</div>
+      <div class="letter-spot-meaning">"${phrase.en}" · ${phrase.az}</div>
+      <div class="letter-drill-hear">
+        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(phrase.ar)})">▶ Hear word</button>
+      </div>
+    </div>
+  `;
+  letterDrillAnswered = false;
+  letterSpotAttempts = 0;
+}
+
+let letterSpotAttempts = 0;
+function answerLetterSpot(targetIdx, tappedIdx, span) {
+  if (letterDrillAnswered) return;
+  if (tappedIdx === targetIdx) {
+    span.classList.add('correct');
+    letterDrillAnswered = true;
+    document.querySelectorAll('.letter-spot-char').forEach(s => s.classList.add('disabled'));
+    finishLetterDrill(targetIdx, letterSpotAttempts === 0);
+    return;
+  }
+  span.classList.add('wrong');
+  span.classList.add('disabled');
+  letterSpotAttempts++;
+  if (letterSpotAttempts >= 2) {
+    // reveal correct + advance
+    document.querySelectorAll('.letter-spot-char').forEach(s => {
+      const idx = Number(s.dataset.idx);
+      if (idx === targetIdx) s.classList.add('correct');
+      s.classList.add('disabled');
+    });
+    letterDrillAnswered = true;
+    finishLetterDrill(targetIdx, false);
+  }
+}
+
+function finishLetterDrill(idx, correct) {
+  gradeLetterCard(idx, correct);
+  const item = state.todayQueue[state.todayIndex];
+  if (!correct) state.todayQueue.push(item);
+  setTimeout(() => {
+    state.todayIndex++;
+    saveState();
+    renderDaily();
+  }, correct ? 700 : 1400);
+}
+
+let letterBuildState = null;
+function renderLetterBuildCard(phraseId) {
+  const stack = document.getElementById('card-stack');
+  const phrase = PHRASES.find(p => p.id === phraseId);
+  if (!phrase) { state.todayIndex++; saveState(); renderDaily(); return; }
+  const chars = letterCharsInPhrase(phrase.ar);
+  if (chars.length === 0) { state.todayIndex++; saveState(); renderDaily(); return; }
+  // Pool: actual letters + 2 distractors of letters not in this word
+  const usedIdxs = new Set(chars.map(x => x.idx));
+  const distractorPool = ALPHABET
+    .map((L, i) => i)
+    .filter(i => !usedIdxs.has(i));
+  for (let i = distractorPool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [distractorPool[i], distractorPool[j]] = [distractorPool[j], distractorPool[i]];
+  }
+  const distractors = distractorPool.slice(0, Math.min(2, Math.max(1, 4 - chars.length))).map(i => ({ ch: ALPHABET[i].l, key: 'd' + i }));
+  const realTiles = chars.map((x, i) => ({ ch: x.ch, key: 'r' + i, idx: x.idx }));
+  const allTiles = [...realTiles, ...distractors];
+  for (let i = allTiles.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allTiles[i], allTiles[j]] = [allTiles[j], allTiles[i]];
+  }
+  letterBuildState = { phraseId, target: chars.map(x => x.ch).join(''), placed: [], pool: allTiles, mistakes: 0, done: false };
+  stack.innerHTML = `
+    <div class="card">
+      <div class="card-corner">Alphabet</div>
+      <div class="card-tag">${tagFor('Build the word')}</div>
+      <div class="letter-build-prompt">${phrase.en}</div>
+      <div class="letter-build-azhint">${phrase.az}</div>
+      <div class="letter-drill-hear">
+        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(phrase.ar)})">▶ Hear word</button>
+      </div>
+      <div class="letter-build-area" id="lb-area" onclick="letterBuildPop()"></div>
+      <div class="letter-build-pool" id="lb-pool"></div>
+      <div class="card-actions" style="margin-top:14px;">
+        <button class="action" onclick="letterBuildClear()">Clear</button>
+        <button class="action good" onclick="letterBuildCheck()">Check</button>
+        <button class="action" onclick="letterBuildReveal()">Show answer</button>
+      </div>
+      <div id="lb-feedback"></div>
+    </div>
+  `;
+  renderLetterBuildTiles();
+}
+
+function renderLetterBuildTiles() {
+  const area = document.getElementById('lb-area');
+  const pool = document.getElementById('lb-pool');
+  if (!area || !pool) return;
+  if (letterBuildState.placed.length === 0) {
+    area.classList.add('empty');
+    area.textContent = 'Tap letters in the order they\'re written';
+  } else {
+    area.classList.remove('empty');
+    area.innerHTML = letterBuildState.placed.map(t => `<span class="built-tile">${t.ch}</span>`).join('');
+  }
+  pool.innerHTML = letterBuildState.pool.map(t => {
+    const used = letterBuildState.placed.some(p => p.key === t.key);
+    return `<button class="letter-tile ${used ? 'used' : ''}" onclick="letterBuildTap(${JSON.stringify(t.key)})">${t.ch}</button>`;
+  }).join('');
+}
+
+function letterBuildTap(key) {
+  if (letterBuildState.done) return;
+  const tile = letterBuildState.pool.find(t => t.key === key);
+  if (!tile) return;
+  if (letterBuildState.placed.some(p => p.key === key)) return;
+  letterBuildState.placed.push(tile);
+  renderLetterBuildTiles();
+}
+
+function letterBuildPop() {
+  if (letterBuildState.done || letterBuildState.placed.length === 0) return;
+  letterBuildState.placed.pop();
+  renderLetterBuildTiles();
+}
+
+function letterBuildClear() {
+  if (letterBuildState.done) return;
+  letterBuildState.placed = [];
+  renderLetterBuildTiles();
+}
+
+function letterBuildCheck() {
+  if (letterBuildState.done) return;
+  const got = letterBuildState.placed.map(t => t.ch).join('');
+  const fb = document.getElementById('lb-feedback');
+  if (got === letterBuildState.target) {
+    letterBuildState.done = true;
+    fb.innerHTML = `<div class="letter-feedback correct">Mabrouk! That's it.</div>`;
+    finishLetterBuild(letterBuildState.mistakes === 0);
+  } else {
+    letterBuildState.mistakes++;
+    fb.innerHTML = `<div class="letter-feedback wrong">Not quite. Try again, or hit "Show answer".</div>`;
+  }
+}
+
+function letterBuildReveal() {
+  if (letterBuildState.done) return;
+  letterBuildState.done = true;
+  const fb = document.getElementById('lb-feedback');
+  fb.innerHTML = `<div class="letter-feedback wrong">Answer: <span style="font-family:Amiri,serif;font-size:32px;direction:rtl;display:inline-block;margin-right:6px;">${letterBuildState.target}</span></div>`;
+  finishLetterBuild(false);
+}
+
+function finishLetterBuild(correct) {
+  // Grade each letter in the word
+  const phrase = PHRASES.find(p => p.id === letterBuildState.phraseId);
+  if (phrase) {
+    const idxs = lettersInPhrase(phrase.ar);
+    idxs.forEach(i => gradeLetterCard(i, correct));
+  }
+  const item = state.todayQueue[state.todayIndex];
+  if (!correct) state.todayQueue.push(item);
+  setTimeout(() => {
+    state.todayIndex++;
+    saveState();
+    renderDaily();
+  }, correct ? 1100 : 2200);
 }
 
 // ==========================================
