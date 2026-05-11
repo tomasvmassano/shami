@@ -1400,6 +1400,149 @@
     font-weight: 600;
   }
 
+  /* WELCOME NAME INPUT */
+  .welcome-name-row {
+    margin-top: 28px;
+    text-align: left;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .welcome-name-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--terra-deep);
+    margin-bottom: 8px;
+  }
+  .welcome-name-input {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    font-family: inherit;
+    font-size: 18px;
+    color: var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    box-sizing: border-box;
+  }
+  .welcome-name-input:focus { outline: 2px solid var(--terra); outline-offset: 2px; }
+
+  /* INLINE NAME PROMPT — for existing users without a name yet */
+  .name-prompt {
+    background: var(--paper-dim);
+    border: 1.5px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ochre);
+    padding: 18px 22px;
+    margin: 0 0 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .name-prompt-text {
+    flex: 1 1 220px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .name-prompt-text strong { color: var(--terra-deep); }
+  .name-prompt-input {
+    flex: 1 1 160px;
+    padding: 10px 14px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    box-sizing: border-box;
+    min-width: 0;
+  }
+  .name-prompt-btn {
+    padding: 10px 16px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1.5px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--terra);
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .name-prompt-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--terra); }
+  .name-prompt-skip {
+    background: none;
+    border: none;
+    color: var(--ink);
+    opacity: 0.5;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  .name-prompt-skip:hover { opacity: 1; }
+
+  /* CULTURAL UNLOCK CARD — cohort-completion reward */
+  .unlock-card {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    box-shadow: 8px 8px 0 var(--plum);
+    padding: 36px 32px;
+  }
+  .unlock-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--plum);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .unlock-title {
+    text-align: center;
+    font-size: 22px;
+    font-style: italic;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+  .unlock-arabic {
+    text-align: center;
+    font-family: 'Amiri', serif;
+    font-size: 56px;
+    color: var(--terra);
+    direction: rtl;
+    margin: 12px 0 6px;
+    line-height: 1.2;
+  }
+  .unlock-arabizi {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--terra-deep);
+    margin-bottom: 4px;
+  }
+  .unlock-en {
+    text-align: center;
+    font-size: 14px;
+    font-style: italic;
+    opacity: 0.7;
+    margin-bottom: 24px;
+  }
+  .unlock-body {
+    background: var(--paper-dim);
+    border-left: 3px solid var(--plum);
+    padding: 18px 22px;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
   /* BOOTCAMP BANNER — alphabet-first phase indicator on Today */
   .bootcamp-banner {
     background: var(--paper-dim);
@@ -2048,8 +2191,12 @@
   <div class="welcome-arabic">أهلاً</div>
   <h1>Shami</h1>
   <p>A daily practice for <em>Syrian Levantine</em> Arabic. No streaks-as-guilt, no fake gamification. Just the right words, in the right script, at the right interval.</p>
-  <p>Three modes interleaved each day: <em>recall</em> trains you to read Arabic and remember what it means, <em>production</em> flips the direction so you can pull Arabic out of your brain when you need to speak, and <em>sentence builder</em> teaches you to compose your own sentences from words you've learned.</p>
+  <p>You'll start with the <em>alphabet</em>, learning 5 letters at a time at the pace your real teacher would set. Once those are in your bones, vocabulary and grammar open up — words become things you can decode, not memorise as shapes.</p>
   <p>You'll learn <em>both</em> Arabizi (Latin texting form) and Arabic script, side by side, the way real Syrians actually write to each other.</p>
+  <div class="welcome-name-row">
+    <label class="welcome-name-label" for="welcome-name">What should we call you?</label>
+    <input type="text" id="welcome-name" class="welcome-name-input" placeholder="Your name" autocomplete="given-name" maxlength="40" />
+  </div>
   <button class="welcome-cta" onclick="startApp()">Start Day 1</button>
 </div>
 
@@ -2101,6 +2248,7 @@
       </div>
     </div>
 
+    <div id="name-prompt-slot"></div>
     <div id="bootcamp-banner"></div>
 
     <div class="card-stack" id="card-stack">
@@ -4839,6 +4987,88 @@ const GRAMMAR_UNITS = [
 const STORE_KEY = 'shami-state-v4';
 
 // ==========================================
+// SIGNUP — auto-feed names to a Google Form so the owner can see who
+// is using the app. Setup: create a Google Form with one short-answer
+// question called "Name", then publish it. Inspect the field to find
+// its entry ID (looks like "entry.123456789"). Paste both below.
+// Leave blank to disable signup posting (names still save locally).
+// ==========================================
+const SIGNUP_FORM_URL = ''; // e.g. 'https://docs.google.com/forms/d/e/1FAIpQLSc.../formResponse'
+const SIGNUP_FORM_NAME_ENTRY = ''; // e.g. 'entry.1234567890'
+
+function submitSignup(name) {
+  if (!SIGNUP_FORM_URL || !SIGNUP_FORM_NAME_ENTRY) return;
+  try {
+    const fd = new FormData();
+    fd.append(SIGNUP_FORM_NAME_ENTRY, name);
+    // no-cors: Google Forms refuses CORS, but the POST still lands in
+    // the linked sheet. We can't read the response and we don't need to.
+    fetch(SIGNUP_FORM_URL, { method: 'POST', mode: 'no-cors', body: fd });
+  } catch (e) { /* fail silently — local save still worked */ }
+}
+
+// ==========================================
+// CULTURAL UNLOCKS — one card per bootcamp cohort completion. Real
+// Syrian phrases and cultural notes; the reward is content, not points.
+// ==========================================
+const CULTURAL_UNLOCKS = [
+  {
+    cohortIdx: 0,
+    tag: 'Cultural unlock · cohort 1',
+    title: 'The warmest word',
+    ar: 'تفضل',
+    az: 'tfaddal',
+    en: 'please / go ahead / welcome in',
+    body: 'One word covers every act of welcome. "Tfaddal" means please come in, please sit, please eat, please take it. You\'ll hear it the moment you enter any Syrian home, and refusing is nearly impossible. It\'s the first cultural lesson of the language: hospitality is not optional, it\'s identity.',
+  },
+  {
+    cohortIdx: 1,
+    tag: 'Cultural unlock · cohort 2',
+    title: 'Jasmine of Damascus',
+    ar: 'ياسمين الشام',
+    az: 'yasmin esh-Sham',
+    en: 'jasmine of Damascus',
+    body: 'White jasmine cascades over the walls of the old city in summer, and the whole quarter smells of it for weeks. Damascenes will tell you their jasmine is unlike any other in the world. Fairouz, the Lebanese singer beloved across the Levant, sang about it more than any other flower. Damascus is sometimes called madinat al-yasmin — the city of jasmine.',
+  },
+  {
+    cohortIdx: 2,
+    tag: 'Cultural unlock · cohort 3',
+    title: 'The language of Daad',
+    ar: 'لغة الضاد',
+    az: 'lughat ad-Daad',
+    en: 'the language of Daad',
+    body: 'Arabic is sometimes called "the language of the Daad" (ض) because no other language has quite this sound. It\'s a heavy, throaty "d" that pulls the back of the tongue up. You just learned it. That puts you on the right side of a sound most learners struggle with for years.',
+  },
+  {
+    cohortIdx: 3,
+    tag: 'Cultural unlock · cohort 4',
+    title: 'In apricot season',
+    ar: 'بكرا في المشمش',
+    az: 'bukra fil mishmish',
+    en: 'tomorrow in the apricot season',
+    body: 'Literally "tomorrow in the apricot season". What Syrians say when they mean "never going to happen". Apricots are fleeting and seasonal. The phrase is gentle sarcasm with a smile — closer to "when pigs fly" but warmer. Perfect Syrian humour: never quite an outright no.',
+  },
+  {
+    cohortIdx: 4,
+    tag: 'Cultural unlock · cohort 5',
+    title: 'On your own pace',
+    ar: 'على مهلك',
+    az: '3ala mahlak',
+    en: 'take your time',
+    body: 'Literally "on your pace". Said when someone is rushing, or stressed, or bracing for bad news. It\'s the most Syrian way to tell someone — and yourself — that the world will not end if you breathe. The opposite of every productivity app. The right thing to say to a learner.',
+  },
+  {
+    cohortIdx: 5,
+    tag: 'Cultural unlock · cohort 6',
+    title: 'All of Arabic is in your hands',
+    ar: 'كل العربية بين إيديك',
+    az: 'kull el-3arabi bein idayk',
+    en: 'all of Arabic is between your hands',
+    body: '28 letters. 28 keys. Every Syrian word ahead of you is now something you can decode, sound out, and wrestle with. From here it\'s just words, patterns, and time — and you have earned the right to start collecting them. Mabrouk, 7abibi. The real journey starts now.',
+  },
+];
+
+// ==========================================
 // STATE
 // ==========================================
 let state = loadState();
@@ -4880,6 +5110,9 @@ function defaultState() {
     grammarCards: {}, // "unitId.drillId" -> { ef, interval, reps, due, learned }
     bootcamp: true, // alphabet-first phase; auto-disables when all 28 letters mastered
     bootcampLetters: {}, // idx -> { introduced, correctStreak, totalCorrect, mastered, due }
+    name: '',
+    signupSubmitted: false,
+    milestones: {}, // milestoneId -> dateShown
     todayQueue: [],
     todayIndex: 0,
     todayDate: null,
@@ -5506,7 +5739,23 @@ function renderBootcampBanner() {
 function renderDaily() {
   buildTodayQueue();
   updateHeaderStats();
+  renderInlineNamePrompt();
   renderBootcampBanner();
+
+  // Time-aware Arabic greeting with the user's name (when set).
+  const g = arabicGreeting(state.name);
+  const gAr = document.getElementById('daily-greeting');
+  const gEn = document.getElementById('daily-greeting-en');
+  if (gAr) gAr.textContent = g.ar;
+  if (gEn) gEn.textContent = g.az + ' — ' + g.en;
+
+  // Cultural unlock card preempts the regular queue when a cohort
+  // has just been mastered and its reward hasn't been shown yet.
+  const pendingUnlock = getPendingCulturalUnlock();
+  if (pendingUnlock) {
+    renderCulturalUnlockCard(pendingUnlock);
+    return;
+  }
 
   const stack = document.getElementById('card-stack');
   const dayDiv = document.getElementById('day-num');
@@ -7472,11 +7721,112 @@ document.getElementById('phrasebook-search').addEventListener('input', e => {
 // BOOT
 // ==========================================
 function startApp() {
+  const input = document.getElementById('welcome-name');
+  const name = (input && input.value || '').trim().slice(0, 40);
+  if (!name) {
+    if (input) input.focus();
+    return;
+  }
   state.started = true;
   state.startDate = todayStr();
+  state.name = name;
+  if (!state.signupSubmitted) {
+    submitSignup(name);
+    state.signupSubmitted = true;
+  }
   saveState();
   document.getElementById('welcome-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
+  renderDaily();
+}
+
+function setNameFromPrompt() {
+  const input = document.getElementById('inline-name');
+  if (!input) return;
+  const name = (input.value || '').trim().slice(0, 40);
+  if (!name) { input.focus(); return; }
+  state.name = name;
+  if (!state.signupSubmitted) {
+    submitSignup(name);
+    state.signupSubmitted = true;
+  }
+  saveState();
+  renderDaily();
+}
+
+function dismissNamePrompt() {
+  // User chose not to share a name — remember and stop asking.
+  state.nameDeclined = true;
+  saveState();
+  renderDaily();
+}
+
+function renderInlineNamePrompt() {
+  const slot = document.getElementById('name-prompt-slot');
+  if (!slot) return;
+  if (state.name || state.nameDeclined) { slot.innerHTML = ''; return; }
+  slot.innerHTML = `
+    <div class="name-prompt">
+      <div class="name-prompt-text">Welcome back. <strong>What should we call you?</strong> The greeting at the top will adjust to your name.</div>
+      <input type="text" class="name-prompt-input" id="inline-name" placeholder="Your name" maxlength="40" autocomplete="given-name" />
+      <button class="name-prompt-btn" onclick="setNameFromPrompt()">Save</button>
+      <button class="name-prompt-skip" onclick="dismissNamePrompt()">Not now</button>
+    </div>
+  `;
+}
+
+function arabicGreeting(name) {
+  const h = new Date().getHours();
+  let ar, az, en;
+  if (h >= 5 && h < 12) {
+    ar = 'صباح الخير'; az = 'sabaa7 el khair'; en = 'Good morning';
+  } else if (h >= 12 && h < 17) {
+    ar = 'أهلاً'; az = 'ahlan'; en = 'Hi';
+  } else if (h >= 17 && h < 22) {
+    ar = 'مساء الخير'; az = 'masa el khair'; en = 'Good evening';
+  } else {
+    ar = 'يا أهلاً'; az = 'ya ahlan'; en = 'Hey';
+  }
+  if (name) {
+    ar = ar + ' يا ' + name;
+    az = az + ' ya ' + name;
+    en = en + ', ' + name;
+  }
+  return { ar, az, en };
+}
+
+function getPendingCulturalUnlock() {
+  if (!state.milestones) state.milestones = {};
+  for (const u of CULTURAL_UNLOCKS) {
+    const id = 'cohort-' + u.cohortIdx;
+    if (isCohortMastered(u.cohortIdx) && !state.milestones[id]) return u;
+  }
+  return null;
+}
+
+function renderCulturalUnlockCard(unlock) {
+  document.getElementById('card-stack').innerHTML = `
+    <div class="unlock-card">
+      <div class="unlock-tag">${unlock.tag}</div>
+      <div class="unlock-title">${unlock.title}</div>
+      <div class="unlock-arabic">${unlock.ar}</div>
+      <div class="unlock-arabizi">${unlock.az}</div>
+      <div class="unlock-en">${unlock.en}</div>
+      <div class="unlock-body">${unlock.body}</div>
+      <div style="text-align:center;margin-bottom:14px;">
+        <button class="reveal-btn" onclick="speakArabic(${jsAttr(unlock.ar)})">▶ Hear it</button>
+      </div>
+      <div class="card-actions">
+        <button class="action good" onclick="dismissUnlock(${unlock.cohortIdx})">Continue</button>
+      </div>
+    </div>
+  `;
+}
+
+function dismissUnlock(cohortIdx) {
+  if (!state.milestones) state.milestones = {};
+  state.milestones['cohort-' + cohortIdx] = todayStr();
+  saveState();
   renderDaily();
 }
 
