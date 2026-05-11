@@ -2179,26 +2179,17 @@
   .reset-btn:hover { opacity: 1; background: var(--terra-deep); color: var(--paper); border-color: var(--terra-deep); }
 
   /* WELCOME */
-  /* WELCOME — split layout: pattern panel on the left, content on the right */
+  /* WELCOME — 50/50 split: pattern panel on the left, content on the right */
   .welcome {
     display: grid;
-    grid-template-columns: 5fr 7fr;
+    grid-template-columns: 1fr 1fr;
     min-height: 100vh;
     position: relative;
     z-index: 2;
   }
   .welcome-pattern-side {
     background: url('shami-pattern.svg') center/cover no-repeat var(--paper);
-    border-right: 2px solid var(--ink);
     position: relative;
-  }
-  .welcome-pattern-side::after {
-    /* Soft inner fade so the pattern reads as a panel, not a hard tile */
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, transparent 0%, transparent 50%, rgba(244, 237, 224, 0.35) 100%);
-    pointer-events: none;
   }
   .welcome-inner {
     display: flex;
@@ -2209,27 +2200,10 @@
     text-align: center;
     background: var(--paper);
     position: relative;
-    overflow: hidden;
   }
-  .welcome-inner::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url('shami-pattern.svg') center/cover no-repeat;
-    opacity: 0.17;
-    pointer-events: none;
-    z-index: 0;
-    mask-image: linear-gradient(135deg, transparent 30%, black 100%);
-    -webkit-mask-image: linear-gradient(135deg, transparent 30%, black 100%);
-  }
-  .welcome-inner > * { position: relative; z-index: 1; }
   @media (max-width: 800px) {
     .welcome { grid-template-columns: 1fr; min-height: auto; }
-    .welcome-pattern-side {
-      height: 180px;
-      border-right: none;
-      border-bottom: 2px solid var(--ink);
-    }
+    .welcome-pattern-side { height: 180px; }
     .welcome-inner { padding: 40px 24px 60px; }
   }
   .welcome-arabic {
@@ -2299,15 +2273,12 @@
   }
   .ornament.dim .ornament-mark { font-size: 18px; }
 
-  /* SHAMI PATTERN — fixed to the viewport's right edge, behind all
-     in-app content. Visible past the right side of cards / panels so
-     it never bleeds into readable text. Hidden when welcome screen
-     shows because #app itself is display:none then. */
-  #app {
-    position: relative;
-    z-index: 1;
-  }
-  #app::before {
+  /* SHAMI PATTERN — fixed to the viewport's right edge, only visible
+     while the Today tab is active. Other tabs see no pattern.
+     Display:none on inactive panels removes their fixed pseudo from
+     the rendering tree, so this self-scopes correctly. */
+  #app { position: relative; z-index: 1; }
+  #panel-daily.active::before {
     content: '';
     position: fixed;
     top: 0;
@@ -2322,7 +2293,7 @@
     -webkit-mask-image: linear-gradient(to left, black 0%, transparent 100%);
   }
   @media (max-width: 720px) {
-    #app::before { width: 75vw; opacity: 0.13; }
+    #panel-daily.active::before { width: 75vw; opacity: 0.13; }
   }
 
   .curriculum {
