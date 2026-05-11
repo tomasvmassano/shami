@@ -2277,6 +2277,152 @@
      curriculum banners. The Today tab stays clean. */
   #app { position: relative; z-index: 1; }
 
+  /* LISTEN — passive audio loop tab */
+  .listen-shell {
+    max-width: 640px;
+    margin: 30px auto 0;
+  }
+  .listen-now-card {
+    background: #fff;
+    border: 1.5px solid var(--ink);
+    box-shadow: 8px 8px 0 var(--ink);
+    padding: 40px 32px;
+    margin-bottom: 28px;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .listen-empty {
+    font-style: italic;
+    opacity: 0.6;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 380px;
+  }
+  .listen-now { width: 100%; }
+  .listen-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--terra);
+    margin-bottom: 18px;
+  }
+  .listen-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 56px;
+    color: var(--ink);
+    line-height: 1.2;
+    direction: rtl;
+    margin-bottom: 8px;
+  }
+  .listen-arabizi {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--terra-deep);
+    margin-bottom: 14px;
+  }
+  .listen-en {
+    font-size: 16px;
+    font-style: italic;
+    opacity: 0.75;
+  }
+  .listen-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+  .listen-btn {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.12s, box-shadow 0.12s;
+    color: var(--ink);
+    font-family: inherit;
+    line-height: 1;
+  }
+  .listen-btn:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--terra);
+  }
+  .listen-btn:disabled { opacity: 0.4; cursor: default; box-shadow: 4px 4px 0 var(--ink); }
+  .listen-btn.primary {
+    background: var(--ink);
+    color: var(--paper);
+    width: 76px;
+    height: 76px;
+    font-size: 28px;
+    box-shadow: 6px 6px 0 var(--terra);
+  }
+  .listen-btn.primary:hover { box-shadow: 9px 9px 0 var(--terra); }
+
+  .listen-settings {
+    background: var(--paper-dim);
+    border: 1.5px solid var(--ink);
+    padding: 18px 22px;
+    margin-bottom: 18px;
+  }
+  .listen-setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px dashed rgba(26, 20, 16, 0.18);
+    flex-wrap: wrap;
+  }
+  .listen-setting-row:last-child { border-bottom: none; }
+  .listen-setting-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+    opacity: 0.75;
+  }
+  .listen-toggles { display: flex; gap: 6px; flex-wrap: wrap; }
+  .listen-toggle {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    padding: 8px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    color: var(--ink);
+    transition: transform 0.12s, box-shadow 0.12s, background 0.12s, color 0.12s;
+  }
+  .listen-toggle:hover { transform: translate(-1px, -1px); box-shadow: 2px 2px 0 var(--ink); }
+  .listen-toggle.active {
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: 2px 2px 0 var(--terra);
+  }
+  .listen-tip {
+    font-size: 12px;
+    line-height: 1.6;
+    opacity: 0.7;
+    font-style: italic;
+    text-align: center;
+    padding: 0 12px;
+  }
+  .listen-tip a { color: var(--terra-deep); }
+  @media (max-width: 600px) {
+    .listen-arabic { font-size: 42px; }
+    .listen-now-card { padding: 30px 22px; }
+    .listen-btn.primary { width: 64px; height: 64px; }
+    .listen-setting-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+
   .curriculum {
     overflow: hidden;
   }
@@ -2631,8 +2777,9 @@
     <button class="tab active" data-panel="daily"><span class="tab-num">01</span>Today</button>
     <button class="tab" data-panel="alphabet"><span class="tab-num">02</span>Alphabet</button>
     <button class="tab" data-panel="phrasebook"><span class="tab-num">03</span>Phrasebook</button>
-    <button class="tab" data-panel="grammar"><span class="tab-num">04</span>Grammar</button>
-    <button class="tab" data-panel="progress"><span class="tab-num">05</span>Progress</button>
+    <button class="tab" data-panel="listen"><span class="tab-num">04</span>Listen</button>
+    <button class="tab" data-panel="grammar"><span class="tab-num">05</span>Grammar</button>
+    <button class="tab" data-panel="progress"><span class="tab-num">06</span>Progress</button>
   </div>
 
   <!-- DAILY PANEL -->
@@ -2669,6 +2816,62 @@
     <input type="text" class="phrasebook-search" id="phrasebook-search" placeholder="Search 600 phrases — try 'love' or 'kifak'…" />
     <div class="cat-pills" id="cat-pills"></div>
     <div id="phrasebook-content"></div>
+  </section>
+
+  <!-- LISTEN PANEL -->
+  <section class="panel" id="panel-listen">
+    <div class="alpha-intro">
+      <div class="alpha-title">Listen <em>passive practice</em></div>
+      <div class="alpha-desc">A loop of every Arabic phrase you've learned. Plug in headphones and let it play while you commute, cook, or work out. Lock the screen, it keeps going.</div>
+    </div>
+    <div class="listen-shell">
+      <div class="listen-now-card">
+        <div id="listen-empty" class="listen-empty">No phrases learned yet. Finish a few daily sessions and they'll appear here for passive listening.</div>
+        <div id="listen-now" class="listen-now" style="display:none;">
+          <div class="listen-meta" id="listen-meta">—</div>
+          <div class="listen-arabic" id="listen-arabic">—</div>
+          <div class="listen-arabizi" id="listen-arabizi">—</div>
+          <div class="listen-en" id="listen-en">—</div>
+        </div>
+      </div>
+      <div class="listen-controls">
+        <button class="listen-btn" id="listen-back-btn" onclick="listenSkipBack()" title="Previous phrase">⏮</button>
+        <button class="listen-btn primary" id="listen-playpause" onclick="listenToggle()" title="Play / pause">▶</button>
+        <button class="listen-btn" id="listen-fwd-btn" onclick="listenSkipForward()" title="Next phrase">⏭</button>
+      </div>
+      <div class="listen-settings">
+        <div class="listen-setting-row">
+          <div class="listen-setting-label">Speed</div>
+          <div class="listen-toggles">
+            <button class="listen-toggle" data-speed="0.7" onclick="listenSetSpeed(0.7)">0.7×</button>
+            <button class="listen-toggle" data-speed="1" onclick="listenSetSpeed(1)">1×</button>
+            <button class="listen-toggle" data-speed="1.25" onclick="listenSetSpeed(1.25)">1.25×</button>
+          </div>
+        </div>
+        <div class="listen-setting-row">
+          <div class="listen-setting-label">Order</div>
+          <div class="listen-toggles">
+            <button class="listen-toggle" data-shuffle="off" onclick="listenSetShuffle(false)">In order</button>
+            <button class="listen-toggle" data-shuffle="on" onclick="listenSetShuffle(true)">Shuffle</button>
+          </div>
+        </div>
+        <div class="listen-setting-row">
+          <div class="listen-setting-label">Shadowing</div>
+          <div class="listen-toggles">
+            <button class="listen-toggle" data-shadow="off" onclick="listenSetShadowing(false)">Off</button>
+            <button class="listen-toggle" data-shadow="on" onclick="listenSetShadowing(true)">3s gap to repeat</button>
+          </div>
+        </div>
+        <div class="listen-setting-row">
+          <div class="listen-setting-label">Include</div>
+          <div class="listen-toggles">
+            <button class="listen-toggle" data-filter="all" onclick="listenSetFilter('all')">All learned</button>
+            <button class="listen-toggle" data-filter="active" onclick="listenSetFilter('active')">Active review only</button>
+          </div>
+        </div>
+      </div>
+      <div class="listen-tip" id="listen-tip"></div>
+    </div>
   </section>
 
   <!-- GRAMMAR PANEL -->
@@ -5494,6 +5697,7 @@ function loadState() {
         s.todayDate = null;
       }
       if (!s.bootcampLetters) s.bootcampLetters = {};
+      if (!s.listen) s.listen = { speed: 1, shuffle: false, shadowing: false, filter: 'all' };
       return s;
     }
   } catch (e) {}
@@ -5518,6 +5722,7 @@ function defaultState() {
     name: '',
     signupSubmitted: false,
     milestones: {}, // milestoneId -> dateShown
+    listen: { speed: 1, shuffle: false, shadowing: false, filter: 'all' },
     todayQueue: [],
     todayIndex: 0,
     todayDate: null,
@@ -7814,6 +8019,379 @@ function renderVoiceStatus() {
 }
 
 // ==========================================
+// LISTEN MODE — passive audio loop of learned phrases
+//
+// Plays every phrase the user has marked as learned, in Arabic only,
+// twice per phrase with a configurable gap. Designed for headphones +
+// locked phone use cases. Works best with Google TTS configured —
+// browser TTS often refuses to play in background on iOS.
+//
+// Audio strategy: reuses the existing IndexedDB blob cache from the
+// Voice section. Each phrase is played via an HTML Audio element (not
+// SpeechSynthesis) when Google TTS is available, so the OS treats it
+// as media and the lock-screen / Media Session controls apply.
+// ==========================================
+let listenQueue = [];          // ordered list of phrase objects to play
+let listenIndex = 0;           // current position in listenQueue
+let listenPlaying = false;     // are we actively playing?
+let _listenAudio = null;       // currently-playing Audio element
+let _listenLoopId = 0;         // bumped on stop/skip to invalidate stale loops
+let _listenWaitResolve = null; // pending wait timer's resolve, for cancellation
+
+function getListenablePhrases() {
+  const today = todayStr();
+  const filter = (state.listen && state.listen.filter) || 'all';
+  return Object.entries(state.cards || {})
+    .filter(([id, c]) => c.learned)
+    .filter(([id, c]) => filter === 'all' || c.interval < 7) // active = not yet long-interval
+    .map(([id]) => PHRASES.find(p => p.id === id))
+    .filter(Boolean);
+}
+
+function buildListenQueue() {
+  const phrases = getListenablePhrases();
+  if (state.listen && state.listen.shuffle) {
+    for (let i = phrases.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [phrases[i], phrases[j]] = [phrases[j], phrases[i]];
+    }
+  }
+  return phrases;
+}
+
+function listenWait(ms) {
+  return new Promise(resolve => {
+    _listenWaitResolve = resolve;
+    setTimeout(() => {
+      if (_listenWaitResolve === resolve) {
+        _listenWaitResolve = null;
+        resolve();
+      }
+    }, ms);
+  });
+}
+
+function interruptListenWait() {
+  if (_listenWaitResolve) {
+    const r = _listenWaitResolve;
+    _listenWaitResolve = null;
+    r();
+  }
+}
+
+// Plays one phrase via Google TTS (cached) or browser fallback. Returns
+// when the audio finishes, errors, or is paused. Honours the listen
+// mode speed setting via Audio.playbackRate (Google) or utterance.rate.
+async function playListenPhrase(phrase) {
+  if (!phrase || !phrase.ar) return;
+  const speed = (state.listen && state.listen.speed) || 1;
+  const config = getVoiceConfig();
+
+  if (config.provider === 'google' && config.googleApiKey) {
+    try {
+      const cacheKey = `${config.voice}:${phrase.ar}`;
+      let blob = await getCachedAudio(cacheKey);
+      if (!blob) {
+        blob = await googleTTSFetch(phrase.ar, config.voice, config.googleApiKey);
+        await setCachedAudio(cacheKey, blob);
+      }
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.playbackRate = speed;
+      _listenAudio = audio;
+      await new Promise(resolve => {
+        let done = false;
+        const finish = () => {
+          if (done) return;
+          done = true;
+          URL.revokeObjectURL(url);
+          if (_listenAudio === audio) _listenAudio = null;
+          resolve();
+        };
+        audio.onended = finish;
+        audio.onerror = finish;
+        audio.onpause = finish;
+        audio.play().catch(finish);
+      });
+      return;
+    } catch (e) {
+      console.warn('Listen: Google TTS failed, falling back', e);
+    }
+  }
+
+  // Browser TTS fallback — works on screen, may not in background.
+  await new Promise(resolve => {
+    if (!('speechSynthesis' in window)) { resolve(); return; }
+    const utt = new SpeechSynthesisUtterance(phrase.ar);
+    utt.lang = 'ar-SA';
+    utt.rate = 0.85 * speed;
+    const voices = window.speechSynthesis.getVoices();
+    const arVoice = voices.find(v => v.lang && v.lang.startsWith('ar'));
+    if (arVoice) utt.voice = arVoice;
+    utt.onend = resolve;
+    utt.onerror = resolve;
+    window.speechSynthesis.speak(utt);
+  });
+}
+
+// Pre-fetches the next phrase's audio so it's ready when needed.
+// Fire-and-forget — populates the IndexedDB cache.
+async function prefetchListenAudio(idx) {
+  const phrase = listenQueue[idx];
+  if (!phrase) return;
+  const config = getVoiceConfig();
+  if (config.provider !== 'google' || !config.googleApiKey) return;
+  const cacheKey = `${config.voice}:${phrase.ar}`;
+  const cached = await getCachedAudio(cacheKey);
+  if (cached) return;
+  try {
+    const blob = await googleTTSFetch(phrase.ar, config.voice, config.googleApiKey);
+    await setCachedAudio(cacheKey, blob);
+  } catch (e) { /* silent — will retry when actually needed */ }
+}
+
+async function listenLoop(loopId) {
+  while (loopId === _listenLoopId && listenPlaying) {
+    if (listenQueue.length === 0) {
+      listenPlaying = false;
+      updateListenUI();
+      return;
+    }
+    if (listenIndex >= listenQueue.length) {
+      // Loop back to the start
+      listenIndex = 0;
+      if (state.listen.shuffle) listenQueue = buildListenQueue();
+    }
+    const phrase = listenQueue[listenIndex];
+    updateListenUI();
+    updateListenMediaSession(phrase);
+    prefetchListenAudio(listenIndex + 1); // warm next phrase
+
+    // First play
+    await playListenPhrase(phrase);
+    if (loopId !== _listenLoopId || !listenPlaying) return;
+
+    // Gap between the two plays of the same phrase. In shadowing mode
+    // it's longer so the user has time to repeat aloud.
+    const gapBetween = state.listen.shadowing ? 3000 : 2000;
+    await listenWait(gapBetween);
+    if (loopId !== _listenLoopId || !listenPlaying) return;
+
+    // Second play
+    await playListenPhrase(phrase);
+    if (loopId !== _listenLoopId || !listenPlaying) return;
+
+    // Short gap before moving to the next phrase
+    await listenWait(1000);
+    if (loopId !== _listenLoopId || !listenPlaying) return;
+
+    listenIndex++;
+  }
+}
+
+function listenPlay() {
+  if (listenPlaying) return;
+  if (listenQueue.length === 0) {
+    listenQueue = buildListenQueue();
+    listenIndex = 0;
+  }
+  if (listenQueue.length === 0) return;
+  listenPlaying = true;
+  _listenLoopId++;
+  updateListenUI();
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.playbackState = 'playing';
+  }
+  listenLoop(_listenLoopId);
+}
+
+function listenPause() {
+  if (!listenPlaying && !_listenAudio) return;
+  listenPlaying = false;
+  _listenLoopId++; // invalidate any in-flight loop
+  if (_listenAudio) {
+    try { _listenAudio.pause(); } catch (e) {}
+  }
+  if ('speechSynthesis' in window) {
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+  }
+  interruptListenWait();
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.playbackState = 'paused';
+  }
+  updateListenUI();
+}
+
+function listenToggle() {
+  if (listenPlaying) listenPause();
+  else listenPlay();
+}
+
+function listenSkipForward() {
+  listenIndex++;
+  if (listenIndex >= listenQueue.length) listenIndex = 0;
+  if (listenPlaying) {
+    // Stop current playback then immediately restart at new index
+    listenPlaying = false;
+    _listenLoopId++;
+    if (_listenAudio) { try { _listenAudio.pause(); } catch (e) {} }
+    if ('speechSynthesis' in window) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+    interruptListenWait();
+    setTimeout(() => listenPlay(), 30);
+  } else {
+    updateListenUI();
+  }
+}
+
+function listenSkipBack() {
+  listenIndex--;
+  if (listenIndex < 0) listenIndex = Math.max(0, listenQueue.length - 1);
+  if (listenPlaying) {
+    listenPlaying = false;
+    _listenLoopId++;
+    if (_listenAudio) { try { _listenAudio.pause(); } catch (e) {} }
+    if ('speechSynthesis' in window) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+    interruptListenWait();
+    setTimeout(() => listenPlay(), 30);
+  } else {
+    updateListenUI();
+  }
+}
+
+function listenSetSpeed(speed) {
+  state.listen.speed = speed;
+  saveState();
+  // Apply to currently playing audio if any (Google path)
+  if (_listenAudio) _listenAudio.playbackRate = speed;
+  updateListenUI();
+}
+
+function listenSetShuffle(on) {
+  state.listen.shuffle = !!on;
+  saveState();
+  // Rebuild queue at current phrase if changing live
+  const currentPhraseId = listenQueue[listenIndex] ? listenQueue[listenIndex].id : null;
+  listenQueue = buildListenQueue();
+  if (currentPhraseId) {
+    const newIdx = listenQueue.findIndex(p => p.id === currentPhraseId);
+    listenIndex = newIdx >= 0 ? newIdx : 0;
+  }
+  updateListenUI();
+}
+
+function listenSetShadowing(on) {
+  state.listen.shadowing = !!on;
+  saveState();
+  updateListenUI();
+}
+
+function listenSetFilter(f) {
+  state.listen.filter = f;
+  saveState();
+  // Rebuild queue with new filter
+  const currentPhraseId = listenQueue[listenIndex] ? listenQueue[listenIndex].id : null;
+  listenQueue = buildListenQueue();
+  if (currentPhraseId) {
+    const newIdx = listenQueue.findIndex(p => p.id === currentPhraseId);
+    listenIndex = newIdx >= 0 ? newIdx : 0;
+  } else {
+    listenIndex = 0;
+  }
+  updateListenUI();
+}
+
+// ----- UI sync -----
+function updateListenUI() {
+  const empty = document.getElementById('listen-empty');
+  const now = document.getElementById('listen-now');
+  const playBtn = document.getElementById('listen-playpause');
+  const backBtn = document.getElementById('listen-back-btn');
+  const fwdBtn = document.getElementById('listen-fwd-btn');
+  const tip = document.getElementById('listen-tip');
+  if (!empty || !now || !playBtn) return;
+
+  // Build queue if empty so we can show count even before pressing play
+  if (listenQueue.length === 0) listenQueue = buildListenQueue();
+
+  if (listenQueue.length === 0) {
+    empty.style.display = 'block';
+    now.style.display = 'none';
+    playBtn.textContent = '▶';
+    playBtn.disabled = true;
+    backBtn.disabled = true;
+    fwdBtn.disabled = true;
+  } else {
+    empty.style.display = 'none';
+    now.style.display = 'block';
+    const phrase = listenQueue[listenIndex] || listenQueue[0];
+    document.getElementById('listen-meta').textContent = `Phrase ${listenIndex + 1} of ${listenQueue.length}${listenPlaying ? ' · playing' : ''}`;
+    document.getElementById('listen-arabic').textContent = phrase.ar;
+    document.getElementById('listen-arabizi').textContent = phrase.az;
+    document.getElementById('listen-en').textContent = phrase.en;
+    playBtn.textContent = listenPlaying ? '⏸' : '▶';
+    playBtn.disabled = false;
+    backBtn.disabled = false;
+    fwdBtn.disabled = false;
+  }
+
+  // Toggle states
+  document.querySelectorAll('.listen-toggle[data-speed]').forEach(b => {
+    b.classList.toggle('active', Number(b.dataset.speed) === (state.listen.speed || 1));
+  });
+  document.querySelectorAll('.listen-toggle[data-shuffle]').forEach(b => {
+    const on = b.dataset.shuffle === 'on';
+    b.classList.toggle('active', on === !!state.listen.shuffle);
+  });
+  document.querySelectorAll('.listen-toggle[data-shadow]').forEach(b => {
+    const on = b.dataset.shadow === 'on';
+    b.classList.toggle('active', on === !!state.listen.shadowing);
+  });
+  document.querySelectorAll('.listen-toggle[data-filter]').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === (state.listen.filter || 'all'));
+  });
+
+  // Tip
+  if (tip) {
+    const config = getVoiceConfig();
+    if (config.provider !== 'google' || !config.googleApiKey) {
+      tip.innerHTML = `Listen mode works best with <strong>Google TTS</strong> set up — browser voice may stop playing when your screen locks. Set it up in <a href="#" onclick="document.querySelector(\'.tab[data-panel=&quot;progress&quot;]\').click(); return false;">Progress → Voice settings</a>.`;
+    } else if (listenQueue.length === 0) {
+      tip.textContent = 'Once you finish a few daily sessions and mark phrases learned, they will appear here on loop.';
+    } else if (listenPlaying) {
+      tip.textContent = 'Lock your screen and keep listening. Use lock-screen controls to skip or pause.';
+    } else {
+      tip.innerHTML = `Press play. Plays each phrase twice, then moves to the next, looping forever.`;
+    }
+  }
+}
+
+function renderListen() {
+  // Reset queue when entering tab so filter/order changes are reflected
+  if (!listenPlaying) {
+    listenQueue = buildListenQueue();
+    listenIndex = 0;
+  }
+  updateListenUI();
+}
+
+// Wire up Media Session API for lock-screen controls.
+function updateListenMediaSession(phrase) {
+  if (!('mediaSession' in navigator)) return;
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: phrase.ar,
+      artist: phrase.az || '',
+      album: 'Shami · ' + (phrase.en || ''),
+      artwork: [{ src: 'shami-favicon.png', sizes: '512x512', type: 'image/png' }],
+    });
+    navigator.mediaSession.setActionHandler('play', () => listenPlay());
+    navigator.mediaSession.setActionHandler('pause', () => listenPause());
+    navigator.mediaSession.setActionHandler('previoustrack', () => listenSkipBack());
+    navigator.mediaSession.setActionHandler('nexttrack', () => listenSkipForward());
+  } catch (e) { /* MediaSession API can throw on some browsers */ }
+}
+
+// ==========================================
 // MIC RECORDING
 // ==========================================
 let mediaRecorder = null;
@@ -8134,6 +8712,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.getElementById(panelId).classList.add('active');
     if (tab.dataset.panel === 'alphabet') renderAlphabet();
     if (tab.dataset.panel === 'phrasebook') { renderCatPills(); renderPhrasebook(document.getElementById('phrasebook-search').value); }
+    if (tab.dataset.panel === 'listen') renderListen();
     if (tab.dataset.panel === 'grammar') renderGrammar();
     if (tab.dataset.panel === 'progress') renderProgress();
     if (tab.dataset.panel === 'daily') renderDaily();
