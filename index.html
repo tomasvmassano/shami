@@ -2299,27 +2299,31 @@
   }
   .ornament.dim .ornament-mark { font-size: 18px; }
 
-  /* SHAMI PATTERN — Today screen, 120-day journey banner.
-     Pattern fades from the right edge inward, capped at 17% opacity,
-     sits under all content via z-index. */
-  #panel-daily {
+  /* SHAMI PATTERN — fixed to the viewport's right edge, behind all
+     in-app content. Visible past the right side of cards / panels so
+     it never bleeds into readable text. Hidden when welcome screen
+     shows because #app itself is display:none then. */
+  #app {
     position: relative;
+    z-index: 1;
   }
-  #panel-daily::before {
+  #app::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0;
-    right: -40px;
+    right: 0;
     bottom: 0;
-    width: 75%;
-    background: url('shami-pattern.svg') right center/cover no-repeat;
+    width: 55vw;
+    background: url('shami-pattern.svg') right center/auto 100% no-repeat;
     opacity: 0.17;
     pointer-events: none;
     z-index: 0;
-    mask-image: linear-gradient(to left, black 0%, transparent 95%);
-    -webkit-mask-image: linear-gradient(to left, black 0%, transparent 95%);
+    mask-image: linear-gradient(to left, black 0%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, black 0%, transparent 100%);
   }
-  #panel-daily > * { position: relative; z-index: 1; }
+  @media (max-width: 720px) {
+    #app::before { width: 75vw; opacity: 0.13; }
+  }
 
   .curriculum {
     overflow: hidden;
@@ -8500,7 +8504,7 @@ function dismissUnlock(cohortIdx) {
 
 function boot() {
   if (!state.started) {
-    document.getElementById('welcome-screen').style.display = 'block';
+    document.getElementById('welcome-screen').style.display = 'grid';
     document.getElementById('app').style.display = 'none';
   } else {
     document.getElementById('welcome-screen').style.display = 'none';
