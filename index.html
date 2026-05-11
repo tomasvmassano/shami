@@ -2273,28 +2273,9 @@
   }
   .ornament.dim .ornament-mark { font-size: 18px; }
 
-  /* SHAMI PATTERN — fixed to the viewport's right edge, only visible
-     while the Today tab is active. Other tabs see no pattern.
-     Display:none on inactive panels removes their fixed pseudo from
-     the rendering tree, so this self-scopes correctly. */
+  /* Pattern lives only on the welcome screen and on the bootcamp /
+     curriculum banners. The Today tab stays clean. */
   #app { position: relative; z-index: 1; }
-  #panel-daily.active::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: url('shami-pattern.svg') center center/cover no-repeat;
-    opacity: 0.14;
-    pointer-events: none;
-    z-index: 0;
-    /* Pattern element fills the entire viewport; the mask handles the
-       visibility distribution — fully visible on the right edge,
-       smoothly fading to transparent at the left edge. */
-    mask-image: linear-gradient(to left, black 0%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to left, black 0%, transparent 100%);
-  }
-  @media (max-width: 720px) {
-    #panel-daily.active::before { opacity: 0.1; }
-  }
 
   .curriculum {
     overflow: hidden;
