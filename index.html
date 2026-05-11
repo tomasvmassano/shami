@@ -5116,7 +5116,14 @@ function buildTodayQueue() {
       continue;
     }
     if (type === 'letterSpot') {
-      const cands = knownPhrases.filter(p => letterCharsInPhrase(p.ar).some(x => x.idx === idx));
+      // Only use phrases where every letter has been introduced —
+      // otherwise the user is asked to spot a letter inside a word
+      // they cannot read yet.
+      const cands = knownPhrases.filter(p => {
+        const chars = letterCharsInPhrase(p.ar);
+        if (!chars.some(x => x.idx === idx)) return false;
+        return chars.every(x => introducedSet.has(x.idx));
+      });
       if (cands.length > 0) {
         const p = cands[Math.floor(Math.random() * cands.length)];
         letterDrills.push({ type: 'letterSpot', ref: { letterIdx: idx, phraseId: p.id } });
@@ -5189,7 +5196,7 @@ function buildTodayQueue() {
 
   // Daily cap — keep beginners from drowning. Lesson cards and due
   // reviews are protected (kept at the front); slice off the back if too long.
-  const DAILY_CAP = 25;
+  const DAILY_CAP = 20;
   const protectedCount = grammarLessons.length + letterIntros.length + matchBatches.length + dueRecall.length + dueProd.length + grammarDrillsDue.length;
   if (queue.length > DAILY_CAP) {
     const minKeep = Math.max(protectedCount, DAILY_CAP);
@@ -5353,6 +5360,14 @@ function renderConsolidation() {
 
 function escapeAttr(s) {
   return String(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// JS-as-attribute: returns a JSON-stringified value with " escaped for use
+// inside a double-quoted onclick attribute. Without &quot; escaping, the
+// browser truncates the attribute at the first inner quote, silently
+// breaking the handler.
+function jsAttr(v) {
+  return JSON.stringify(v).replace(/"/g, '&quot;');
 }
 
 let consolPlaying = false;
@@ -5712,7 +5727,7 @@ function renderLetterIntroCard(idx) {
       <div class="letter-intro-arabizi">Arabizi: ${letter.arabizi}</div>
       <div class="letter-intro-sound">${letter.sound}</div>
       <div style="text-align:center;margin-bottom:18px;">
-        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(letter.l)})">▶ Hear it</button>
+        <button class="reveal-btn" onclick="speakLetter(${jsAttr(letter.l)})">▶ Hear it</button>
       </div>
       <div class="card-actions">
         <button class="action good" onclick="advanceLetterIntro(${idx})">Got it</button>
@@ -5761,7 +5776,7 @@ function renderLetterSoundCard(idx) {
     const j = Math.floor(Math.random() * (i + 1));
     [opts[i], opts[j]] = [opts[j], opts[i]];
   }
-  const optsHtml = opts.map(o => `<button class="letter-option" onclick="answerLetterSound(${idx}, ${JSON.stringify(o)}, this)">${o}</button>`).join('');
+  const optsHtml = opts.map(o => `<button class="letter-option" onclick="answerLetterSound(${idx}, ${jsAttr(o)}, this)">${o}</button>`).join('');
   stack.innerHTML = `
     <div class="card">
       <div class="card-corner">Alphabet</div>
@@ -5769,7 +5784,7 @@ function renderLetterSoundCard(idx) {
       <div class="letter-drill-prompt">Which sound is this?</div>
       <div class="letter-drill-big">${letter.l}</div>
       <div class="letter-drill-hear">
-        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(letter.l)})">▶ Hear it</button>
+        <button class="reveal-btn" onclick="speakLetter(${jsAttr(letter.l)})">▶ Hear it</button>
       </div>
       <div class="letter-options">${optsHtml}</div>
     </div>
@@ -5813,7 +5828,7 @@ function renderLetterSpotCard(ref) {
       <div class="letter-spot-word">${charsHtml}</div>
       <div class="letter-spot-meaning">"${phrase.en}" · ${phrase.az}</div>
       <div class="letter-drill-hear">
-        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(phrase.ar)})">▶ Hear word</button>
+        <button class="reveal-btn" onclick="speakArabic(${jsAttr(phrase.ar)})">▶ Hear word</button>
       </div>
     </div>
   `;
@@ -5888,7 +5903,7 @@ function renderLetterBuildCard(phraseId) {
       <div class="letter-build-prompt">${phrase.en}</div>
       <div class="letter-build-azhint">${phrase.az}</div>
       <div class="letter-drill-hear">
-        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(phrase.ar)})">▶ Hear word</button>
+        <button class="reveal-btn" onclick="speakArabic(${jsAttr(phrase.ar)})">▶ Hear word</button>
       </div>
       <div class="letter-build-area" id="lb-area" onclick="letterBuildPop()"></div>
       <div class="letter-build-pool" id="lb-pool"></div>
@@ -5916,7 +5931,7 @@ function renderLetterBuildTiles() {
   }
   pool.innerHTML = letterBuildState.pool.map(t => {
     const used = letterBuildState.placed.some(p => p.key === t.key);
-    return `<button class="letter-tile ${used ? 'used' : ''}" onclick="letterBuildTap(${JSON.stringify(t.key)})">${t.ch}</button>`;
+    return `<button class="letter-tile ${used ? 'used' : ''}" onclick="letterBuildTap(${jsAttr(t.key)})">${t.ch}</button>`;
   }).join('');
 }
 
@@ -6002,7 +6017,7 @@ function renderLetterFromSoundCard(idx) {
       <div class="card-tag">Sound to letter · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
       <div class="letter-drill-prompt">Which letter sounds like <strong>${letter.arabizi}</strong>?</div>
       <div class="letter-drill-hear" style="margin-top:6px;margin-bottom:14px;">
-        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(letter.l)})">▶ Hear it</button>
+        <button class="reveal-btn" onclick="speakLetter(${jsAttr(letter.l)})">▶ Hear it</button>
       </div>
       <div class="letter-options">${optsHtml}</div>
     </div>
@@ -6083,7 +6098,7 @@ function renderPickMeaningCard(id) {
   const card = state.cards[id];
   const opts = pickMeaningOptions(id);
   const optsHtml = opts.map(p =>
-    `<button class="pick-option" data-en="${escapeAttr(p.en)}" onclick="answerPickMeaning(${JSON.stringify(id)}, ${JSON.stringify(p.id)}, this)">${p.en}</button>`
+    `<button class="pick-option" data-en="${escapeAttr(p.en)}" onclick="answerPickMeaning(${jsAttr(id)}, ${jsAttr(p.id)}, this)">${p.en}</button>`
   ).join('');
   document.getElementById('card-stack').innerHTML = `
     <div class="card">
@@ -6092,7 +6107,7 @@ function renderPickMeaningCard(id) {
       <div class="pick-meaning-prompt">${phrase.ar}</div>
       <div class="pick-meaning-az">${phrase.az}</div>
       <div style="text-align:center;margin-bottom:18px;">
-        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(phrase.ar)})">▶ Hear it</button>
+        <button class="reveal-btn" onclick="speakArabic(${jsAttr(phrase.ar)})">▶ Hear it</button>
       </div>
       <div class="pick-meaning-options">${optsHtml}</div>
     </div>
@@ -6252,7 +6267,7 @@ function renderTranslateCard(id) {
       <div class="translate-source">${phrase.ar}</div>
       <div class="translate-az">${phrase.az}</div>
       <div style="text-align:center;margin-bottom:14px;">
-        <button class="reveal-btn" onclick="speakArabic(${JSON.stringify(phrase.ar)})">▶ Hear it</button>
+        <button class="reveal-btn" onclick="speakArabic(${jsAttr(phrase.ar)})">▶ Hear it</button>
       </div>
       <div class="translate-build-area" id="t-area" onclick="translatePop()"></div>
       <div class="translate-pool" id="t-pool"></div>
@@ -6280,7 +6295,7 @@ function renderTranslateTiles() {
   }
   pool.innerHTML = translateState.pool.map(t => {
     const used = translateState.placed.some(p => p.key === t.key);
-    return `<button class="translate-tile ${used ? 'used' : ''}" onclick="translateTap(${JSON.stringify(t.key)})">${t.t}</button>`;
+    return `<button class="translate-tile ${used ? 'used' : ''}" onclick="translateTap(${jsAttr(t.key)})">${t.t}</button>`;
   }).join('');
 }
 
@@ -6348,14 +6363,14 @@ function renderListenPickCard(id) {
   initCard(id);
   const card = state.cards[id];
   const optsHtml = opts.map(p =>
-    `<button class="listen-option" data-ar="${escapeAttr(p.ar)}" onclick="answerListenPick(${JSON.stringify(id)}, ${JSON.stringify(p.id)}, this)">${p.ar}</button>`
+    `<button class="listen-option" data-ar="${escapeAttr(p.ar)}" onclick="answerListenPick(${jsAttr(id)}, ${jsAttr(p.id)}, this)">${p.ar}</button>`
   ).join('');
   document.getElementById('card-stack').innerHTML = `
     <div class="card">
       <div class="card-corner">${phrase.cat}</div>
       <div class="card-tag">Listen · review${card.reps ? ' <span class="srs-mark">#' + card.reps + '</span>' : ''} · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
       <div class="listen-prompt">
-        <button class="listen-big-btn" onclick="speakArabic(${JSON.stringify(phrase.ar)})">▶</button>
+        <button class="listen-big-btn" onclick="speakArabic(${jsAttr(phrase.ar)})">▶</button>
         <div class="listen-hint">Tap to play again</div>
       </div>
       <div class="listen-options">${optsHtml}</div>
@@ -6407,7 +6422,7 @@ function renderGrammarLessonCard(unitId) {
       ${sectionsHtml}
       <div class="gram-lesson-closing">${unit.lesson.closing}</div>
       <div class="card-actions" style="margin-top:18px;">
-        <button class="action good" onclick="finishGrammarLesson(${JSON.stringify(unit.id)})">Got it · start drilling</button>
+        <button class="action good" onclick="finishGrammarLesson(${jsAttr(unit.id)})">Got it · start drilling</button>
       </div>
     </div>
   `;
@@ -6435,7 +6450,7 @@ function renderGrammarDrillCard(ref) {
     [opts[i], opts[j]] = [opts[j], opts[i]];
   }
   const optsHtml = opts.map(o =>
-    `<button class="pick-option" data-val="${escapeAttr(o)}" onclick="answerGrammarDrill(${JSON.stringify(ref.unitId)}, ${JSON.stringify(ref.drillId)}, ${JSON.stringify(o)}, this)">${o}</button>`
+    `<button class="pick-option" data-val="${escapeAttr(o)}" onclick="answerGrammarDrill(${jsAttr(ref.unitId)}, ${jsAttr(ref.drillId)}, ${jsAttr(o)}, this)">${o}</button>`
   ).join('');
   // Render cloze with blank highlighted
   const clozeHtml = drill.cloze.replace(/___/g, '<span class="gram-drill-blank">___</span>');
@@ -6515,7 +6530,7 @@ function renderGrammar() {
         ${!locked ? `
           <div class="gram-progress-bar"><div class="gram-progress-fill" style="transform:scaleX(${fillPct/100})"></div></div>
           <div class="gram-unit-actions">
-            ${taught ? `<button class="action" onclick="reviewGrammarLesson(${JSON.stringify(unit.id)})">Re-read lesson</button>` : ''}
+            ${taught ? `<button class="action" onclick="reviewGrammarLesson(${jsAttr(unit.id)})">Re-read lesson</button>` : ''}
           </div>
         ` : ''}
       </div>
@@ -6704,6 +6719,30 @@ async function speakArabic(text) {
     catch (e) { console.warn('Google TTS failed, falling back to browser voice:', e.message); }
   }
   await playBrowserSpeech(text);
+}
+
+// Single Arabic letters often refuse to speak through browser TTS — engines
+// need a syllable. Append a long-a vowel so a letter becomes a pronounceable
+// syllable (ح → حا "ha"), then for letters that already are or contain that
+// vowel, fall back to doubling. Google TTS handles the bare letter fine, so
+// only apply this transformation when we are using browser TTS.
+function speakLetter(arabicChar) {
+  const config = getVoiceConfig();
+  if (config.provider === 'google' && config.googleApiKey) {
+    speakArabic(arabicChar);
+    return;
+  }
+  let toSpeak = arabicChar;
+  if (toSpeak === 'ا' || toSpeak === 'أ' || toSpeak === 'إ' || toSpeak === 'آ') {
+    toSpeak = 'أَ'; // hamza on alif with fatha = "a"
+  } else if (toSpeak === 'و') {
+    toSpeak = 'وَ'; // "wa"
+  } else if (toSpeak === 'ي') {
+    toSpeak = 'يَ'; // "ya"
+  } else {
+    toSpeak = arabicChar + 'ا'; // consonant + long a, e.g. "ba", "ta", "ha"
+  }
+  speakArabic(toSpeak);
 }
 
 // ----- Voice settings UI -----
