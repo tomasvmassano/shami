@@ -2284,16 +2284,18 @@
     top: 0;
     right: 0;
     bottom: 0;
-    width: 55vw;
+    width: 38vw;
     background: url('shami-pattern.svg') right center/auto 100% no-repeat;
-    opacity: 0.17;
+    opacity: 0.14;
     pointer-events: none;
     z-index: 0;
-    mask-image: linear-gradient(to left, black 0%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to left, black 0%, transparent 100%);
+    /* Most of the element is fully transparent — pattern reads only as
+       a glimpse on the rightmost ~30% before fading out completely. */
+    mask-image: linear-gradient(to left, black 0%, transparent 75%);
+    -webkit-mask-image: linear-gradient(to left, black 0%, transparent 75%);
   }
   @media (max-width: 720px) {
-    #panel-daily.active::before { width: 75vw; opacity: 0.13; }
+    #panel-daily.active::before { width: 55vw; opacity: 0.1; }
   }
 
   .curriculum {
