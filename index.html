@@ -1400,6 +1400,75 @@
     font-weight: 600;
   }
 
+  /* BOOTCAMP BANNER — alphabet-first phase indicator on Today */
+  .bootcamp-banner {
+    background: var(--paper-dim);
+    border: 1.5px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--terra);
+    padding: 18px 22px;
+    margin: 0 0 24px;
+  }
+  .bc-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--terra);
+    margin-bottom: 4px;
+  }
+  .bc-cohort-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .bc-letters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .bc-letter {
+    width: 44px;
+    height: 44px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    font-family: 'Amiri', serif;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .bc-letter.introduced { background: #fff; }
+  .bc-letter.learning { background: var(--ochre); }
+  .bc-letter.mastered { background: var(--olive); color: var(--paper); border-color: var(--olive); }
+  .bc-progress-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    opacity: 0.7;
+  }
+  .bc-progress-line strong {
+    color: var(--terra-deep);
+    opacity: 1;
+  }
+  .bc-done-banner {
+    background: var(--olive);
+    color: var(--paper);
+    border: 1.5px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    padding: 18px 22px;
+    margin: 0 0 24px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
   /* GRAMMAR — lesson cards + cloze drills + grammar tab */
   .gram-week {
     display: inline-block;
@@ -2031,6 +2100,8 @@
         <div id="day-date">Day · Lesson</div>
       </div>
     </div>
+
+    <div id="bootcamp-banner"></div>
 
     <div class="card-stack" id="card-stack">
       <!-- Card injected here -->
@@ -4775,7 +4846,21 @@ let state = loadState();
 function loadState() {
   try {
     const raw = localStorage.getItem(STORE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const s = JSON.parse(raw);
+      // Migrate older state that predates bootcamp mode — turn it on so
+      // the alphabet curriculum runs by default. Preserves all existing
+      // vocab/letter cards intact, but clears today's queue so it
+      // rebuilds with the bootcamp flow.
+      if (s.bootcamp === undefined) {
+        s.bootcamp = true;
+        s.todayQueue = [];
+        s.todayIndex = 0;
+        s.todayDate = null;
+      }
+      if (!s.bootcampLetters) s.bootcampLetters = {};
+      return s;
+    }
   } catch (e) {}
   return defaultState();
 }
@@ -4793,6 +4878,8 @@ function defaultState() {
     letterCards: {}, // index -> { ef, interval, reps, due, learned, introduced, correctStreak }
     grammarTaught: {}, // unitId -> true once lesson card finished
     grammarCards: {}, // "unitId.drillId" -> { ef, interval, reps, due, learned }
+    bootcamp: true, // alphabet-first phase; auto-disables when all 28 letters mastered
+    bootcampLetters: {}, // idx -> { introduced, correctStreak, totalCorrect, mastered, due }
     todayQueue: [],
     todayIndex: 0,
     todayDate: null,
@@ -4916,6 +5003,149 @@ function initLetterCard(idx) {
   return state.letterCards[idx];
 }
 
+// ----- Bootcamp (alphabet-first phase) -----
+// Letters introduced 5 at a time, in standard alphabet order. A cohort
+// is mastered only when every letter in it has been answered correctly
+// 3 times in a row across recognition + production drills. A miss
+// resets the streak and defers the letter to tomorrow (no in-session
+// retry). Until all 28 letters are mastered, vocab reviews and grammar
+// stay paused; only one new phrase trickles in per day for exposure.
+const BOOTCAMP_COHORTS = [
+  [0, 1, 2, 3, 4],     // alif, baa, taa, thaa, jeem
+  [5, 6, 7, 8, 9],     // Haa, khaa, daal, dhaal, raa
+  [10, 11, 12, 13, 14], // zay, seen, sheen, Saad, Daad
+  [15, 16, 17, 18, 19], // Taa, Zaa, ayn, ghayn, faa
+  [20, 21, 22, 23, 24], // qaaf, kaaf, laam, meem, noon
+  [25, 26, 27],         // haa, waw, yaa
+];
+const BOOTCAMP_MASTERY_STREAK = 3;
+
+function initBootcampLetter(idx) {
+  if (!state.bootcampLetters) state.bootcampLetters = {};
+  if (!state.bootcampLetters[idx]) {
+    state.bootcampLetters[idx] = {
+      introduced: false,
+      correctStreak: 0,
+      totalCorrect: 0,
+      mastered: false,
+      due: todayStr(),
+    };
+  }
+  return state.bootcampLetters[idx];
+}
+
+function isBootcampLetterMastered(idx) {
+  const c = state.bootcampLetters && state.bootcampLetters[idx];
+  return !!(c && c.mastered);
+}
+
+function isCohortMastered(cohortIdx) {
+  const cohort = BOOTCAMP_COHORTS[cohortIdx];
+  if (!cohort) return false;
+  return cohort.every(i => isBootcampLetterMastered(i));
+}
+
+function getActiveCohortIndex() {
+  for (let i = 0; i < BOOTCAMP_COHORTS.length; i++) {
+    if (!isCohortMastered(i)) return i;
+  }
+  return BOOTCAMP_COHORTS.length; // beyond last
+}
+
+function isAlphabetBootcampDone() {
+  return BOOTCAMP_COHORTS.every((_, i) => isCohortMastered(i));
+}
+
+function gradeBootcampLetter(idx, correct) {
+  const c = initBootcampLetter(idx);
+  if (correct) {
+    c.correctStreak += 1;
+    c.totalCorrect += 1;
+    if (c.correctStreak >= BOOTCAMP_MASTERY_STREAK) {
+      c.mastered = true;
+      c.due = addDays(todayStr(), 7); // light retention rotation after mastery
+      // Mirror to alphabet panel display
+      state.letters[idx] = 'mastered';
+    } else {
+      c.due = addDays(todayStr(), 1);
+      if (!state.letters[idx]) state.letters[idx] = 'learned';
+    }
+  } else {
+    c.correctStreak = 0;
+    c.due = addDays(todayStr(), 1);
+  }
+  // Auto-exit bootcamp when all 28 letters mastered. Clear today's
+  // queue so the next renderDaily rebuilds with the normal flow.
+  if (isAlphabetBootcampDone() && state.bootcamp) {
+    state.bootcamp = false;
+    state.todayQueue = [];
+    state.todayIndex = 0;
+    state.todayDate = null;
+  }
+  saveState();
+}
+
+function buildBootcampQueue(today) {
+  const queue = [];
+  const activeIdx = getActiveCohortIndex();
+  if (activeIdx >= BOOTCAMP_COHORTS.length) return queue; // shouldn't happen — bootcamp would be off
+  const activeCohort = BOOTCAMP_COHORTS[activeIdx];
+
+  // Step 1: introduce any unintroduced letter in active cohort, paired
+  // immediately with one recognition drill so the new letter is tested
+  // right after exposure (same as your in-person lesson).
+  for (const idx of activeCohort) {
+    const lc = initBootcampLetter(idx);
+    if (!lc.introduced) {
+      lc.introduced = true;
+      // Mirror to legacy letterCards.introduced for alphabet panel coloring
+      initLetterCard(idx).introduced = true;
+      queue.push({ type: 'letterIntro', ref: idx });
+      queue.push({ type: 'letterSound', ref: idx });
+    }
+  }
+
+  // Step 2: drills on introduced-but-not-mastered letters in active cohort
+  // that are due today. Alternate recognition (letter→sound) and
+  // production (sound→letter) for variety.
+  let drillCount = 0;
+  for (const idx of activeCohort) {
+    const lc = initBootcampLetter(idx);
+    if (!lc.introduced || lc.mastered) continue;
+    if (lc.due > today) continue;
+    // Skip if we already added an immediate recognition above
+    const alreadyHasIntroPair = queue.some(q => q.type === 'letterSound' && q.ref === idx);
+    if (alreadyHasIntroPair) continue;
+    // Pick recognition or production based on which has been seen less
+    // (favor production once recognition is warming up — totalCorrect >= 1)
+    const wantProd = lc.totalCorrect >= 1 && Math.random() < 0.55;
+    queue.push({ type: wantProd ? 'letterFromSound' : 'letterSound', ref: idx });
+    drillCount++;
+    if (drillCount >= 5) break;
+  }
+
+  // Step 3: 1 retention drill on a previously mastered letter, if any
+  // (only when there's room in the day)
+  const masteredIdxs = [];
+  for (const i in state.bootcampLetters) {
+    if (state.bootcampLetters[i].mastered && (state.bootcampLetters[i].due || today) <= today) {
+      masteredIdxs.push(Number(i));
+    }
+  }
+  if (masteredIdxs.length > 0) {
+    const idx = masteredIdxs[Math.floor(Math.random() * masteredIdxs.length)];
+    queue.push({ type: 'letterFromSound', ref: idx });
+  }
+
+  // Step 4: one new phrase per day for real-language exposure (audio +
+  // translation, no decoding pressure). Use the next unlearned phrase
+  // in curriculum order.
+  const newPhrase = PHRASES.find(p => !state.cards[p.id] || !state.cards[p.id].learned);
+  if (newPhrase) queue.push({ type: 'recall', ref: newPhrase.id });
+
+  return queue;
+}
+
 // ----- Grammar SRS -----
 function grammarKey(unitId, drillId) { return unitId + '.' + drillId; }
 
@@ -5008,6 +5238,15 @@ function buildTodayQueue() {
     const gap = daysBetween(state.lastActiveDate, today);
     if (gap === 1) state.streak += 0; // continues, will inc on completion
     else if (gap > 1) state.streak = 0;
+  }
+
+  // Bootcamp short-circuits the regular queue builder. Only letter
+  // exercises (on already-introduced letters) plus one new phrase per
+  // day for ear-training.
+  if (state.bootcamp) {
+    state.todayQueue = buildBootcampQueue(today);
+    saveState();
+    return;
   }
 
   // Due recognition reviews — rotate exercise variants by maturity (reps).
@@ -5227,9 +5466,47 @@ function getLettersLearned() {
 // ==========================================
 // RENDER — Daily card (dispatches to type-specific renderer)
 // ==========================================
+function renderBootcampBanner() {
+  const el = document.getElementById('bootcamp-banner');
+  if (!el) return;
+  if (!state.bootcamp) {
+    if (isAlphabetBootcampDone()) {
+      // One-off "you finished" banner; can be dismissed by tapping
+      el.innerHTML = `<div class="bc-done-banner" onclick="this.parentNode.innerHTML=''">Alphabet bootcamp complete · vocab and grammar unlocked</div>`;
+    } else {
+      el.innerHTML = '';
+    }
+    return;
+  }
+  const activeIdx = getActiveCohortIndex();
+  if (activeIdx >= BOOTCAMP_COHORTS.length) {
+    el.innerHTML = '';
+    return;
+  }
+  const cohort = BOOTCAMP_COHORTS[activeIdx];
+  const masteredCount = cohort.filter(i => isBootcampLetterMastered(i)).length;
+  const namesPreview = cohort.map(i => ALPHABET[i].name).join(', ');
+  const lettersHtml = cohort.map(i => {
+    const lc = state.bootcampLetters[i];
+    let cls = 'bc-letter';
+    if (lc && lc.mastered) cls += ' mastered';
+    else if (lc && lc.introduced) cls += ' learning';
+    return `<div class="${cls}" title="${ALPHABET[i].name}">${ALPHABET[i].l}</div>`;
+  }).join('');
+  el.innerHTML = `
+    <div class="bootcamp-banner">
+      <div class="bc-tag">Alphabet Bootcamp · Cohort ${activeIdx + 1} of ${BOOTCAMP_COHORTS.length}</div>
+      <div class="bc-cohort-title">${namesPreview}</div>
+      <div class="bc-letters">${lettersHtml}</div>
+      <div class="bc-progress-line"><strong>${masteredCount} of ${cohort.length} mastered</strong> · ${BOOTCAMP_MASTERY_STREAK} correct in a row to master a letter · vocab paused</div>
+    </div>
+  `;
+}
+
 function renderDaily() {
   buildTodayQueue();
   updateHeaderStats();
+  renderBootcampBanner();
 
   const stack = document.getElementById('card-stack');
   const dayDiv = document.getElementById('day-num');
@@ -5244,7 +5521,34 @@ function renderDaily() {
   dateDiv.textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
 
   if (state.todayIndex >= state.todayQueue.length) {
-    // All done! Show consolidation card for today.
+    // All done! In bootcamp we show a tight wrap-up; otherwise the
+    // day's dialogue/saying card.
+    if (state.bootcamp) {
+      const stack = document.getElementById('card-stack');
+      const activeIdx = getActiveCohortIndex();
+      const cohort = BOOTCAMP_COHORTS[activeIdx] || [];
+      const remaining = cohort.filter(i => !isBootcampLetterMastered(i)).length;
+      const msg = activeIdx >= BOOTCAMP_COHORTS.length
+        ? 'Bootcamp complete!'
+        : `Cohort ${activeIdx + 1}: ${remaining} letter${remaining === 1 ? '' : 's'} left to master`;
+      stack.innerHTML = `
+        <div class="done-state">
+          <div class="done-arabic">مبروك</div>
+          <div class="done-text">Done for today.</div>
+          <div class="done-sub">${msg} · come back tomorrow for the next drill round</div>
+        </div>
+      `;
+      // Mark streak
+      if (state.lastActiveDate !== todayStr()) {
+        const gap = state.lastActiveDate ? daysBetween(state.lastActiveDate, todayStr()) : 0;
+        if (gap === 1 || !state.lastActiveDate) state.streak += 1;
+        else if (gap > 1) state.streak = 1;
+        state.lastActiveDate = todayStr();
+        saveState();
+        updateHeaderStats();
+      }
+      return;
+    }
     renderConsolidation();
     // Mark streak
     if (state.lastActiveDate !== todayStr()) {
@@ -5738,6 +6042,7 @@ function renderLetterIntroCard(idx) {
 
 function advanceLetterIntro(idx) {
   initLetterCard(idx).introduced = true;
+  if (state.bootcamp) initBootcampLetter(idx).introduced = true;
   saveState();
   state.todayIndex++;
   saveState();
@@ -5862,9 +6167,14 @@ function answerLetterSpot(targetIdx, tappedIdx, span) {
 }
 
 function finishLetterDrill(idx, correct) {
-  gradeLetterCard(idx, correct);
-  const item = state.todayQueue[state.todayIndex];
-  if (!correct) state.todayQueue.push(item);
+  if (state.bootcamp) {
+    // Bootcamp rule: a miss defers to tomorrow, no in-session retry.
+    gradeBootcampLetter(idx, correct);
+  } else {
+    gradeLetterCard(idx, correct);
+    const item = state.todayQueue[state.todayIndex];
+    if (!correct) state.todayQueue.push(item);
+  }
   setTimeout(() => {
     state.todayIndex++;
     saveState();
@@ -6496,6 +6806,16 @@ function answerGrammarDrill(unitId, drillId, choice, btn) {
 function renderGrammar() {
   const container = document.getElementById('gram-units');
   if (!container) return;
+  if (state.bootcamp) {
+    container.innerHTML = `
+      <div class="gram-unit locked" style="text-align:center;">
+        <div class="gram-unit-week">Locked</div>
+        <div class="gram-unit-title">Grammar unlocks after the alphabet</div>
+        <div class="gram-unit-sub">Finish the Alphabet Bootcamp on the Today tab and these 5 grammar units will start opening week by week.</div>
+      </div>
+    `;
+    return;
+  }
   const currentDay = state.startDate ? Math.max(1, daysBetween(state.startDate, todayStr()) + 1) : 1;
   container.innerHTML = GRAMMAR_UNITS.map(unit => {
     const taught = state.grammarTaught && state.grammarTaught[unit.id];
