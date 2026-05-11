@@ -29,6 +29,9 @@
     --pattern-star-plum: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%2354243a' stroke-width='0.7'%3E%3Crect x='22' y='22' width='36' height='36'/%3E%3Crect x='22' y='22' width='36' height='36' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='2.5' fill='%2354243a'/%3E%3C/g%3E%3C/svg%3E");
     /* Smaller diamond+dot motif — for tighter textures */
     --pattern-diamond-terra: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23c1532b' stroke-width='0.5'%3E%3Cpolygon points='20,4 36,20 20,36 4,20'/%3E%3Ccircle cx='20' cy='20' r='1.5' fill='%23c1532b'/%3E%3C/g%3E%3C/svg%3E");
+    /* Ambient background-tier star: low alpha baked in so it can sit
+       directly inside body's background-image stack as a soft glimpse. */
+    --pattern-bg-star: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23c1532b' stroke-width='0.7' stroke-opacity='0.17'%3E%3Crect x='22' y='22' width='36' height='36'/%3E%3Crect x='22' y='22' width='36' height='36' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='2.5' fill='%23c1532b' fill-opacity='0.17'/%3E%3C/g%3E%3C/svg%3E");
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -46,7 +49,11 @@
     background-image:
       radial-gradient(ellipse 90% 70% at 18% 12%, rgba(193, 83, 43, 0.08) 0%, transparent 55%),
       radial-gradient(ellipse 70% 60% at 85% 90%, rgba(212, 162, 74, 0.09) 0%, transparent 55%),
-      radial-gradient(ellipse 100% 80% at 50% 50%, rgba(84, 36, 58, 0.025) 0%, transparent 70%);
+      radial-gradient(ellipse 100% 80% at 50% 50%, rgba(84, 36, 58, 0.025) 0%, transparent 70%),
+      var(--pattern-bg-star);
+    background-size: auto, auto, auto, 110px 110px;
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+    background-position: 0 0, 0 0, 0 0, center;
     background-attachment: fixed;
     min-height: 100vh;
   }
