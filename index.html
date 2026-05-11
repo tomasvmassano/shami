@@ -2281,21 +2281,19 @@
   #panel-daily.active::before {
     content: '';
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 38vw;
-    background: url('shami-pattern.svg') right center/auto 100% no-repeat;
+    inset: 0;
+    background: url('shami-pattern.svg') center center/cover no-repeat;
     opacity: 0.14;
     pointer-events: none;
     z-index: 0;
-    /* Most of the element is fully transparent — pattern reads only as
-       a glimpse on the rightmost ~30% before fading out completely. */
-    mask-image: linear-gradient(to left, black 0%, transparent 75%);
-    -webkit-mask-image: linear-gradient(to left, black 0%, transparent 75%);
+    /* Pattern element fills the entire viewport; the mask handles the
+       visibility distribution — fully visible on the right edge,
+       smoothly fading to transparent at the left edge. */
+    mask-image: linear-gradient(to left, black 0%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, black 0%, transparent 100%);
   }
   @media (max-width: 720px) {
-    #panel-daily.active::before { width: 55vw; opacity: 0.1; }
+    #panel-daily.active::before { opacity: 0.1; }
   }
 
   .curriculum {
