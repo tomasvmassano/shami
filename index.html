@@ -2153,6 +2153,137 @@
   }
   .welcome-cta:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--terra); }
 
+  /* TOUR / WELCOME STEPS */
+  .welcome-step { display: none; }
+  .welcome-step.active { display: block; animation: tour-fade 0.25s ease; }
+  @keyframes tour-fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .welcome-step-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--terra);
+    margin-bottom: 8px;
+  }
+  .welcome-step h2 {
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+  .welcome-phase {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 18px;
+    text-align: left;
+    background: var(--paper-dim);
+    border: 1.5px solid var(--ink);
+    padding: 18px 22px;
+    margin-bottom: 14px;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .welcome-phase-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    color: var(--terra);
+    font-weight: 600;
+    line-height: 1;
+  }
+  .welcome-phase-body {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .welcome-phase-body strong { color: var(--terra-deep); font-weight: 600; }
+  .welcome-phase-body em { color: var(--plum); font-style: italic; }
+
+  .welcome-tab-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px 18px;
+    text-align: left;
+    border-bottom: 1px dashed rgba(26, 20, 16, 0.18);
+    padding: 14px 8px;
+    align-items: baseline;
+  }
+  .welcome-tab-row:last-of-type { border-bottom: none; }
+  .welcome-tab-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--terra);
+    letter-spacing: 0.1em;
+  }
+  .welcome-tab-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .welcome-tab-desc {
+    grid-column: 2;
+    font-size: 13px;
+    opacity: 0.75;
+    line-height: 1.6;
+    margin-top: 2px;
+  }
+
+  .welcome-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .welcome-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .welcome-dot {
+    width: 10px;
+    height: 10px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+  }
+  .welcome-dot.active { background: var(--terra); border-color: var(--terra); }
+  .welcome-nav-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .welcome-skip,
+  .welcome-prev {
+    background: none;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    padding: 12px 18px;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .welcome-skip:hover,
+  .welcome-prev:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .welcome-cta.small {
+    margin-top: 0;
+    padding: 12px 24px;
+    font-size: 11px;
+    box-shadow: 4px 4px 0 var(--terra);
+  }
+  .welcome-cta.small:hover { box-shadow: 6px 6px 0 var(--terra); }
+  .welcome-tour-intro {
+    font-size: 14px;
+    font-style: italic;
+    opacity: 0.7;
+    margin-bottom: 18px;
+  }
+
   footer {
     text-align: center;
     padding: 40px 20px;
@@ -2188,16 +2319,105 @@
 <body>
 
 <div id="welcome-screen" class="welcome" style="display:none">
-  <div class="welcome-arabic">أهلاً</div>
-  <h1>Shami</h1>
-  <p>A daily practice for <em>Syrian Levantine</em> Arabic. No streaks-as-guilt, no fake gamification. Just the right words, in the right script, at the right interval.</p>
-  <p>You'll start with the <em>alphabet</em>, learning 5 letters at a time at the pace your real teacher would set. Once those are in your bones, vocabulary and grammar open up — words become things you can decode, not memorise as shapes.</p>
-  <p>You'll learn <em>both</em> Arabizi (Latin texting form) and Arabic script, side by side, the way real Syrians actually write to each other.</p>
-  <div class="welcome-name-row">
-    <label class="welcome-name-label" for="welcome-name">What should we call you?</label>
-    <input type="text" id="welcome-name" class="welcome-name-input" placeholder="Your name" autocomplete="given-name" maxlength="40" />
+  <!-- STEP 1 — welcome + tone -->
+  <div class="welcome-step active" data-step="1">
+    <div class="welcome-arabic">أهلاً</div>
+    <h1>Shami</h1>
+    <p>A daily practice for <em>Syrian Levantine</em> Arabic. Patient, content-rich, designed to teach the way a real teacher would.</p>
+    <p>No streaks-as-guilt, no fake points, no hearts to lose. You move at the pace of mastery, not the pace of the app.</p>
+    <div class="welcome-nav">
+      <div class="welcome-dots"><span class="welcome-dot active"></span><span class="welcome-dot"></span><span class="welcome-dot"></span><span class="welcome-dot"></span></div>
+      <div class="welcome-nav-buttons">
+        <button class="welcome-skip" onclick="tourSkip()">Skip tour</button>
+        <button class="welcome-cta small" onclick="tourGoTo(2)">Next →</button>
+      </div>
+    </div>
   </div>
-  <button class="welcome-cta" onclick="startApp()">Start Day 1</button>
+
+  <!-- STEP 2 — learning process -->
+  <div class="welcome-step" data-step="2">
+    <div class="welcome-step-tag">Step 2 of 4</div>
+    <h2>The learning process</h2>
+    <p class="welcome-tour-intro">Three layered phases. Each one only opens once you have the foundations from the previous one.</p>
+    <div class="welcome-phase">
+      <div class="welcome-phase-num">01</div>
+      <div class="welcome-phase-body"><strong>Alphabet first.</strong> The 28 letters are taught in <em>6 cohorts of 5</em> (the last has 3). Each letter is introduced with its sound, then drilled in two formats: recognition (see letter → pick sound) and production (hear sound → pick letter). A letter is <em>mastered</em> when you answer it correctly <em>3 times in a row</em>. Miss it once and the streak resets — the letter is deferred to tomorrow, no in-session retry. When all 5 letters in a cohort are mastered, the next cohort unlocks.</div>
+    </div>
+    <div class="welcome-phase">
+      <div class="welcome-phase-num">02</div>
+      <div class="welcome-phase-body"><strong>Words and phrases.</strong> Once every letter is mastered, vocabulary opens up. <em>5 new phrases per day</em> in curriculum order. Each phrase rotates through five exercise formats as it matures: pick the meaning, match the pairs, translate the sentence, listen and pick, free recall. Spaced repetition: get it right and it comes back later, miss it and it comes back tomorrow.</div>
+    </div>
+    <div class="welcome-phase">
+      <div class="welcome-phase-num">03</div>
+      <div class="welcome-phase-body"><strong>Grammar patterns.</strong> Five grammar units unlock on a schedule: <em>subject pronouns</em> (Day 8), <em>the b- prefix</em> (Day 15), <em>possessive suffixes</em> (Day 22), <em>gender agreement</em> (Day 29), <em>negation and questions</em> (Day 36). Each is taught with one short lesson card, then drilled gradually for the next two weeks.</div>
+    </div>
+    <div class="welcome-nav">
+      <div class="welcome-dots"><span class="welcome-dot"></span><span class="welcome-dot active"></span><span class="welcome-dot"></span><span class="welcome-dot"></span></div>
+      <div class="welcome-nav-buttons">
+        <button class="welcome-prev" onclick="tourGoTo(1)">← Back</button>
+        <button class="welcome-skip" onclick="tourSkip()">Skip</button>
+        <button class="welcome-cta small" onclick="tourGoTo(3)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 — what's in Shami (5 tabs) -->
+  <div class="welcome-step" data-step="3">
+    <div class="welcome-step-tag">Step 3 of 4</div>
+    <h2>What you'll find</h2>
+    <p class="welcome-tour-intro">Five tabs. You only need Today most days — the rest are there when you want to wander.</p>
+    <div class="welcome-tab-row">
+      <div class="welcome-tab-num">01</div>
+      <div class="welcome-tab-name">Today</div>
+      <div class="welcome-tab-desc">Your daily lesson queue — letters, drills, new phrases, and cultural rewards. The only tab you need to open most days.</div>
+    </div>
+    <div class="welcome-tab-row">
+      <div class="welcome-tab-num">02</div>
+      <div class="welcome-tab-name">Alphabet</div>
+      <div class="welcome-tab-desc">All 28 letters with their forms and sounds. Tap any letter to see its details and hear it on demand. Mastery state shown by colour.</div>
+    </div>
+    <div class="welcome-tab-row">
+      <div class="welcome-tab-num">03</div>
+      <div class="welcome-tab-name">Phrasebook</div>
+      <div class="welcome-tab-desc">600+ phrases organised by category — greetings, food, family, work, slang. Searchable. Tap any phrase to hear it.</div>
+    </div>
+    <div class="welcome-tab-row">
+      <div class="welcome-tab-num">04</div>
+      <div class="welcome-tab-name">Grammar</div>
+      <div class="welcome-tab-desc">The five grammar units. Locked until you finish the alphabet, then unlock by curriculum day. Re-read any lesson anytime.</div>
+    </div>
+    <div class="welcome-tab-row">
+      <div class="welcome-tab-num">05</div>
+      <div class="welcome-tab-name">Progress</div>
+      <div class="welcome-tab-desc">Your streak, mastery counts, the 120-day journey grid, alphabet bootcamp status, and voice settings (set up Google TTS here for near-human Arabic audio).</div>
+    </div>
+    <div class="welcome-nav">
+      <div class="welcome-dots"><span class="welcome-dot"></span><span class="welcome-dot"></span><span class="welcome-dot active"></span><span class="welcome-dot"></span></div>
+      <div class="welcome-nav-buttons">
+        <button class="welcome-prev" onclick="tourGoTo(2)">← Back</button>
+        <button class="welcome-skip" onclick="tourSkip()">Skip</button>
+        <button class="welcome-cta small" onclick="tourGoTo(4)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 — name + start -->
+  <div class="welcome-step" data-step="4">
+    <div class="welcome-step-tag">Step 4 of 4</div>
+    <h2>Ready when you are</h2>
+    <p class="welcome-tour-intro">One last thing — so we can greet you properly.</p>
+    <div class="welcome-name-row">
+      <label class="welcome-name-label" for="welcome-name">What should we call you?</label>
+      <input type="text" id="welcome-name" class="welcome-name-input" placeholder="Your name" autocomplete="given-name" maxlength="40" />
+    </div>
+    <div class="welcome-nav">
+      <div class="welcome-dots"><span class="welcome-dot"></span><span class="welcome-dot"></span><span class="welcome-dot"></span><span class="welcome-dot active"></span></div>
+      <div class="welcome-nav-buttons">
+        <button class="welcome-prev" onclick="tourGoTo(3)">← Back</button>
+        <button class="welcome-cta small" onclick="startApp()" id="tour-finish-btn">Start Day 1</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="app" style="display:none">
@@ -2249,7 +2469,6 @@
     </div>
 
     <div id="name-prompt-slot"></div>
-    <div id="bootcamp-banner"></div>
 
     <div class="card-stack" id="card-stack">
       <!-- Card injected here -->
@@ -2283,6 +2502,7 @@
 
   <!-- PROGRESS PANEL -->
   <section class="panel" id="panel-progress">
+    <div id="bootcamp-banner"></div>
     <div class="progress-grid">
       <div class="prog-tile">
         <div class="prog-num" id="p-streak">0</div>
@@ -2329,6 +2549,11 @@
       <div class="voice-status" id="voice-status"></div>
       <button class="action" onclick="openVoiceSettings()">Voice settings</button>
     </div>
+    <div class="voice-section" style="margin-top:20px;">
+      <h3>App tour</h3>
+      <div class="voice-status">Walk through the learning process and what each tab does. Useful if you forget where something lives.</div>
+      <button class="action" onclick="openRetakeTour()">Show the tour</button>
+    </div>
     <button class="reset-btn" onclick="if(confirm('This wipes all your progress. Sure?')) { resetAll(); }">Reset all progress</button>
   </section>
 </main>
@@ -2346,7 +2571,7 @@
     <div class="modal-arabizi" id="m-arabizi"></div>
     <div class="modal-sound" id="m-sound"></div>
     <div class="modal-actions">
-      <button class="action" onclick="speakLetter()">▶ Hear it</button>
+      <button class="action" onclick="speakActiveLetter()">▶ Hear it</button>
       <button class="action good" onclick="markLetterLearned()">Mark learned</button>
     </div>
   </div>
@@ -5740,7 +5965,6 @@ function renderDaily() {
   buildTodayQueue();
   updateHeaderStats();
   renderInlineNamePrompt();
-  renderBootcampBanner();
 
   // Time-aware Arabic greeting with the user's name (when set).
   const g = arabicGreeting(state.name);
@@ -7296,22 +7520,44 @@ async function speakArabic(text) {
 // vowel, fall back to doubling. Google TTS handles the bare letter fine, so
 // only apply this transformation when we are using browser TTS.
 function speakLetter(arabicChar) {
+  if (!arabicChar) return;
   const config = getVoiceConfig();
   if (config.provider === 'google' && config.googleApiKey) {
     speakArabic(arabicChar);
     return;
   }
+  // Browser TTS — call synchronously from the user click so iOS Safari
+  // and some Chrome versions don't strip the gesture credit.
+  if (!('speechSynthesis' in window)) return;
+  try { window.speechSynthesis.cancel(); } catch (e) {}
+
+  // Build a pronounceable syllable so single letters don't get refused.
   let toSpeak = arabicChar;
-  if (toSpeak === 'ا' || toSpeak === 'أ' || toSpeak === 'إ' || toSpeak === 'آ') {
-    toSpeak = 'أَ'; // hamza on alif with fatha = "a"
-  } else if (toSpeak === 'و') {
-    toSpeak = 'وَ'; // "wa"
-  } else if (toSpeak === 'ي') {
-    toSpeak = 'يَ'; // "ya"
-  } else {
-    toSpeak = arabicChar + 'ا'; // consonant + long a, e.g. "ba", "ta", "ha"
+  if (toSpeak === 'ا' || toSpeak === 'أ' || toSpeak === 'إ' || toSpeak === 'آ') toSpeak = 'أَ';
+  else if (toSpeak === 'و') toSpeak = 'وَ';
+  else if (toSpeak === 'ي') toSpeak = 'يَ';
+  else toSpeak = arabicChar + 'ا';
+
+  const voices = window.speechSynthesis.getVoices();
+  const arVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
+
+  if (arVoice) {
+    const utt = new SpeechSynthesisUtterance(toSpeak);
+    utt.voice = arVoice;
+    utt.lang = arVoice.lang;
+    utt.rate = 0.8;
+    window.speechSynthesis.speak(utt);
+    return;
   }
-  speakArabic(toSpeak);
+
+  // No Arabic voice on this device — fall back to spoken letter name
+  // in English so the user still hears something useful.
+  const idx = ALPHABET.findIndex(L => L.l === arabicChar);
+  const name = idx >= 0 ? ALPHABET[idx].name : arabicChar;
+  const utt = new SpeechSynthesisUtterance(name);
+  utt.lang = 'en-US';
+  utt.rate = 0.85;
+  window.speechSynthesis.speak(utt);
 }
 
 // ----- Voice settings UI -----
@@ -7462,9 +7708,9 @@ function closeModal() {
   activeLetterIdx = null;
 }
 
-function speakLetter() {
+function speakActiveLetter() {
   if (activeLetterIdx === null) return;
-  speakArabic(ALPHABET[activeLetterIdx].l);
+  speakLetter(ALPHABET[activeLetterIdx].l);
 }
 
 function markLetterLearned() {
@@ -7578,6 +7824,7 @@ function renderProgress() {
 
   renderCurriculum();
   renderVoiceStatus();
+  renderBootcampBanner();
 }
 
 function renderCurriculum() {
@@ -7720,11 +7967,70 @@ document.getElementById('phrasebook-search').addEventListener('input', e => {
 // ==========================================
 // BOOT
 // ==========================================
+// ----- Welcome tour -----
+let tourMode = 'initial'; // 'initial' | 'retake'
+
+function tourGoTo(step) {
+  document.querySelectorAll('.welcome-step').forEach(el => {
+    el.classList.toggle('active', Number(el.dataset.step) === step);
+  });
+  // Keep window scrolled to top so each step starts clean
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // On the final step, focus the name input for first-time users
+  if (step === 4 && tourMode === 'initial') {
+    setTimeout(() => {
+      const input = document.getElementById('welcome-name');
+      if (input) input.focus();
+    }, 250);
+  }
+}
+
+function tourSkip() {
+  // Skip to the final (name) step — they can still enter a name if
+  // they want, or just hit Start.
+  tourGoTo(4);
+}
+
+function openRetakeTour() {
+  tourMode = 'retake';
+  // Hide app, show welcome flow, swap the final button to a "Done"
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('welcome-screen').style.display = 'block';
+  const btn = document.getElementById('tour-finish-btn');
+  if (btn) {
+    btn.textContent = 'Done';
+    btn.setAttribute('onclick', 'closeRetakeTour()');
+  }
+  // Pre-fill name if known
+  const input = document.getElementById('welcome-name');
+  if (input && state.name) input.value = state.name;
+  tourGoTo(1);
+}
+
+function closeRetakeTour() {
+  tourMode = 'initial';
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  const btn = document.getElementById('tour-finish-btn');
+  if (btn) {
+    btn.textContent = 'Start Day 1';
+    btn.setAttribute('onclick', 'startApp()');
+  }
+  // Reset visible step
+  tourGoTo(1);
+}
+
 function startApp() {
   const input = document.getElementById('welcome-name');
   const name = (input && input.value || '').trim().slice(0, 40);
   if (!name) {
-    if (input) input.focus();
+    // Make sure the name step is visible and focus the input
+    tourGoTo(4);
+    if (input) {
+      input.focus();
+      input.style.outline = '2px solid var(--terra)';
+      setTimeout(() => { if (input) input.style.outline = ''; }, 1500);
+    }
     return;
   }
   state.started = true;
@@ -7834,6 +8140,7 @@ function boot() {
   if (!state.started) {
     document.getElementById('welcome-screen').style.display = 'block';
     document.getElementById('app').style.display = 'none';
+    tourGoTo(1); // always start the tour at step 1 for new users
   } else {
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
