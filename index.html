@@ -21,6 +21,14 @@
     --plum: #54243a;
     --line: #1a1410;
     --shadow: rgba(26, 20, 16, 0.12);
+
+    /* Islamic 8-pointed star (two overlapping squares + center dot).
+       Used as a low-opacity ambient overlay on certain surfaces. */
+    --pattern-star-terra: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23c1532b' stroke-width='0.7'%3E%3Crect x='22' y='22' width='36' height='36'/%3E%3Crect x='22' y='22' width='36' height='36' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='2.5' fill='%23c1532b'/%3E%3C/g%3E%3C/svg%3E");
+    --pattern-star-ochre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23d4a24a' stroke-width='0.7'%3E%3Crect x='22' y='22' width='36' height='36'/%3E%3Crect x='22' y='22' width='36' height='36' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='2.5' fill='%23d4a24a'/%3E%3C/g%3E%3C/svg%3E");
+    --pattern-star-plum: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%2354243a' stroke-width='0.7'%3E%3Crect x='22' y='22' width='36' height='36'/%3E%3Crect x='22' y='22' width='36' height='36' transform='rotate(45 40 40)'/%3E%3Ccircle cx='40' cy='40' r='2.5' fill='%2354243a'/%3E%3C/g%3E%3C/svg%3E");
+    /* Smaller diamond+dot motif — for tighter textures */
+    --pattern-diamond-terra: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23c1532b' stroke-width='0.5'%3E%3Cpolygon points='20,4 36,20 20,36 4,20'/%3E%3Ccircle cx='20' cy='20' r='1.5' fill='%23c1532b'/%3E%3C/g%3E%3C/svg%3E");
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,9 +42,12 @@
   }
 
   body {
+    background-color: var(--paper);
     background-image:
-      radial-gradient(circle at 20% 30%, rgba(193, 83, 43, 0.04) 0%, transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(212, 162, 74, 0.05) 0%, transparent 40%);
+      radial-gradient(ellipse 90% 70% at 18% 12%, rgba(193, 83, 43, 0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 60% at 85% 90%, rgba(212, 162, 74, 0.09) 0%, transparent 55%),
+      radial-gradient(ellipse 100% 80% at 50% 50%, rgba(84, 36, 58, 0.025) 0%, transparent 70%);
+    background-attachment: fixed;
     min-height: 100vh;
   }
 
@@ -235,7 +246,9 @@
   }
 
   .card {
-    background: #fff;
+    background:
+      radial-gradient(ellipse 90% 50% at 50% 0%, rgba(193, 83, 43, 0.025) 0%, transparent 60%),
+      linear-gradient(180deg, #fff 0%, rgba(244, 237, 224, 0.5) 100%);
     border: 1.5px solid var(--ink);
     padding: 56px 48px 40px;
     box-shadow: 8px 8px 0 var(--ink);
@@ -874,14 +887,31 @@
   }
   .modal-bg.show { display: flex; }
   .modal {
-    background: var(--paper);
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(193, 83, 43, 0.04) 0%, transparent 65%),
+      linear-gradient(180deg, var(--paper) 0%, rgba(235, 226, 210, 0.6) 100%);
     border: 1.5px solid var(--ink);
     box-shadow: 12px 12px 0 var(--ink);
     padding: 40px;
     max-width: 500px;
     width: 100%;
     position: relative;
+    overflow: hidden;
   }
+  .modal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--pattern-star-terra);
+    background-size: 90px 90px;
+    background-position: top right;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: radial-gradient(ellipse 80% 70% at 100% 0%, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 100% 0%, black 0%, transparent 70%);
+  }
+  .modal > * { position: relative; z-index: 1; }
   .modal-close {
     position: absolute;
     top: 12px;
@@ -1492,11 +1522,29 @@
 
   /* CULTURAL UNLOCK CARD — cohort-completion reward */
   .unlock-card {
-    background: var(--paper);
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(84, 36, 58, 0.06) 0%, transparent 60%),
+      linear-gradient(180deg, var(--paper) 0%, rgba(235, 226, 210, 0.55) 100%);
     border: 1.5px solid var(--ink);
     box-shadow: 8px 8px 0 var(--plum);
     padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
   }
+  .unlock-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--pattern-star-plum);
+    background-size: 90px 90px;
+    background-position: center;
+    opacity: 0.07;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: radial-gradient(ellipse 80% 90% at 50% 50%, black 0%, transparent 95%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 90% at 50% 50%, black 0%, transparent 95%);
+  }
+  .unlock-card > * { position: relative; z-index: 1; }
   .unlock-tag {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
@@ -1547,12 +1595,28 @@
 
   /* BOOTCAMP BANNER — alphabet-first phase indicator on Today */
   .bootcamp-banner {
-    background: var(--paper-dim);
+    background:
+      linear-gradient(135deg, var(--paper-dim) 0%, rgba(244, 237, 224, 0.7) 100%);
     border: 1.5px solid var(--ink);
     box-shadow: 5px 5px 0 var(--terra);
     padding: 18px 22px;
     margin: 0 0 24px;
+    position: relative;
+    overflow: hidden;
   }
+  .bootcamp-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--pattern-star-ochre);
+    background-size: 70px 70px;
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: linear-gradient(90deg, transparent 0%, black 30%, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 30%, black 70%, transparent 100%);
+  }
+  .bootcamp-banner > * { position: relative; z-index: 1; }
   .bc-tag {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
@@ -2116,14 +2180,30 @@
     max-width: 600px;
     margin: 0 auto;
     text-align: center;
-    padding: 40px 20px 80px;
+    padding: 60px 28px 80px;
+    position: relative;
+    z-index: 2;
+  }
+  .welcome::before {
+    content: '';
+    position: absolute;
+    inset: -40px 0 0 0;
+    background-image: var(--pattern-star-terra);
+    background-size: 100px 100px;
+    background-repeat: repeat;
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: -1;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, transparent 90%);
   }
   .welcome-arabic {
     font-family: 'Amiri', serif;
-    font-size: 80px;
+    font-size: 88px;
     color: var(--terra);
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     line-height: 1;
+    text-shadow: 0 2px 0 rgba(138, 56, 24, 0.08);
   }
   .welcome h1 {
     font-size: 42px;
@@ -2154,6 +2234,35 @@
     font-weight: 500;
   }
   .welcome-cta:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--terra); }
+
+  /* ARABIC-STYLE ORNAMENT DIVIDER — a thin rule with a centered glyph */
+  .ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 28px auto;
+    max-width: 340px;
+  }
+  .ornament::before,
+  .ornament::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(193, 83, 43, 0.4) 40%, rgba(193, 83, 43, 0.4) 60%, transparent);
+  }
+  .ornament-mark {
+    font-family: 'Amiri', serif;
+    font-size: 26px;
+    color: var(--terra);
+    line-height: 1;
+    opacity: 0.75;
+  }
+  .ornament.dim {
+    margin: 20px auto;
+    opacity: 0.6;
+  }
+  .ornament.dim .ornament-mark { font-size: 18px; }
 
   /* IN-APP TOUR — overlay with spotlight + tooltip
      Uses a cutout div whose massive box-shadow paints the dark
@@ -2449,6 +2558,7 @@
 <div id="welcome-screen" class="welcome" style="display:none">
   <div class="welcome-arabic">أهلاً</div>
   <h1>Welcome to Shami</h1>
+  <div class="ornament"><span class="ornament-mark">۞</span></div>
   <p>A daily practice for <em>Syrian Levantine</em> Arabic. Patient, content-rich, designed to teach the way a real teacher would.</p>
   <p>You'll start with the <em>alphabet</em>. We'll show you around once you're inside.</p>
   <div class="welcome-name-row">
@@ -8290,6 +8400,7 @@ function renderCulturalUnlockCard(unlock) {
     <div class="unlock-card">
       <div class="unlock-tag">${unlock.tag}</div>
       <div class="unlock-title">${unlock.title}</div>
+      <div class="ornament dim"><span class="ornament-mark">۞</span></div>
       <div class="unlock-arabic">${unlock.ar}</div>
       <div class="unlock-arabizi">${unlock.az}</div>
       <div class="unlock-en">${unlock.en}</div>
