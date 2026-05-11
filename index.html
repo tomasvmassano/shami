@@ -4,6 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Shami — Learn Syrian Arabic</title>
+<link rel="icon" type="image/png" href="shami-favicon.png">
+<link rel="apple-touch-icon" href="shami-favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
@@ -2153,6 +2155,132 @@
   }
   .welcome-cta:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 var(--terra); }
 
+  /* IN-APP TOUR — overlay with spotlight + tooltip
+     Uses a cutout div whose massive box-shadow paints the dark
+     backdrop everywhere outside its own rect, so we don't fight
+     stacking contexts on the spotlighted element. */
+  .tour-cutout {
+    position: fixed;
+    background: transparent;
+    border-radius: 6px;
+    box-shadow: 0 0 0 4px var(--terra), 0 0 0 10px rgba(193, 83, 43, 0.32), 0 0 0 9999px rgba(26, 20, 16, 0.72);
+    z-index: 9000;
+    pointer-events: none;
+    transition: top 0.2s ease, left 0.2s ease, width 0.2s ease, height 0.2s ease;
+    animation: tour-cutout-fade 0.2s ease;
+  }
+  @keyframes tour-cutout-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .tour-block {
+    position: fixed;
+    inset: 0;
+    z-index: 8999;
+    pointer-events: auto;
+    background: transparent;
+  }
+  .tour-tooltip {
+    position: fixed;
+    z-index: 9200;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--terra);
+    padding: 18px 22px 16px;
+    max-width: 340px;
+    width: calc(100vw - 32px);
+    box-sizing: border-box;
+    animation: tour-tooltip-pop 0.22s ease;
+  }
+  @keyframes tour-tooltip-pop {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .tour-tooltip-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+  .tour-tooltip[data-placement="bottom"] .tour-tooltip-arrow {
+    top: -10px;
+    left: 28px;
+    border-width: 0 9px 10px 9px;
+    border-color: transparent transparent var(--ink) transparent;
+  }
+  .tour-tooltip[data-placement="top"] .tour-tooltip-arrow {
+    bottom: -10px;
+    left: 28px;
+    border-width: 10px 9px 0 9px;
+    border-color: var(--ink) transparent transparent transparent;
+  }
+  .tour-step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--terra);
+    margin-bottom: 4px;
+  }
+  .tour-tooltip h4 {
+    font-size: 18px;
+    margin: 0 0 8px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .tour-tooltip-body {
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .tour-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .tour-dots {
+    display: flex;
+    gap: 5px;
+  }
+  .tour-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(26, 20, 16, 0.25);
+  }
+  .tour-dot.active { background: var(--terra); }
+  .tour-nav-btns {
+    display: flex;
+    gap: 6px;
+  }
+  .tour-btn {
+    padding: 8px 14px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .tour-btn:hover { transform: translate(-1px, -1px); box-shadow: 2px 2px 0 var(--ink); }
+  .tour-btn.primary {
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: 2px 2px 0 var(--terra);
+  }
+  .tour-btn.primary:hover { box-shadow: 4px 4px 0 var(--terra); }
+  .tour-btn.subtle {
+    border: none;
+    opacity: 0.55;
+    box-shadow: none;
+    padding: 8px 10px;
+  }
+  .tour-btn.subtle:hover { opacity: 1; transform: none; box-shadow: none; }
+
   /* TOUR / WELCOME STEPS */
   .welcome-step { display: none; }
   .welcome-step.active { display: block; animation: tour-fade 0.25s ease; }
@@ -2319,105 +2447,15 @@
 <body>
 
 <div id="welcome-screen" class="welcome" style="display:none">
-  <!-- STEP 1 — welcome + tone -->
-  <div class="welcome-step active" data-step="1">
-    <div class="welcome-arabic">أهلاً</div>
-    <h1>Shami</h1>
-    <p>A daily practice for <em>Syrian Levantine</em> Arabic. Patient, content-rich, designed to teach the way a real teacher would.</p>
-    <p>No streaks-as-guilt, no fake points, no hearts to lose. You move at the pace of mastery, not the pace of the app.</p>
-    <div class="welcome-nav">
-      <div class="welcome-dots"><span class="welcome-dot active"></span><span class="welcome-dot"></span><span class="welcome-dot"></span><span class="welcome-dot"></span></div>
-      <div class="welcome-nav-buttons">
-        <button class="welcome-skip" onclick="tourSkip()">Skip tour</button>
-        <button class="welcome-cta small" onclick="tourGoTo(2)">Next →</button>
-      </div>
-    </div>
+  <div class="welcome-arabic">أهلاً</div>
+  <h1>Welcome to Shami</h1>
+  <p>A daily practice for <em>Syrian Levantine</em> Arabic. Patient, content-rich, designed to teach the way a real teacher would.</p>
+  <p>You'll start with the <em>alphabet</em>. We'll show you around once you're inside.</p>
+  <div class="welcome-name-row">
+    <label class="welcome-name-label" for="welcome-name">What should we call you?</label>
+    <input type="text" id="welcome-name" class="welcome-name-input" placeholder="Your name" autocomplete="given-name" maxlength="40" />
   </div>
-
-  <!-- STEP 2 — learning process -->
-  <div class="welcome-step" data-step="2">
-    <div class="welcome-step-tag">Step 2 of 4</div>
-    <h2>The learning process</h2>
-    <p class="welcome-tour-intro">Three layered phases. Each one only opens once you have the foundations from the previous one.</p>
-    <div class="welcome-phase">
-      <div class="welcome-phase-num">01</div>
-      <div class="welcome-phase-body"><strong>Alphabet first.</strong> The 28 letters are taught in <em>6 cohorts of 5</em> (the last has 3). Each letter is introduced with its sound, then drilled in two formats: recognition (see letter → pick sound) and production (hear sound → pick letter). A letter is <em>mastered</em> when you answer it correctly <em>3 times in a row</em>. Miss it once and the streak resets — the letter is deferred to tomorrow, no in-session retry. When all 5 letters in a cohort are mastered, the next cohort unlocks.</div>
-    </div>
-    <div class="welcome-phase">
-      <div class="welcome-phase-num">02</div>
-      <div class="welcome-phase-body"><strong>Words and phrases.</strong> Once every letter is mastered, vocabulary opens up. <em>5 new phrases per day</em> in curriculum order. Each phrase rotates through five exercise formats as it matures: pick the meaning, match the pairs, translate the sentence, listen and pick, free recall. Spaced repetition: get it right and it comes back later, miss it and it comes back tomorrow.</div>
-    </div>
-    <div class="welcome-phase">
-      <div class="welcome-phase-num">03</div>
-      <div class="welcome-phase-body"><strong>Grammar patterns.</strong> Five grammar units unlock on a schedule: <em>subject pronouns</em> (Day 8), <em>the b- prefix</em> (Day 15), <em>possessive suffixes</em> (Day 22), <em>gender agreement</em> (Day 29), <em>negation and questions</em> (Day 36). Each is taught with one short lesson card, then drilled gradually for the next two weeks.</div>
-    </div>
-    <div class="welcome-nav">
-      <div class="welcome-dots"><span class="welcome-dot"></span><span class="welcome-dot active"></span><span class="welcome-dot"></span><span class="welcome-dot"></span></div>
-      <div class="welcome-nav-buttons">
-        <button class="welcome-prev" onclick="tourGoTo(1)">← Back</button>
-        <button class="welcome-skip" onclick="tourSkip()">Skip</button>
-        <button class="welcome-cta small" onclick="tourGoTo(3)">Next →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 3 — what's in Shami (5 tabs) -->
-  <div class="welcome-step" data-step="3">
-    <div class="welcome-step-tag">Step 3 of 4</div>
-    <h2>What you'll find</h2>
-    <p class="welcome-tour-intro">Five tabs. You only need Today most days — the rest are there when you want to wander.</p>
-    <div class="welcome-tab-row">
-      <div class="welcome-tab-num">01</div>
-      <div class="welcome-tab-name">Today</div>
-      <div class="welcome-tab-desc">Your daily lesson queue — letters, drills, new phrases, and cultural rewards. The only tab you need to open most days.</div>
-    </div>
-    <div class="welcome-tab-row">
-      <div class="welcome-tab-num">02</div>
-      <div class="welcome-tab-name">Alphabet</div>
-      <div class="welcome-tab-desc">All 28 letters with their forms and sounds. Tap any letter to see its details and hear it on demand. Mastery state shown by colour.</div>
-    </div>
-    <div class="welcome-tab-row">
-      <div class="welcome-tab-num">03</div>
-      <div class="welcome-tab-name">Phrasebook</div>
-      <div class="welcome-tab-desc">600+ phrases organised by category — greetings, food, family, work, slang. Searchable. Tap any phrase to hear it.</div>
-    </div>
-    <div class="welcome-tab-row">
-      <div class="welcome-tab-num">04</div>
-      <div class="welcome-tab-name">Grammar</div>
-      <div class="welcome-tab-desc">The five grammar units. Locked until you finish the alphabet, then unlock by curriculum day. Re-read any lesson anytime.</div>
-    </div>
-    <div class="welcome-tab-row">
-      <div class="welcome-tab-num">05</div>
-      <div class="welcome-tab-name">Progress</div>
-      <div class="welcome-tab-desc">Your streak, mastery counts, the 120-day journey grid, alphabet bootcamp status, and voice settings (set up Google TTS here for near-human Arabic audio).</div>
-    </div>
-    <div class="welcome-nav">
-      <div class="welcome-dots"><span class="welcome-dot"></span><span class="welcome-dot"></span><span class="welcome-dot active"></span><span class="welcome-dot"></span></div>
-      <div class="welcome-nav-buttons">
-        <button class="welcome-prev" onclick="tourGoTo(2)">← Back</button>
-        <button class="welcome-skip" onclick="tourSkip()">Skip</button>
-        <button class="welcome-cta small" onclick="tourGoTo(4)">Next →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- STEP 4 — name + start -->
-  <div class="welcome-step" data-step="4">
-    <div class="welcome-step-tag">Step 4 of 4</div>
-    <h2>Ready when you are</h2>
-    <p class="welcome-tour-intro">One last thing — so we can greet you properly.</p>
-    <div class="welcome-name-row">
-      <label class="welcome-name-label" for="welcome-name">What should we call you?</label>
-      <input type="text" id="welcome-name" class="welcome-name-input" placeholder="Your name" autocomplete="given-name" maxlength="40" />
-    </div>
-    <div class="welcome-nav">
-      <div class="welcome-dots"><span class="welcome-dot"></span><span class="welcome-dot"></span><span class="welcome-dot"></span><span class="welcome-dot active"></span></div>
-      <div class="welcome-nav-buttons">
-        <button class="welcome-prev" onclick="tourGoTo(3)">← Back</button>
-        <button class="welcome-cta small" onclick="startApp()" id="tour-finish-btn">Start Day 1</button>
-      </div>
-    </div>
-  </div>
+  <button class="welcome-cta" onclick="startApp()">Start →</button>
 </div>
 
 <div id="app" style="display:none">
@@ -7967,65 +8005,198 @@ document.getElementById('phrasebook-search').addEventListener('input', e => {
 // ==========================================
 // BOOT
 // ==========================================
-// ----- Welcome tour -----
-let tourMode = 'initial'; // 'initial' | 'retake'
+// ----- In-app tour: spotlight overlay on real UI elements -----
+const APP_TOUR = [
+  {
+    selector: '.tab[data-panel="daily"]',
+    title: 'Today',
+    body: 'Your daily lesson queue. Letters, drills, new phrases, and cultural moments. Open this tab every day — it\'s the only one you really need.',
+    placement: 'bottom',
+  },
+  {
+    selector: '.tab[data-panel="alphabet"]',
+    title: 'Alphabet',
+    body: 'All 28 letters with their forms and sounds. Tap any letter to see its details and hear it on demand. Mastery state is shown by colour.',
+    placement: 'bottom',
+  },
+  {
+    selector: '.tab[data-panel="phrasebook"]',
+    title: 'Phrasebook',
+    body: '600+ phrases organised by category — greetings, food, family, work, slang. Searchable. Tap any phrase to hear it.',
+    placement: 'bottom',
+  },
+  {
+    selector: '.tab[data-panel="grammar"]',
+    title: 'Grammar',
+    body: 'Five grammar units. Locked until the alphabet bootcamp is done, then they unlock on schedule (subject pronouns first, then the b- prefix, possessives, gender, negation).',
+    placement: 'bottom',
+  },
+  {
+    selector: '.tab[data-panel="progress"]',
+    title: 'Progress',
+    body: 'Your streak, mastery counts, the 120-day journey grid, the alphabet bootcamp box, voice settings, and the button to re-take this tour.',
+    placement: 'bottom',
+  },
+];
 
-function tourGoTo(step) {
-  document.querySelectorAll('.welcome-step').forEach(el => {
-    el.classList.toggle('active', Number(el.dataset.step) === step);
+let _tourStep = 0;
+let _tourActive = false;
+let _tourFirstRun = false; // marks tourCompleted on finish only when this is true
+
+function startInAppTour(opts) {
+  _tourFirstRun = !!(opts && opts.firstRun);
+  _tourActive = true;
+  _tourStep = 0;
+
+  // Scroll to top so the highlighted tabs are reliably in view
+  window.scrollTo({ top: 0 });
+
+  // Click blocker (transparent, just absorbs clicks outside the tooltip)
+  let block = document.getElementById('tour-block');
+  if (!block) {
+    block = document.createElement('div');
+    block.id = 'tour-block';
+    block.className = 'tour-block';
+    document.body.appendChild(block);
+  }
+  // Cutout — dark backdrop with hole at target's rect
+  let cutout = document.getElementById('tour-cutout');
+  if (!cutout) {
+    cutout = document.createElement('div');
+    cutout.id = 'tour-cutout';
+    cutout.className = 'tour-cutout';
+    document.body.appendChild(cutout);
+  }
+  // Tooltip
+  let tooltip = document.getElementById('tour-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = 'tour-tooltip';
+    tooltip.className = 'tour-tooltip';
+    document.body.appendChild(tooltip);
+  }
+
+  showTourStep(0);
+}
+
+function showTourStep(idx) {
+  if (!_tourActive) return;
+
+  if (idx >= APP_TOUR.length) {
+    endInAppTour();
+    return;
+  }
+  _tourStep = idx;
+  const step = APP_TOUR[idx];
+  const target = document.querySelector(step.selector);
+  if (!target) {
+    // If a target element isn't found, just skip ahead.
+    showTourStep(idx + 1);
+    return;
+  }
+
+  // Position the cutout on top of the target's rect (with a tiny pad)
+  const cutout = document.getElementById('tour-cutout');
+  const r = target.getBoundingClientRect();
+  const pad = 6;
+  cutout.style.top = (r.top - pad) + 'px';
+  cutout.style.left = (r.left - pad) + 'px';
+  cutout.style.width = (r.width + pad * 2) + 'px';
+  cutout.style.height = (r.height + pad * 2) + 'px';
+
+  const tooltip = document.getElementById('tour-tooltip');
+  const dotsHtml = APP_TOUR.map((_, i) =>
+    `<span class="tour-dot${i === idx ? ' active' : ''}"></span>`
+  ).join('');
+  const isLast = idx === APP_TOUR.length - 1;
+  tooltip.dataset.placement = step.placement || 'bottom';
+  tooltip.innerHTML = `
+    <div class="tour-tooltip-arrow"></div>
+    <div class="tour-step-num">Step ${idx + 1} of ${APP_TOUR.length}</div>
+    <h4>${step.title}</h4>
+    <div class="tour-tooltip-body">${step.body}</div>
+    <div class="tour-nav">
+      <div class="tour-dots">${dotsHtml}</div>
+      <div class="tour-nav-btns">
+        ${idx > 0 ? `<button class="tour-btn" onclick="showTourStep(${idx - 1})">← Back</button>` : ''}
+        ${!isLast ? `<button class="tour-btn subtle" onclick="endInAppTour()">Skip</button>` : ''}
+        <button class="tour-btn primary" onclick="${isLast ? 'endInAppTour()' : 'showTourStep(' + (idx + 1) + ')'}">${isLast ? 'Got it' : 'Next →'}</button>
+      </div>
+    </div>
+  `;
+
+  // Position tooltip near target
+  positionTourTooltip(target, tooltip, step.placement || 'bottom');
+}
+
+function positionTourTooltip(target, tooltip, placement) {
+  // Make tooltip visible (so we can measure)
+  tooltip.style.visibility = 'hidden';
+  tooltip.style.display = 'block';
+  tooltip.style.top = '0px';
+  tooltip.style.left = '0px';
+
+  const rect = target.getBoundingClientRect();
+  const ttRect = tooltip.getBoundingClientRect();
+  const margin = 12;
+
+  let top, left;
+  if (placement === 'top') {
+    top = rect.top - ttRect.height - margin;
+  } else {
+    top = rect.bottom + margin;
+  }
+  // Try to align tooltip's left arrow with target's left edge
+  left = rect.left;
+
+  // Keep tooltip on screen horizontally
+  if (left + ttRect.width > window.innerWidth - 16) {
+    left = window.innerWidth - ttRect.width - 16;
+  }
+  if (left < 16) left = 16;
+
+  // If placement=bottom would go off the bottom, flip to top
+  if (placement === 'bottom' && top + ttRect.height > window.innerHeight - 16) {
+    const flippedTop = rect.top - ttRect.height - margin;
+    if (flippedTop > 16) {
+      top = flippedTop;
+      tooltip.dataset.placement = 'top';
+    }
+  }
+
+  tooltip.style.top = top + 'px';
+  tooltip.style.left = left + 'px';
+  tooltip.style.visibility = 'visible';
+}
+
+function endInAppTour() {
+  _tourActive = false;
+  ['tour-block', 'tour-cutout', 'tour-tooltip'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.remove();
   });
-  // Keep window scrolled to top so each step starts clean
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  // On the final step, focus the name input for first-time users
-  if (step === 4 && tourMode === 'initial') {
-    setTimeout(() => {
-      const input = document.getElementById('welcome-name');
-      if (input) input.focus();
-    }, 250);
+  if (_tourFirstRun && !state.tourCompleted) {
+    state.tourCompleted = true;
+    saveState();
   }
+  _tourFirstRun = false;
 }
 
-function tourSkip() {
-  // Skip to the final (name) step — they can still enter a name if
-  // they want, or just hit Start.
-  tourGoTo(4);
-}
+// Reposition cutout + tooltip on window resize while tour is active
+window.addEventListener('resize', () => {
+  if (!_tourActive) return;
+  showTourStep(_tourStep);
+});
 
+// Public entry point used by the Progress tab "Show the tour" button
 function openRetakeTour() {
-  tourMode = 'retake';
-  // Hide app, show welcome flow, swap the final button to a "Done"
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('welcome-screen').style.display = 'block';
-  const btn = document.getElementById('tour-finish-btn');
-  if (btn) {
-    btn.textContent = 'Done';
-    btn.setAttribute('onclick', 'closeRetakeTour()');
-  }
-  // Pre-fill name if known
-  const input = document.getElementById('welcome-name');
-  if (input && state.name) input.value = state.name;
-  tourGoTo(1);
-}
-
-function closeRetakeTour() {
-  tourMode = 'initial';
-  document.getElementById('welcome-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  const btn = document.getElementById('tour-finish-btn');
-  if (btn) {
-    btn.textContent = 'Start Day 1';
-    btn.setAttribute('onclick', 'startApp()');
-  }
-  // Reset visible step
-  tourGoTo(1);
+  startInAppTour({ firstRun: false });
 }
 
 function startApp() {
   const input = document.getElementById('welcome-name');
   const name = (input && input.value || '').trim().slice(0, 40);
   if (!name) {
-    // Make sure the name step is visible and focus the input
-    tourGoTo(4);
     if (input) {
       input.focus();
       input.style.outline = '2px solid var(--terra)';
@@ -8044,6 +8215,10 @@ function startApp() {
   document.getElementById('welcome-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   renderDaily();
+  // First-run tour fires once after the app renders
+  if (!state.tourCompleted) {
+    setTimeout(() => startInAppTour({ firstRun: true }), 350);
+  }
 }
 
 function setNameFromPrompt() {
@@ -8140,11 +8315,15 @@ function boot() {
   if (!state.started) {
     document.getElementById('welcome-screen').style.display = 'block';
     document.getElementById('app').style.display = 'none';
-    tourGoTo(1); // always start the tour at step 1 for new users
   } else {
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     renderDaily();
+    // If a returning user never finished the in-app tour (e.g. first
+    // session ended before tour ran), fire it once on next load.
+    if (!state.tourCompleted) {
+      setTimeout(() => startInAppTour({ firstRun: true }), 400);
+    }
   }
 
   // Preload voices for TTS
