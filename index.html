@@ -6528,21 +6528,21 @@ function buildBootcampQueue(today) {
   if (activeIdx >= BOOTCAMP_COHORTS.length) return queue; // shouldn't happen — bootcamp would be off
   const activeCohort = BOOTCAMP_COHORTS[activeIdx];
 
-  // Step 1: introduce any unintroduced letter in active cohort, paired
-  // immediately with one recognition drill so the new letter is tested
-  // right after exposure (same as your in-person lesson).
-  for (const idx of activeCohort) {
-    const lc = initBootcampLetter(idx);
-    if (!lc.introduced) {
-      lc.introduced = true;
-      lc.firstSeenDate = today;
-      // Mirror to legacy letterCards.introduced for alphabet panel coloring
-      const legacy = initLetterCard(idx);
-      legacy.introduced = true;
-      if (!legacy.firstSeenDate) legacy.firstSeenDate = today;
-      queue.push({ type: 'letterIntro', ref: idx });
-      queue.push({ type: 'letterSound', ref: idx });
-    }
+  // Step 1: drip in ONE new letter per day from the active cohort. Each
+  // intro is paired immediately with a recognition drill so the new
+  // letter is tested right after exposure. Intros stop once every
+  // letter in the cohort has been seen — then it's drills only until
+  // the cohort is mastered.
+  const unintroducedIdx = activeCohort.find(idx => !initBootcampLetter(idx).introduced);
+  if (unintroducedIdx !== undefined) {
+    const lc = initBootcampLetter(unintroducedIdx);
+    lc.introduced = true;
+    lc.firstSeenDate = today;
+    const legacy = initLetterCard(unintroducedIdx);
+    legacy.introduced = true;
+    if (!legacy.firstSeenDate) legacy.firstSeenDate = today;
+    queue.push({ type: 'letterIntro', ref: unintroducedIdx });
+    queue.push({ type: 'letterSound', ref: unintroducedIdx });
   }
 
   // Step 2: drills on introduced-but-not-mastered letters in active cohort
@@ -6711,7 +6711,7 @@ function buildTodayQueue() {
       // when every letter in the phrase has been mastered in the
       // alphabet bootcamp — otherwise we would ask the learner to
       // type letters they have not been taught.
-      const variants = ['translate', 'listenPick', 'pickMeaning'];
+      const variants = ['translate', 'listenPick', 'pickMeaning', 'arabicToArabizi', 'arabiziToEnglish'];
       if (isPhraseTypeable(x.id)) variants.push('typing');
       const v = variants[Math.floor(Math.random() * variants.length)];
       if (v === 'translate') {
@@ -7042,6 +7042,10 @@ function renderDaily() {
     renderListenPickCard(queueItem.ref);
   } else if (queueItem.type === 'typing') {
     renderTypingCard(queueItem.ref);
+  } else if (queueItem.type === 'arabicToArabizi') {
+    renderArabicToArabiziCard(queueItem.ref);
+  } else if (queueItem.type === 'arabiziToEnglish') {
+    renderArabiziToEnglishCard(queueItem.ref);
   } else if (queueItem.type === 'letterIntro') {
     renderLetterIntroCard(queueItem.ref);
   } else if (queueItem.type === 'letterSound') {
@@ -8193,6 +8197,121 @@ function renderPickMeaningCard(id) {
 }
 
 function answerPickMeaning(targetId, choiceId, btn) {
+  if (variantAnswered) return;
+  variantAnswered = true;
+  const correct = targetId === choiceId;
+  const target = PHRASES.find(p => p.id === targetId);
+  document.querySelectorAll('.pick-option').forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.pick-option').forEach(b => {
+      if (target && b.dataset.en === target.en) b.classList.add('correct');
+    });
+  }
+  finishVariant(targetId, correct);
+}
+
+// Variant: Arabic script → Arabizi (multiple choice). Tests the bridge
+// from how Syrians write online (arabizi) to the script they read in
+// books, signs, and chats with Arabic-keyboard users.
+function renderArabicToArabiziCard(id) {
+  const phrase = PHRASES.find(p => p.id === id);
+  if (!phrase) { state.todayIndex++; saveState(); renderDaily(); return; }
+  initCard(id);
+  const card = state.cards[id];
+  // Distractors: 3 other phrases' arabizi values, prefer same category.
+  let candidates = PHRASES.filter(p => p.id !== id && p.cat === phrase.cat);
+  if (candidates.length < 5) candidates = candidates.concat(PHRASES.filter(p => p.id !== id && p.cat !== phrase.cat));
+  for (let i = candidates.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [candidates[i], candidates[j]] = [candidates[j], candidates[i]]; }
+  const seen = new Set([phrase.az.toLowerCase()]);
+  const distractors = [];
+  for (const c of candidates) {
+    const k = c.az.toLowerCase();
+    if (seen.has(k)) continue;
+    seen.add(k);
+    distractors.push(c);
+    if (distractors.length === 3) break;
+  }
+  const opts = [phrase, ...distractors];
+  for (let i = opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [opts[i], opts[j]] = [opts[j], opts[i]]; }
+  const optsHtml = opts.map(p =>
+    `<button class="pick-option" data-az="${escapeAttr(p.az)}" onclick="answerArabicToArabizi(${jsAttr(id)}, ${jsAttr(p.id)}, this)" style="font-family:'JetBrains Mono',monospace;">${p.az}</button>`
+  ).join('');
+  document.getElementById('card-stack').innerHTML = `
+    <div class="card">
+      <div class="card-corner">${phrase.cat}</div>
+      <div class="card-tag">Arabizi · review${card.reps ? ' <span class="srs-mark">#' + card.reps + '</span>' : ''} · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
+      <div class="pick-meaning-prompt">${phrase.ar}</div>
+      <div style="text-align:center;margin-bottom:18px;">
+        <button class="reveal-btn" onclick="speakArabic(${jsAttr(phrase.ar)})">▶ Hear it</button>
+      </div>
+      <div style="text-align:center;font-size:13px;font-style:italic;opacity:0.6;margin-bottom:14px;">Pick the arabizi spelling</div>
+      <div class="pick-meaning-options">${optsHtml}</div>
+    </div>
+  `;
+  variantAnswered = false;
+}
+
+function answerArabicToArabizi(targetId, choiceId, btn) {
+  if (variantAnswered) return;
+  variantAnswered = true;
+  const correct = targetId === choiceId;
+  const target = PHRASES.find(p => p.id === targetId);
+  document.querySelectorAll('.pick-option').forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.pick-option').forEach(b => {
+      if (target && b.dataset.az === target.az) b.classList.add('correct');
+    });
+  }
+  finishVariant(targetId, correct);
+}
+
+// Variant: Arabizi → English (multiple choice). Tests reading of the
+// Latin chat alphabet straight to meaning, the way you would read a
+// WhatsApp message from a Syrian friend.
+function renderArabiziToEnglishCard(id) {
+  const phrase = PHRASES.find(p => p.id === id);
+  if (!phrase) { state.todayIndex++; saveState(); renderDaily(); return; }
+  initCard(id);
+  const card = state.cards[id];
+  let candidates = PHRASES.filter(p => p.id !== id && p.cat === phrase.cat);
+  if (candidates.length < 5) candidates = candidates.concat(PHRASES.filter(p => p.id !== id && p.cat !== phrase.cat));
+  for (let i = candidates.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [candidates[i], candidates[j]] = [candidates[j], candidates[i]]; }
+  const seen = new Set([phrase.en.toLowerCase()]);
+  const distractors = [];
+  for (const c of candidates) {
+    const k = c.en.toLowerCase();
+    if (seen.has(k)) continue;
+    seen.add(k);
+    distractors.push(c);
+    if (distractors.length === 3) break;
+  }
+  const opts = [phrase, ...distractors];
+  for (let i = opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [opts[i], opts[j]] = [opts[j], opts[i]]; }
+  const optsHtml = opts.map(p =>
+    `<button class="pick-option" data-en="${escapeAttr(p.en)}" onclick="answerArabiziToEnglish(${jsAttr(id)}, ${jsAttr(p.id)}, this)">${p.en}</button>`
+  ).join('');
+  document.getElementById('card-stack').innerHTML = `
+    <div class="card">
+      <div class="card-corner">${phrase.cat}</div>
+      <div class="card-tag">Reading · review${card.reps ? ' <span class="srs-mark">#' + card.reps + '</span>' : ''} · ${state.todayIndex + 1}/${state.todayQueue.length}</div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:32px;color:var(--terra-deep);margin:18px 0 8px;line-height:1.3;">${phrase.az}</div>
+      <div style="text-align:center;margin-bottom:18px;">
+        <button class="reveal-btn" onclick="speakArabic(${jsAttr(phrase.ar)})">▶ Hear it</button>
+      </div>
+      <div style="text-align:center;font-size:13px;font-style:italic;opacity:0.6;margin-bottom:14px;">What does this mean?</div>
+      <div class="pick-meaning-options">${optsHtml}</div>
+    </div>
+  `;
+  variantAnswered = false;
+}
+
+function answerArabiziToEnglish(targetId, choiceId, btn) {
   if (variantAnswered) return;
   variantAnswered = true;
   const correct = targetId === choiceId;
