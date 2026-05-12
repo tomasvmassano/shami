@@ -2277,6 +2277,130 @@
      curriculum banners. The Today tab stays clean. */
   #app { position: relative; z-index: 1; }
 
+  /* DAY THEME BANNER — shown above the card stack each day */
+  .day-theme {
+    background: var(--paper-dim);
+    border: 1.5px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ochre);
+    padding: 12px 18px;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .day-theme-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--terra);
+  }
+  .day-theme-title {
+    font-size: 18px;
+    font-weight: 600;
+    font-style: italic;
+  }
+  .day-theme-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.55;
+  }
+
+  /* ABILITIES — capability milestones in Progress */
+  .abilities-section {
+    background: #fff;
+    border: 1.5px solid var(--ink);
+    padding: 24px 28px;
+    box-shadow: 6px 6px 0 var(--olive);
+    margin-top: 30px;
+  }
+  .abilities-section h3 {
+    font-size: 22px;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .abilities-sub {
+    font-size: 13px;
+    opacity: 0.6;
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+  .abilities-grid {
+    display: grid;
+    gap: 12px;
+  }
+  .ability {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 14px 18px;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .ability.locked { opacity: 0.42; background: var(--paper-dim); }
+  .ability.unlocked { background: #fff; box-shadow: 4px 4px 0 var(--olive); }
+  .ability-emoji {
+    font-size: 32px;
+    line-height: 1;
+    text-align: center;
+  }
+  .ability-body { min-width: 0; }
+  .ability-title {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .ability-desc {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  .ability-progress {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--terra-deep);
+    white-space: nowrap;
+  }
+  .ability.unlocked .ability-progress { color: var(--olive); }
+  .ability-progress-bar {
+    height: 4px;
+    background: var(--paper-dim);
+    border: 1px solid var(--ink);
+    margin-top: 6px;
+    position: relative;
+    overflow: hidden;
+    grid-column: 2 / -1;
+  }
+  .ability-progress-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--olive);
+    transform-origin: left;
+  }
+  .abilities-summary {
+    background: var(--paper-dim);
+    border-left: 3px solid var(--olive);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .abilities-summary strong { color: var(--olive); }
+  @media (max-width: 600px) {
+    .ability { grid-template-columns: 44px 1fr; }
+    .ability-progress { grid-column: 2; margin-top: 4px; }
+    .ability-emoji { font-size: 26px; }
+  }
+
   /* TYPING MODE — Arabic-script typing recall with on-screen keyboard */
   .typing-card { padding: 40px 32px 28px; }
   .typing-prompt {
@@ -3255,6 +3379,7 @@
     </div>
 
     <div id="name-prompt-slot"></div>
+    <div id="day-theme-slot"></div>
 
     <div class="card-stack" id="card-stack">
       <!-- Card injected here -->
@@ -3436,6 +3561,12 @@
     <div class="review-queue">
       <h3>Coming up for review</h3>
       <ul class="review-list" id="review-list"></ul>
+    </div>
+    <div class="abilities-section">
+      <h3>Abilities</h3>
+      <div class="abilities-sub">Concrete things you can do, unlocked as you learn the words behind them.</div>
+      <div id="abilities-summary"></div>
+      <div class="abilities-grid" id="abilities-grid"></div>
     </div>
     <div class="curriculum">
       <h3>120-day journey</h3>
@@ -6155,6 +6286,147 @@ const GRAMMAR_UNITS = [
   },
 ];
 
+// ==========================================
+// CAPABILITY MILESTONES — real-world things you can do
+//
+// Replace abstract "47 phrases learned" with concrete capabilities.
+// Each milestone unlocks when a set of related phrases has been
+// learned (graded Good at least once). Phrases can be specified
+// explicitly by ID, or implicitly by category count.
+// ==========================================
+const CAPABILITY_MILESTONES = [
+  { id: 'greet',     emoji: '👋', title: 'You can greet a Syrian',
+    desc: 'Hello, hi, how are you, good morning, good evening.',
+    phrases: ['p1','p2','p3','p4','p5'] },
+  { id: 'polite',    emoji: '🙏', title: 'You can handle politeness',
+    desc: 'Thanks, sorry, please, no problem, you are welcome.',
+    phrases: ['p6','p7','p8','p9','p10'] },
+  { id: 'small-talk', emoji: '💬', title: 'You can hold a tiny conversation',
+    desc: 'What is up, see you, my dear, I love you.',
+    cat: 'Small talk', count: 3 },
+  { id: 'introduce', emoji: '🗣️', title: 'You can introduce yourself',
+    desc: 'Name, where you are from, age, that you speak a little Arabic.',
+    cat: 'Introductions', count: 6 },
+  { id: 'questions', emoji: '❓', title: 'You can ask the five questions',
+    desc: 'Who, what, where, when, why, how, how much.',
+    cat: 'Questions', count: 6 },
+  { id: 'pronouns', emoji: '👤', title: 'You can use the basic pronouns',
+    desc: 'I, you (m/f), he, she, we, they.',
+    cat: 'Pronouns', count: 6 },
+  { id: 'shop',     emoji: '🛍️', title: 'You can buy something',
+    desc: 'I want this, can I try, how much, paying cash.',
+    cat: 'Shopping', count: 5 },
+  { id: 'coffee',   emoji: '☕', title: 'You can order coffee like a local',
+    desc: 'I want coffee, with or without sugar, the bill.',
+    phrases: ['p106'], cat: 'Food & drink', count: 8 },
+  { id: 'time',     emoji: '⏰', title: 'You can tell time',
+    desc: 'Today, tomorrow, yesterday, days of the week, every day.',
+    cat: 'Time', count: 8 },
+  { id: 'family',   emoji: '👨‍👩‍👧', title: 'You can talk about family',
+    desc: 'Mother, daughter, family members, my people.',
+    cat: 'Family', count: 6 },
+  { id: 'directions', emoji: '🧭', title: 'You can ask for directions',
+    desc: 'Where is, left, right, near, far.',
+    cat: 'Directions', count: 5 },
+  { id: 'taxi',     emoji: '🚕', title: 'You can survive a taxi ride',
+    desc: 'The address, here please, slow down, how much.',
+    cat: 'Transport', count: 5 },
+  { id: 'feelings', emoji: '💚', title: 'You can express how you feel',
+    desc: 'Tired, hungry, happy, sad, bored.',
+    cat: 'Feelings', count: 5 },
+  { id: 'body',     emoji: '🩺', title: 'You can survive at a doctor',
+    desc: 'It hurts, head, stomach, sick, medicine.',
+    cat: 'Body & health', count: 5 },
+  { id: 'work',     emoji: '💼', title: 'You can do basic work small talk',
+    desc: 'What you do, busy, the meeting, the boss.',
+    cat: 'Work', count: 5 },
+  { id: 'apartment', emoji: '🏠', title: 'You can handle apartment things',
+    desc: 'House, my home, the bill, the AC, the lock.',
+    cat: 'Apartment', count: 5 },
+  { id: 'dubai',    emoji: '🌆', title: 'You can navigate Dubai',
+    desc: 'Metro, marina, mall, weekend, holiday season.',
+    cat: 'Dubai life', count: 5 },
+  { id: 'react',    emoji: '😲', title: 'You can react in conversation',
+    desc: 'No way, really, of course, exactly, god willing.',
+    cat: 'Reactions', count: 8 },
+  { id: 'texting',  emoji: '📱', title: 'You can text a Syrian friend',
+    desc: 'Casual texting habits, abbreviations, emoji-equivalents.',
+    cat: 'Texting', count: 10 },
+  { id: 'idioms',   emoji: '🌙', title: 'You can drop Syrian idioms',
+    desc: 'Real expressions that mark you as more than a tourist.',
+    cat: 'Idioms', count: 5 },
+  { id: 'sophisticated', emoji: '🎓', title: 'You sound sophisticated',
+    desc: 'Multi-clause sentences, opinion phrases, polite formality.',
+    cat: 'Sophisticated', count: 7 },
+];
+
+// Manual theme overrides for days where the dominant category does
+// not capture what is really being taught. Auto-detection from the
+// majority category in each day is used as a fallback.
+const DAY_THEME_OVERRIDES = {
+  1: 'First hellos',
+  2: 'Politeness essentials',
+  3: 'Tiny conversation',
+  4: 'Affection words',
+  8: 'Meeting someone new',
+  12: 'Asking for help',
+  16: 'Counting to five',
+  17: 'Counting to ten',
+  18: 'Getting the bill',
+  19: 'Bargaining at the souk',
+  21: 'Hungry and thirsty',
+  22: 'Ordering coffee',
+  26: 'Telling time',
+  27: 'The work week',
+  29: 'Weekend plans',
+  31: 'Talking about family',
+};
+
+function getDayTheme(day) {
+  if (DAY_THEME_OVERRIDES[day]) return DAY_THEME_OVERRIDES[day];
+  const phrases = PHRASES.slice((day - 1) * 5, day * 5);
+  if (phrases.length === 0) return null;
+  const counts = {};
+  for (const p of phrases) counts[p.cat] = (counts[p.cat] || 0) + 1;
+  let topCat = phrases[0].cat;
+  let topCount = 0;
+  for (const cat in counts) {
+    if (counts[cat] > topCount) { topCat = cat; topCount = counts[cat]; }
+  }
+  return topCat;
+}
+
+function getMilestoneStatus(milestone) {
+  let needed = 0;
+  let learned = 0;
+  // Explicit phrases requirement
+  if (Array.isArray(milestone.phrases)) {
+    for (const id of milestone.phrases) {
+      needed += 1;
+      const c = state.cards && state.cards[id];
+      if (c && c.learned) learned += 1;
+    }
+  }
+  // Category-count requirement
+  if (milestone.cat && milestone.count) {
+    const catPhrases = PHRASES.filter(p => p.cat === milestone.cat);
+    const learnedCat = catPhrases.filter(p => state.cards && state.cards[p.id] && state.cards[p.id].learned).length;
+    needed += milestone.count;
+    learned += Math.min(learnedCat, milestone.count);
+  }
+  if (needed === 0) return { unlocked: false, learned: 0, needed: 0, pct: 0 };
+  return {
+    unlocked: learned >= needed,
+    learned,
+    needed,
+    pct: Math.round((learned / needed) * 100),
+  };
+}
+
+function getUnlockedMilestones() {
+  return CAPABILITY_MILESTONES.filter(m => getMilestoneStatus(m).unlocked);
+}
+
 const STORE_KEY = 'shami-state-v4';
 
 // ==========================================
@@ -6997,10 +7269,72 @@ function rebuildTodayBootcamp() {
   }
 }
 
+function renderDayThemeBanner() {
+  const slot = document.getElementById('day-theme-slot');
+  if (!slot) return;
+  // Hide during bootcamp — the bootcamp banner already owns top-of-Today
+  if (state.bootcamp) { slot.innerHTML = ''; return; }
+  const day = getCurrentDay();
+  const theme = getDayTheme(day);
+  if (!theme) { slot.innerHTML = ''; return; }
+  slot.innerHTML = `
+    <div class="day-theme">
+      <div>
+        <div class="day-theme-tag">Today's theme</div>
+        <div class="day-theme-title">${theme}</div>
+      </div>
+      <div class="day-theme-meta">Day ${String(day).padStart(2, '0')} of 120</div>
+    </div>
+  `;
+}
+
+function renderAbilities() {
+  const grid = document.getElementById('abilities-grid');
+  const summary = document.getElementById('abilities-summary');
+  if (!grid || !summary) return;
+
+  const all = CAPABILITY_MILESTONES.map(m => ({ ...m, status: getMilestoneStatus(m) }));
+  const unlocked = all.filter(a => a.status.unlocked);
+  const closeTo = all
+    .filter(a => !a.status.unlocked && a.status.needed > 0)
+    .sort((a, b) => b.status.pct - a.status.pct)
+    .slice(0, 2)
+    .map(a => a.title.replace(/^You can /i, ''));
+
+  if (unlocked.length === 0) {
+    summary.innerHTML = `<div class="abilities-summary">No abilities unlocked yet. As you learn phrases, you'll start unlocking real-world things you can do.${closeTo.length ? ' Closest to unlock: <strong>' + closeTo.join(', ') + '</strong>.' : ''}</div>`;
+  } else {
+    const sample = unlocked.slice(0, 2).map(a => a.title.replace(/^You can /i, ''));
+    summary.innerHTML = `<div class="abilities-summary">You've unlocked <strong>${unlocked.length} of ${all.length} abilities</strong>${sample.length ? ', including ' + sample.join(' and ') : ''}.${closeTo.length ? ' Closest next: <strong>' + closeTo.join(', ') + '</strong>.' : ''}</div>`;
+  }
+
+  // Sort: unlocked first, then by progress percentage
+  all.sort((a, b) => {
+    if (a.status.unlocked !== b.status.unlocked) return a.status.unlocked ? -1 : 1;
+    return b.status.pct - a.status.pct;
+  });
+
+  grid.innerHTML = all.map(a => {
+    const fillPct = a.status.pct / 100;
+    return `
+      <div class="ability ${a.status.unlocked ? 'unlocked' : 'locked'}">
+        <div class="ability-emoji">${a.emoji}</div>
+        <div class="ability-body">
+          <div class="ability-title">${a.title}</div>
+          <div class="ability-desc">${a.desc}</div>
+        </div>
+        <div class="ability-progress">${a.status.unlocked ? 'Unlocked' : a.status.learned + ' / ' + a.status.needed}</div>
+        <div class="ability-progress-bar"><div class="ability-progress-fill" style="transform:scaleX(${fillPct})"></div></div>
+      </div>
+    `;
+  }).join('');
+}
+
 function renderDaily() {
   buildTodayQueue();
   updateHeaderStats();
   renderInlineNamePrompt();
+  renderDayThemeBanner();
 
   // Time-aware Arabic greeting with the user's name (when set).
   const g = arabicGreeting(state.name);
@@ -10046,6 +10380,7 @@ function renderProgress() {
   }
 
   renderCurriculum();
+  renderAbilities();
   renderVoiceStatus();
   renderTypingStatus();
   renderChatKeyStatus();
