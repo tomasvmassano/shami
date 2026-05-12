@@ -6454,7 +6454,7 @@ const BOOTCAMP_COHORTS = [
   [20, 21, 22, 23, 24], // qaaf, kaaf, laam, meem, noon
   [25, 26, 27],         // haa, waw, yaa
 ];
-const BOOTCAMP_MASTERY_STREAK = 3;
+const BOOTCAMP_MASTERY_STREAK = 2;
 
 function initBootcampLetter(idx) {
   if (!state.bootcampLetters) state.bootcampLetters = {};
@@ -6528,21 +6528,22 @@ function buildBootcampQueue(today) {
   if (activeIdx >= BOOTCAMP_COHORTS.length) return queue; // shouldn't happen — bootcamp would be off
   const activeCohort = BOOTCAMP_COHORTS[activeIdx];
 
-  // Step 1: drip in ONE new letter per day from the active cohort. Each
-  // intro is paired immediately with a recognition drill so the new
-  // letter is tested right after exposure. Intros stop once every
-  // letter in the cohort has been seen — then it's drills only until
-  // the cohort is mastered.
-  const unintroducedIdx = activeCohort.find(idx => !initBootcampLetter(idx).introduced);
-  if (unintroducedIdx !== undefined) {
-    const lc = initBootcampLetter(unintroducedIdx);
-    lc.introduced = true;
-    lc.firstSeenDate = today;
-    const legacy = initLetterCard(unintroducedIdx);
-    legacy.introduced = true;
-    if (!legacy.firstSeenDate) legacy.firstSeenDate = today;
-    queue.push({ type: 'letterIntro', ref: unintroducedIdx });
-    queue.push({ type: 'letterSound', ref: unintroducedIdx });
+  // Step 1: introduce every unintroduced letter in the active cohort,
+  // each paired immediately with a recognition drill. This matches how
+  // a real teacher walks you through the row in one sitting.
+  const introducedThisCall = new Set();
+  for (const idx of activeCohort) {
+    const lc = initBootcampLetter(idx);
+    if (!lc.introduced) {
+      lc.introduced = true;
+      lc.firstSeenDate = today;
+      const legacy = initLetterCard(idx);
+      legacy.introduced = true;
+      if (!legacy.firstSeenDate) legacy.firstSeenDate = today;
+      queue.push({ type: 'letterIntro', ref: idx });
+      queue.push({ type: 'letterSound', ref: idx });
+      introducedThisCall.add(idx);
+    }
   }
 
   // Step 2: drills on introduced-but-not-mastered letters in active cohort
@@ -6553,15 +6554,12 @@ function buildBootcampQueue(today) {
     const lc = initBootcampLetter(idx);
     if (!lc.introduced || lc.mastered) continue;
     if (lc.due > today) continue;
-    // Skip if we already added an immediate recognition above
-    const alreadyHasIntroPair = queue.some(q => q.type === 'letterSound' && q.ref === idx);
-    if (alreadyHasIntroPair) continue;
-    // Pick recognition or production based on which has been seen less
-    // (favor production once recognition is warming up — totalCorrect >= 1)
-    const wantProd = lc.totalCorrect >= 1 && Math.random() < 0.55;
+    if (introducedThisCall.has(idx)) continue; // already paired with intro this call
+    // Alternate recognition and production by parity of past correct answers.
+    const wantProd = lc.totalCorrect >= 1 && (lc.totalCorrect % 2 === 1);
     queue.push({ type: wantProd ? 'letterFromSound' : 'letterSound', ref: idx });
     drillCount++;
-    if (drillCount >= 5) break;
+    if (drillCount >= 8) break;
   }
 
   // Step 3: 1 retention drill on a previously mastered letter, if any
@@ -6943,9 +6941,23 @@ function renderBootcampBanner() {
       <div class="bc-tag">Alphabet Bootcamp · Cohort ${activeIdx + 1} of ${BOOTCAMP_COHORTS.length}</div>
       <div class="bc-cohort-title">${namesPreview}</div>
       <div class="bc-letters">${lettersHtml}</div>
-      <div class="bc-progress-line"><strong>${masteredCount} of ${cohort.length} mastered</strong> · ${BOOTCAMP_MASTERY_STREAK} correct in a row to master a letter · vocab paused</div>
+      <div class="bc-progress-line"><strong>${masteredCount} of ${cohort.length} mastered</strong> · ${BOOTCAMP_MASTERY_STREAK} correct in a row to master a letter · vocab paused · <a onclick="rebuildTodayBootcamp()" style="color:var(--terra);cursor:pointer;text-decoration:underline;">refresh today's plan</a></div>
     </div>
   `;
+}
+
+function rebuildTodayBootcamp() {
+  if (!state.bootcamp) return;
+  state.todayQueue = buildBootcampQueue(todayStr());
+  state.todayIndex = 0;
+  state.todayDate = todayStr();
+  saveState();
+  // If user is on the Today tab, re-render. Otherwise just refresh the banner.
+  if (document.getElementById('panel-daily').classList.contains('active')) {
+    renderDaily();
+  } else {
+    renderBootcampBanner();
+  }
 }
 
 function renderDaily() {
