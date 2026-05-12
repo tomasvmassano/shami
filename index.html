@@ -6263,6 +6263,28 @@ function loadState() {
       if (!s.listen) s.listen = { speed: 1, shuffle: false, shadowing: false, filter: 'all' };
       if (!s.chat) s.chat = { apiKey: '', showArabicScript: true, conversation: [] };
       if (s.settings && s.settings.typingStrict === undefined) s.settings.typingStrict = false;
+      // Backfill firstSeenDate on existing cards / letters / bootcamp
+      // letters that predate this field. Default to startDate so all
+      // legacy entries cluster on Day 1 of the journey rather than
+      // picking up today the next time they are touched.
+      const fallbackSeen = s.startDate || todayStr();
+      if (s.cards) {
+        for (const id in s.cards) {
+          if (s.cards[id] && !s.cards[id].firstSeenDate) s.cards[id].firstSeenDate = fallbackSeen;
+        }
+      }
+      if (s.letterCards) {
+        for (const k in s.letterCards) {
+          if (s.letterCards[k] && !s.letterCards[k].firstSeenDate) s.letterCards[k].firstSeenDate = fallbackSeen;
+        }
+      }
+      if (s.bootcampLetters) {
+        for (const k in s.bootcampLetters) {
+          if (s.bootcampLetters[k] && s.bootcampLetters[k].introduced && !s.bootcampLetters[k].firstSeenDate) {
+            s.bootcampLetters[k].firstSeenDate = fallbackSeen;
+          }
+        }
+      }
       return s;
     }
   } catch (e) {}
@@ -6315,7 +6337,9 @@ function resetAll() {
 // ==========================================
 function initCard(id) {
   if (!state.cards[id]) {
-    state.cards[id] = { ef: 2.5, interval: 0, reps: 0, due: todayStr(), learned: false, goodReps: 0 };
+    state.cards[id] = { ef: 2.5, interval: 0, reps: 0, due: todayStr(), learned: false, goodReps: 0, firstSeenDate: todayStr() };
+  } else if (!state.cards[id].firstSeenDate) {
+    state.cards[id].firstSeenDate = todayStr();
   }
   return state.cards[id];
 }
@@ -6408,7 +6432,9 @@ function arabiziMatches(answer, letter) {
 function initLetterCard(idx) {
   if (!state.letterCards) state.letterCards = {};
   if (!state.letterCards[idx]) {
-    state.letterCards[idx] = { ef: 2.5, interval: 0, reps: 0, due: todayStr(), learned: false, introduced: false, correctStreak: 0 };
+    state.letterCards[idx] = { ef: 2.5, interval: 0, reps: 0, due: todayStr(), learned: false, introduced: false, correctStreak: 0, firstSeenDate: todayStr() };
+  } else if (!state.letterCards[idx].firstSeenDate) {
+    state.letterCards[idx].firstSeenDate = todayStr();
   }
   return state.letterCards[idx];
 }
@@ -6439,6 +6465,7 @@ function initBootcampLetter(idx) {
       totalCorrect: 0,
       mastered: false,
       due: todayStr(),
+      firstSeenDate: null, // set when the letter is first introduced via the queue
     };
   }
   return state.bootcampLetters[idx];
@@ -6508,8 +6535,11 @@ function buildBootcampQueue(today) {
     const lc = initBootcampLetter(idx);
     if (!lc.introduced) {
       lc.introduced = true;
+      lc.firstSeenDate = today;
       // Mirror to legacy letterCards.introduced for alphabet panel coloring
-      initLetterCard(idx).introduced = true;
+      const legacy = initLetterCard(idx);
+      legacy.introduced = true;
+      if (!legacy.firstSeenDate) legacy.firstSeenDate = today;
       queue.push({ type: 'letterIntro', ref: idx });
       queue.push({ type: 'letterSound', ref: idx });
     }
@@ -9876,33 +9906,94 @@ function renderCurriculum() {
 }
 
 function openDay(day) {
-  const startIdx = (day - 1) * 5;
-  const dayPhrases = PHRASES.slice(startIdx, startIdx + 5);
-  if (dayPhrases.length === 0) return;
-  const consol = getConsolidationForDay(day);
   const currentDay = getCurrentDay();
   const isToday = day === currentDay;
 
-  let dateLabel = '';
+  // The actual calendar date for this day of the user's journey
+  let dateStr = null, dateLabel = '';
   if (state.startDate) {
-    const d = new Date(state.startDate);
-    d.setDate(d.getDate() + (day - 1));
+    dateStr = addDays(state.startDate, day - 1);
+    const d = new Date(dateStr);
     dateLabel = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
   }
 
-  const phrasesHtml = dayPhrases.map(p => {
-    const learned = state.cards[p.id] && state.cards[p.id].learned;
-    const status = learned ? '<span style="color:var(--olive);font-family:JetBrains Mono,monospace;font-size:11px;">✓ learned</span>' : '';
-    return `
-      <div class="day-phrase" onclick="speakArabic(this.dataset.ar)" data-ar="${escapeAttr(p.ar)}">
-        <div class="day-phrase-ar">${p.ar}</div>
-        <div class="day-phrase-az">${p.az}</div>
-        <div class="day-phrase-en">${p.en} ${status}</div>
-        ${p.note ? `<div class="day-phrase-note">${p.note}</div>` : ''}
-      </div>
-    `;
-  }).join('');
+  // What the user ACTUALLY saw on that calendar date — phrases first
+  // introduced and letters first introduced. This is the truth, regardless
+  // of whether the curriculum schedule matches (which it won't during
+  // bootcamp).
+  const seenPhrases = dateStr
+    ? PHRASES.filter(p => state.cards[p.id] && state.cards[p.id].firstSeenDate === dateStr)
+    : [];
+  const seenLetters = dateStr
+    ? ALPHABET.map((L, idx) => {
+        const lc = state.bootcampLetters && state.bootcampLetters[idx];
+        return (lc && lc.firstSeenDate === dateStr) ? { L, idx } : null;
+      }).filter(Boolean)
+    : [];
 
+  // Curriculum content for this day — shown as "coming up later" when the
+  // user hasn't reached this day in the curriculum yet (e.g. during
+  // bootcamp).
+  const startIdx = (day - 1) * 5;
+  const curriculumPhrases = PHRASES.slice(startIdx, startIdx + 5);
+  const consol = getConsolidationForDay(day);
+
+  const hasActual = seenPhrases.length > 0 || seenLetters.length > 0;
+
+  // Build the "what you actually saw" section
+  let actualHtml = '';
+  if (seenLetters.length > 0) {
+    actualHtml += `<div class="day-modal-section-title">Letters introduced</div>`;
+    actualHtml += '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;">' +
+      seenLetters.map(({ L, idx }) => `
+        <div onclick="speakLetter(${jsAttr(L.l)})" style="cursor:pointer;text-align:center;padding:10px 14px;border:1.5px solid var(--ink);background:var(--paper);box-shadow:3px 3px 0 var(--ink);">
+          <div style="font-family:Amiri,serif;font-size:32px;color:var(--terra);line-height:1;">${L.l}</div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">${L.name}</div>
+          <div style="font-family:JetBrains Mono,monospace;font-size:10px;color:var(--terra);margin-top:2px;">${L.arabizi}</div>
+        </div>
+      `).join('') + '</div>';
+  }
+  if (seenPhrases.length > 0) {
+    actualHtml += `<div class="day-modal-section-title">Phrases · tap to hear</div>`;
+    actualHtml += seenPhrases.map(p => {
+      const learned = state.cards[p.id] && state.cards[p.id].learned;
+      const status = learned ? '<span style="color:var(--olive);font-family:JetBrains Mono,monospace;font-size:11px;">✓ learned</span>' : '';
+      return `
+        <div class="day-phrase" onclick="speakArabic(this.dataset.ar)" data-ar="${escapeAttr(p.ar)}">
+          <div class="day-phrase-ar">${p.ar}</div>
+          <div class="day-phrase-az">${p.az}</div>
+          <div class="day-phrase-en">${p.en} ${status}</div>
+          ${p.note ? `<div class="day-phrase-note">${p.note}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Build the "curriculum preview" section (only shown when user hasn't
+  // actually seen anything this day, OR when bootcamp is on so the schedule
+  // is shifted)
+  let previewHtml = '';
+  const showPreview = !hasActual || state.bootcamp;
+  if (showPreview && curriculumPhrases.length > 0) {
+    const previewLabel = hasActual
+      ? 'Curriculum schedule (will appear when alphabet bootcamp completes)'
+      : (state.bootcamp ? 'Curriculum schedule for this day (paused during bootcamp)' : 'Coming up · curriculum schedule');
+    previewHtml += `<div class="day-modal-section-title">${previewLabel}</div>`;
+    previewHtml += curriculumPhrases.map(p => {
+      const learned = state.cards[p.id] && state.cards[p.id].learned;
+      const status = learned ? '<span style="color:var(--olive);font-family:JetBrains Mono,monospace;font-size:11px;">✓ learned</span>' : '';
+      return `
+        <div class="day-phrase" onclick="speakArabic(this.dataset.ar)" data-ar="${escapeAttr(p.ar)}" style="opacity:${learned ? 1 : 0.7};">
+          <div class="day-phrase-ar">${p.ar}</div>
+          <div class="day-phrase-az">${p.az}</div>
+          <div class="day-phrase-en">${p.en} ${status}</div>
+          ${p.note ? `<div class="day-phrase-note">${p.note}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Consolidation dialogue (curriculum-aligned, kept for cultural context)
   let consolHtml = '';
   if (consol) {
     const linesHtml = consol.lines.map(line => `
@@ -9922,15 +10013,24 @@ function openDay(day) {
     `;
   }
 
-  const reviewBtn = isToday
-    ? ''
-    : `<button class="action" onclick="jumpToDay(${day})">Review these now</button>`;
+  const reviewBtn = (!isToday && curriculumPhrases.length > 0)
+    ? `<button class="action" onclick="jumpToDay(${day})">Queue this day's curriculum</button>`
+    : '';
+
+  let titleText;
+  if (hasActual && !showPreview) {
+    titleText = `${seenLetters.length ? `${seenLetters.length} letter${seenLetters.length === 1 ? '' : 's'}` : ''}${seenLetters.length && seenPhrases.length ? ' + ' : ''}${seenPhrases.length ? `${seenPhrases.length} phrase${seenPhrases.length === 1 ? '' : 's'}` : ''}`;
+  } else if (hasActual) {
+    titleText = `What you saw, plus the curriculum`;
+  } else {
+    titleText = `Nothing yet on this day`;
+  }
 
   document.getElementById('day-modal-body').innerHTML = `
     <div class="day-modal-tag">Day ${String(day).padStart(2, '0')}${dateLabel ? ' · ' + dateLabel : ''}${isToday ? ' · today' : ''}</div>
-    <div class="day-modal-title">5 phrases${consol ? ' + a piece of context' : ''}</div>
-    <div class="day-modal-section-title">Phrases · tap to hear</div>
-    ${phrasesHtml}
+    <div class="day-modal-title">${titleText}</div>
+    ${actualHtml}
+    ${previewHtml}
     ${consolHtml}
     <div class="modal-actions" style="margin-top:24px;">
       ${reviewBtn}
