@@ -2277,6 +2277,89 @@
      curriculum banners. The Today tab stays clean. */
   #app { position: relative; z-index: 1; }
 
+  /* TRANSLITERATION MODES — body class controls arabizi visibility
+     across recall, pickMeaning, translate, listen, chat, unlock,
+     phrasebook, past-day modal, and day-phrase rows. */
+  body.translit-never .card-arabizi,
+  body.translit-never .pick-meaning-az,
+  body.translit-never .translate-az,
+  body.translit-never .phrase-arabizi,
+  body.translit-never .day-phrase-az,
+  body.translit-never .unlock-arabizi,
+  body.translit-never .listen-arabizi,
+  body.translit-never .chat-arabizi,
+  body.translit-never .typing-prompt-az,
+  body.translit-never .gram-section-az {
+    display: none !important;
+  }
+  body.translit-tap .card-arabizi,
+  body.translit-tap .pick-meaning-az,
+  body.translit-tap .translate-az,
+  body.translit-tap .phrase-arabizi,
+  body.translit-tap .day-phrase-az,
+  body.translit-tap .unlock-arabizi,
+  body.translit-tap .listen-arabizi,
+  body.translit-tap .chat-arabizi,
+  body.translit-tap .typing-prompt-az,
+  body.translit-tap .gram-section-az {
+    filter: blur(5px);
+    opacity: 0.55;
+    cursor: pointer;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+    user-select: none;
+  }
+  body.translit-tap .card-arabizi.az-revealed,
+  body.translit-tap .pick-meaning-az.az-revealed,
+  body.translit-tap .translate-az.az-revealed,
+  body.translit-tap .phrase-arabizi.az-revealed,
+  body.translit-tap .day-phrase-az.az-revealed,
+  body.translit-tap .unlock-arabizi.az-revealed,
+  body.translit-tap .listen-arabizi.az-revealed,
+  body.translit-tap .chat-arabizi.az-revealed,
+  body.translit-tap .typing-prompt-az.az-revealed,
+  body.translit-tap .gram-section-az.az-revealed {
+    filter: none;
+    opacity: 1;
+    user-select: text;
+  }
+
+  /* CULTURAL NOTE — info bubble appearing on phrases that have one */
+  .cultural-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 8px;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  .cultural-note-icon {
+    cursor: pointer;
+    color: var(--terra);
+    font-size: 15px;
+    line-height: 1;
+    border: 1.5px solid var(--terra);
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-style: normal;
+    background: var(--paper);
+    transition: background 0.12s, color 0.12s;
+  }
+  .cultural-note-icon:hover { background: var(--terra); color: var(--paper); }
+  .cultural-note-body {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: var(--paper-dim);
+    border-left: 3px solid var(--ochre);
+    font-size: 13px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+  .cultural-note-body.hidden { display: none; }
+
   /* DAY THEME BANNER — shown above the card stack each day */
   .day-theme {
     background: var(--paper-dim);
@@ -3583,6 +3666,28 @@
       <h3>Voice</h3>
       <div class="voice-status" id="voice-status"></div>
       <button class="action" onclick="openVoiceSettings()">Voice settings</button>
+    </div>
+    <div class="voice-section" style="margin-top:20px;">
+      <h3>Audio and transliteration</h3>
+      <div class="voice-status">
+        Global audio speed applies to every phrase you tap to hear. Transliteration mode controls when arabizi shows next to the Arabic script.
+      </div>
+      <div style="margin-top:14px;">
+        <div class="listen-setting-label" style="margin-bottom:6px;">Audio speed</div>
+        <div class="listen-toggles" id="audio-speed-toggles">
+          <button class="listen-toggle" data-as="0.7" onclick="setAudioSpeed(0.7)">0.7×</button>
+          <button class="listen-toggle" data-as="1" onclick="setAudioSpeed(1)">1×</button>
+          <button class="listen-toggle" data-as="1.25" onclick="setAudioSpeed(1.25)">1.25×</button>
+        </div>
+      </div>
+      <div style="margin-top:14px;">
+        <div class="listen-setting-label" style="margin-bottom:6px;">Show transliteration (arabizi)</div>
+        <div class="listen-toggles" id="translit-toggles">
+          <button class="listen-toggle" data-tm="always" onclick="setTransliterationMode('always')">Always</button>
+          <button class="listen-toggle" data-tm="tap" onclick="setTransliterationMode('tap')">Only when tapped</button>
+          <button class="listen-toggle" data-tm="never" onclick="setTransliterationMode('never')">Never</button>
+        </div>
+      </div>
     </div>
     <div class="voice-section" style="margin-top:20px;">
       <h3>Typing</h3>
@@ -6535,6 +6640,8 @@ function loadState() {
       if (!s.listen) s.listen = { speed: 1, shuffle: false, shadowing: false, filter: 'all' };
       if (!s.chat) s.chat = { apiKey: '', showArabicScript: true, conversation: [] };
       if (s.settings && s.settings.typingStrict === undefined) s.settings.typingStrict = false;
+      if (s.settings && s.settings.audioSpeed === undefined) s.settings.audioSpeed = 1;
+      if (s.settings && !s.settings.transliterationMode) s.settings.transliterationMode = 'tap';
       // Backfill firstSeenDate on existing cards / letters / bootcamp
       // letters that predate this field. Default to startDate so all
       // legacy entries cluster on Day 1 of the journey rather than
@@ -6590,6 +6697,8 @@ function defaultState() {
       productionEnabled: true,
       sentencesEnabled: true,
       typingStrict: false,
+      audioSpeed: 1,                  // 0.7 / 1 / 1.25 — applies to every speakArabic call
+      transliterationMode: 'tap',     // 'always' | 'tap' | 'never' — controls arabizi visibility
     }
   };
 }
@@ -7585,7 +7694,7 @@ function renderRecallCard(id) {
       <div class="card-meaning hidden" id="meaning" onclick="revealRecall()">${phrase.en}</div>
       <button class="reveal-btn" id="reveal-btn" onclick="revealRecall()">Reveal meaning</button>
       <div id="post-reveal" style="display:none">
-        <div class="card-note">${phrase.note}</div>
+        <div class="card-note">${phrase.note}${renderCulturalNote(phrase)}</div>
         <button class="mic-btn" id="mic-btn" onclick="toggleRecord()">
           <span class="mic-dot"></span>
           <span id="mic-label">Record yourself saying it</span>
@@ -9270,6 +9379,7 @@ async function playGoogleAudio(text, config) {
   }
   const url = URL.createObjectURL(blob);
   const audio = new Audio(url);
+  audio.playbackRate = getAudioSpeed();
   currentAudio = audio;
   return new Promise((resolve) => {
     let done = false;
@@ -9286,7 +9396,7 @@ function playBrowserSpeech(text) {
     if (!('speechSynthesis' in window)) { resolve(); return; }
     const utt = new SpeechSynthesisUtterance(text);
     utt.lang = 'ar-SA';
-    utt.rate = 0.85;
+    utt.rate = 0.85 * getAudioSpeed();
     const voices = window.speechSynthesis.getVoices();
     // Prefer known higher-quality Arabic voices when present
     const preferred = ['Maged', 'Tarik', 'Majed', 'Laila'];
@@ -9297,6 +9407,66 @@ function playBrowserSpeech(text) {
     utt.onerror = resolve;
     window.speechSynthesis.speak(utt);
   });
+}
+
+// Global audio speed multiplier applied to every speakArabic call so
+// "slow audio for the first month" is one setting, not per-feature.
+function getAudioSpeed() {
+  return (state.settings && state.settings.audioSpeed) || 1;
+}
+
+function getTransliterationMode() {
+  return (state.settings && state.settings.transliterationMode) || 'tap';
+}
+
+// Sync the body class so the CSS rules for arabizi visibility kick in.
+function applyTransliterationMode() {
+  const mode = getTransliterationMode();
+  document.body.classList.remove('translit-always', 'translit-tap', 'translit-never');
+  document.body.classList.add('translit-' + mode);
+}
+
+function setAudioSpeed(s) {
+  if (!state.settings) state.settings = {};
+  state.settings.audioSpeed = Number(s) || 1;
+  saveState();
+  renderAudioSettingsUI();
+}
+
+function setTransliterationMode(mode) {
+  if (!state.settings) state.settings = {};
+  state.settings.transliterationMode = mode;
+  saveState();
+  applyTransliterationMode();
+  renderAudioSettingsUI();
+}
+
+// Global click handler: in tap-mode, clicking an arabizi span toggles
+// the az-revealed class so it un-blurs. Doesn't consume the click, so
+// any existing onclick (e.g. speakArabic on phrase rows) still fires.
+document.addEventListener('click', (e) => {
+  if (getTransliterationMode() !== 'tap') return;
+  const target = e.target.closest('.card-arabizi, .pick-meaning-az, .translate-az, .phrase-arabizi, .day-phrase-az, .unlock-arabizi, .listen-arabizi, .chat-arabizi, .typing-prompt-az, .gram-section-az');
+  if (!target) return;
+  target.classList.toggle('az-revealed');
+});
+
+// Cultural note toggle — small inline expander on phrases that have one
+function toggleCulturalNote(noteId) {
+  const el = document.getElementById(noteId);
+  if (el) el.classList.toggle('hidden');
+}
+let _culturalNoteCounter = 0;
+function renderCulturalNote(phrase) {
+  if (!phrase || !phrase.culturalNote) return '';
+  _culturalNoteCounter += 1;
+  const id = 'cn-' + _culturalNoteCounter;
+  return `
+    <span class="cultural-note">
+      <span class="cultural-note-icon" title="Cultural note" onclick="toggleCulturalNote('${id}')">i</span>
+    </span>
+    <div id="${id}" class="cultural-note-body hidden">${escapeHtml(phrase.culturalNote)}</div>
+  `;
 }
 
 async function speakArabic(text) {
@@ -9341,7 +9511,7 @@ function speakLetter(arabicChar) {
     const utt = new SpeechSynthesisUtterance(toSpeak);
     utt.voice = arVoice;
     utt.lang = arVoice.lang;
-    utt.rate = 0.8;
+    utt.rate = 0.8 * getAudioSpeed();
     window.speechSynthesis.speak(utt);
     return;
   }
@@ -9352,7 +9522,7 @@ function speakLetter(arabicChar) {
   const name = idx >= 0 ? ALPHABET[idx].name : arabicChar;
   const utt = new SpeechSynthesisUtterance(name);
   utt.lang = 'en-US';
-  utt.rate = 0.85;
+  utt.rate = 0.85 * getAudioSpeed();
   window.speechSynthesis.speak(utt);
 }
 
@@ -10140,6 +10310,17 @@ function setTypingStrict(on) {
   renderTypingStatus();
 }
 
+function renderAudioSettingsUI() {
+  const speed = getAudioSpeed();
+  document.querySelectorAll('#audio-speed-toggles .listen-toggle').forEach(b => {
+    b.classList.toggle('active', Number(b.dataset.as) === speed);
+  });
+  const mode = getTransliterationMode();
+  document.querySelectorAll('#translit-toggles .listen-toggle').forEach(b => {
+    b.classList.toggle('active', b.dataset.tm === mode);
+  });
+}
+
 function renderTypingStatus() {
   const el = document.getElementById('typing-status');
   const cb = document.getElementById('typing-strict-toggle');
@@ -10382,6 +10563,7 @@ function renderProgress() {
   renderCurriculum();
   renderAbilities();
   renderVoiceStatus();
+  renderAudioSettingsUI();
   renderTypingStatus();
   renderChatKeyStatus();
   renderBootcampBanner();
@@ -10907,6 +11089,7 @@ function dismissUnlock(cohortIdx) {
 }
 
 function boot() {
+  applyTransliterationMode();
   if (!state.started) {
     document.getElementById('welcome-screen').style.display = 'grid';
     document.getElementById('app').style.display = 'none';
