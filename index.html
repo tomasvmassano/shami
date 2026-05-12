@@ -6495,21 +6495,30 @@ function isAlphabetBootcampDone() {
 
 function gradeBootcampLetter(idx, correct) {
   const c = initBootcampLetter(idx);
+  const today = todayStr();
   if (correct) {
-    c.correctStreak += 1;
-    c.totalCorrect += 1;
+    c.totalCorrect = (c.totalCorrect || 0) + 1;
+    // Streak only increments ONCE per day per letter, and only if the
+    // letter hasn't been missed today. This keeps practice depth
+    // (multiple drills per letter per day) from collapsing into
+    // same-day mastery — the spec is "clean across days", not "clean
+    // across drills".
+    if (c.lastCorrectDate !== today && c.lastMissDate !== today) {
+      c.correctStreak = (c.correctStreak || 0) + 1;
+      c.lastCorrectDate = today;
+    }
     if (c.correctStreak >= BOOTCAMP_MASTERY_STREAK) {
       c.mastered = true;
-      c.due = addDays(todayStr(), 7); // light retention rotation after mastery
-      // Mirror to alphabet panel display
+      c.due = addDays(today, 7);
       state.letters[idx] = 'mastered';
     } else {
-      c.due = addDays(todayStr(), 1);
+      c.due = addDays(today, 1);
       if (!state.letters[idx]) state.letters[idx] = 'learned';
     }
   } else {
     c.correctStreak = 0;
-    c.due = addDays(todayStr(), 1);
+    c.lastMissDate = today;
+    c.due = addDays(today, 1);
   }
   // Auto-exit bootcamp when all 28 letters mastered. Clear today's
   // queue so the next renderDaily rebuilds with the normal flow.
@@ -6546,20 +6555,48 @@ function buildBootcampQueue(today) {
     }
   }
 
-  // Step 2: drills on introduced-but-not-mastered letters in active cohort
-  // that are due today. Alternate recognition (letter→sound) and
-  // production (sound→letter) for variety.
+  // Step 2: drills — each introduced+due+not-mastered letter gets
+  // multiple drills per day in different formats so the user spends
+  // real time on the cohort instead of two clicks and done. A letter
+  // that was just introduced this call already had one letterSound
+  // drill paired to it; that counts as the first drill of the day.
+  // Caps total drills so the session stays bounded.
+  const introducedSet = new Set();
+  for (const i in (state.bootcampLetters || {})) {
+    if (state.bootcampLetters[i].introduced) introducedSet.add(Number(i));
+  }
+  const knownPhrasesForSpot = PHRASES.filter(p => state.cards[p.id] && state.cards[p.id].learned);
+
   let drillCount = 0;
+  const DRILL_CAP = 12;
   for (const idx of activeCohort) {
     const lc = initBootcampLetter(idx);
     if (!lc.introduced || lc.mastered) continue;
     if (lc.due > today) continue;
-    if (introducedThisCall.has(idx)) continue; // already paired with intro this call
-    // Alternate recognition and production by parity of past correct answers.
-    const wantProd = lc.totalCorrect >= 1 && (lc.totalCorrect % 2 === 1);
-    queue.push({ type: wantProd ? 'letterFromSound' : 'letterSound', ref: idx });
-    drillCount++;
-    if (drillCount >= 8) break;
+
+    // Build the list of formats for this letter today.
+    const formats = introducedThisCall.has(idx)
+      ? ['letterFromSound']  // letterSound was paired with the intro
+      : ['letterSound', 'letterFromSound'];
+
+    // Optional third: spot-the-letter inside a known phrase, but only
+    // if a phrase exists where every letter has been introduced.
+    const spotPhrase = knownPhrasesForSpot.find(p => {
+      const chars = letterCharsInPhrase(p.ar);
+      return chars.some(x => x.idx === idx) && chars.every(x => introducedSet.has(x.idx));
+    });
+    if (spotPhrase) formats.push({ type: 'letterSpot', ref: { letterIdx: idx, phraseId: spotPhrase.id } });
+
+    for (const fmt of formats) {
+      if (drillCount >= DRILL_CAP) break;
+      if (typeof fmt === 'string') {
+        queue.push({ type: fmt, ref: idx });
+      } else {
+        queue.push(fmt);
+      }
+      drillCount++;
+    }
+    if (drillCount >= DRILL_CAP) break;
   }
 
   // Step 3: 1 retention drill on a previously mastered letter, if any
