@@ -158,33 +158,34 @@
   }
 
   .tab {
-    padding: 14px 26px 16px;
+    padding: 10px 14px 12px;
     background: transparent;
     border: none;
     cursor: pointer;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--ink);
     opacity: 0.45;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     transition: opacity 0.2s;
     position: relative;
     margin-bottom: -1.5px;
+    white-space: nowrap;
   }
 
   .tab:hover { opacity: 0.8; }
 
   .tab.active {
     opacity: 1;
-    border-bottom: 3px solid var(--terra);
+    border-bottom: 2px solid var(--terra);
   }
 
   .tab-num {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    margin-right: 8px;
+    font-size: 9px;
+    margin-right: 6px;
     color: var(--terra);
   }
 
@@ -3388,8 +3389,9 @@
     .progress-grid { grid-template-columns: 1fr; }
     .phrase-row { grid-template-columns: 1fr; gap: 4px; padding: 14px 4px; }
     .phrase-arabic { text-align: right; font-size: 24px; }
-    .tabs { flex-wrap: wrap; }
-    .tab { padding: 10px 14px 12px; font-size: 12px; }
+    .tabs { flex-wrap: wrap; gap: 0; }
+    .tab { padding: 8px 10px 10px; font-size: 11px; letter-spacing: 0.08em; }
+    .tab-num { font-size: 8px; margin-right: 4px; }
   }
 </style>
 </head>
@@ -10782,35 +10784,49 @@ document.getElementById('phrasebook-search').addEventListener('input', e => {
 // BOOT
 // ==========================================
 // ----- In-app tour: spotlight overlay on real UI elements -----
+const TOUR_VERSION = 2; // bump when tour content changes to re-show to existing users
+
 const APP_TOUR = [
   {
     selector: '.tab[data-panel="daily"]',
     title: 'Today',
-    body: 'Your daily lesson queue. Letters, drills, new phrases, and cultural moments. Open this tab every day — it\'s the only one you really need.',
+    body: 'Your daily lesson feed. Letters, drills, new phrases, cultural moments — one queue, in order. During the alphabet bootcamp you will see a status banner here showing which cohort is active. After bootcamp, each day shows its theme (greetings, ordering coffee, etc.) above the cards.',
     placement: 'bottom',
   },
   {
     selector: '.tab[data-panel="alphabet"]',
     title: 'Alphabet',
-    body: 'All 28 letters with their forms and sounds. Tap any letter to see its details and hear it on demand. Mastery state is shown by colour.',
+    body: 'All 28 letters, grouped into 6 cohorts of 5. The bootcamp introduces a cohort at a time and drills each letter in two formats (recognition + production) until you nail it 2 days in a row. Tap any letter card to see its details and hear it.',
     placement: 'bottom',
   },
   {
     selector: '.tab[data-panel="phrasebook"]',
     title: 'Phrasebook',
-    body: '600+ phrases organised by category — greetings, food, family, work, slang. Searchable. Tap any phrase to hear it.',
+    body: '600+ phrases organised by category — greetings, food, family, work, slang. Searchable. Tap any phrase to hear it. Use this as your reference when you remember a Syrian word but cannot quite place it.',
+    placement: 'bottom',
+  },
+  {
+    selector: '.tab[data-panel="listen"]',
+    title: 'Listen — passive audio',
+    body: 'A loop of every Arabic phrase you have learned, played twice each, on indefinite repeat. Speed, shuffle, and a shadowing mode that leaves a 3-second gap so you can repeat aloud. Works while your screen is locked via the OS media controls — plug in headphones on your commute or at the gym.',
+    placement: 'bottom',
+  },
+  {
+    selector: '.tab[data-panel="chat"]',
+    title: 'Chat with Layla',
+    body: 'A simulated 28-year-old Syrian friend from Damascus, talking to Claude via your own API key. She texts in Arabizi (no Arabic keyboard needed), uses only words you have learned plus 1-2 new ones per message, and corrects your mistakes at the end. Set up your key in the panel, then start with a scenario or just say marhaba.',
     placement: 'bottom',
   },
   {
     selector: '.tab[data-panel="grammar"]',
     title: 'Grammar',
-    body: 'Five grammar units. Locked until the alphabet bootcamp is done, then they unlock on schedule (subject pronouns first, then the b- prefix, possessives, gender, negation).',
+    body: 'Five grammar units unlock after the alphabet bootcamp: subject pronouns (Day 8), the b- prefix (Day 15), possessive suffixes (Day 22), gender agreement (Day 29), negation and questions (Day 36). Each is taught with one short lesson card, then drilled gradually in your daily flow. Re-read any lesson anytime from this tab.',
     placement: 'bottom',
   },
   {
     selector: '.tab[data-panel="progress"]',
     title: 'Progress',
-    body: 'Your streak, mastery counts, the 120-day journey grid, the alphabet bootcamp box, voice settings, and the button to re-take this tour.',
+    body: 'Mission control. Capability milestones (21 real-world things you can do — order coffee, take a taxi, do work small talk — unlocked as you learn the words behind them), the 120-day journey grid, alphabet bootcamp status, voice settings (Google TTS for near-human Arabic), audio speed (0.7x/1x/1.25x global), transliteration mode (Always / Only when tapped / Never), and the button to re-take this tour.',
     placement: 'bottom',
   },
 ];
@@ -10951,11 +10967,18 @@ function endInAppTour() {
     const el = document.getElementById(id);
     if (el) el.remove();
   });
-  if (_tourFirstRun && !state.tourCompleted) {
+  if (_tourFirstRun) {
     state.tourCompleted = true;
+    state.tourVersion = TOUR_VERSION;
     saveState();
   }
   _tourFirstRun = false;
+}
+
+function userNeedsTour() {
+  if (!state.tourCompleted) return true;
+  if ((state.tourVersion || 1) < TOUR_VERSION) return true;
+  return false;
 }
 
 // Reposition cutout + tooltip on window resize while tour is active
@@ -10991,8 +11014,9 @@ function startApp() {
   document.getElementById('welcome-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   renderDaily();
-  // First-run tour fires once after the app renders
-  if (!state.tourCompleted) {
+  // First-run tour fires once after the app renders. Also re-fires if
+  // the tour content has been updated to a new TOUR_VERSION.
+  if (userNeedsTour()) {
     setTimeout(() => startInAppTour({ firstRun: true }), 350);
   }
 }
@@ -11097,9 +11121,9 @@ function boot() {
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     renderDaily();
-    // If a returning user never finished the in-app tour (e.g. first
-    // session ended before tour ran), fire it once on next load.
-    if (!state.tourCompleted) {
+    // If a returning user never finished the in-app tour (or finished
+    // an older version of it), fire the latest one once on next load.
+    if (userNeedsTour()) {
       setTimeout(() => startInAppTour({ firstRun: true }), 400);
     }
   }
