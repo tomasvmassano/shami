@@ -6677,7 +6677,12 @@ function buildTodayQueue() {
     .filter(x => !consumedByMatch.has(x.id))
     .map(x => {
       if (x.reps <= 1) return { type: 'pickMeaning', ref: x.id };
+      // Mature reviews rotate among variants. Typing is included only
+      // when every letter in the phrase has been mastered in the
+      // alphabet bootcamp — otherwise we would ask the learner to
+      // type letters they have not been taught.
       const variants = ['translate', 'listenPick', 'pickMeaning'];
+      if (isPhraseTypeable(x.id)) variants.push('typing');
       const v = variants[Math.floor(Math.random() * variants.length)];
       if (v === 'translate') {
         const p = PHRASES.find(P => P.id === x.id);
@@ -7005,6 +7010,8 @@ function renderDaily() {
     renderTranslateCard(queueItem.ref);
   } else if (queueItem.type === 'listenPick') {
     renderListenPickCard(queueItem.ref);
+  } else if (queueItem.type === 'typing') {
+    renderTypingCard(queueItem.ref);
   } else if (queueItem.type === 'letterIntro') {
     renderLetterIntroCard(queueItem.ref);
   } else if (queueItem.type === 'letterSound') {
@@ -7120,17 +7127,23 @@ async function playConsolidation() {
   consolPlaying = false;
 }
 
-// In-session preference: which queue items the user has switched to
-// typing mode for. Resets when the page reloads.
-const _typingPreference = {};
+// True when every Arabic letter in this phrase has been bootcamp-
+// mastered. Typing exercises gate on this so users are never asked
+// to type letters they have not been taught yet.
+function isPhraseTypeable(phraseId) {
+  const phrase = PHRASES.find(p => p.id === phraseId);
+  if (!phrase) return false;
+  const idxs = lettersInPhrase(phrase.ar);
+  if (idxs.length === 0) return false;
+  return idxs.every(i => {
+    const bc = state.bootcampLetters && state.bootcampLetters[i];
+    if (bc && bc.mastered) return true;
+    // Fall back to the alphabet panel mastery flag
+    return state.letters && state.letters[i] === 'mastered';
+  });
+}
 
 function renderRecallCard(id) {
-  // If user has flipped this card into typing mode this session, render
-  // the typing variant instead of standard recall.
-  if (_typingPreference[id]) {
-    renderTypingCard(id);
-    return;
-  }
   const stack = document.getElementById('card-stack');
   const phrase = PHRASES.find(p => p.id === id);
   if (!phrase) {
@@ -7168,21 +7181,8 @@ function renderRecallCard(id) {
           <button class="action easy" onclick="gradeAndAdvance(3, false)">Easy</button>
         </div>
       </div>
-      <div class="typing-mode-link">
-        <a onclick="switchToTypingForCurrent(${jsAttr(id)})">⌨ Type it instead</a>
-      </div>
     </div>
   `;
-}
-
-function switchToTypingForCurrent(id) {
-  _typingPreference[id] = true;
-  renderTypingCard(id);
-}
-
-function switchToRecallForCurrent(id) {
-  _typingPreference[id] = false;
-  renderRecallCard(id);
 }
 
 // ==========================================
@@ -7257,9 +7257,6 @@ function renderTypingCard(id) {
       <div class="card-actions" style="margin-top:14px;">
         <button class="action" onclick="typingSkip()">Skip</button>
         <button class="action good" onclick="typingCheck()">Check</button>
-      </div>
-      <div class="typing-mode-link">
-        <a onclick="switchToRecallForCurrent(${jsAttr(id)})">← Back to standard recall</a>
       </div>
     </div>
   `;
@@ -7435,7 +7432,6 @@ function typingCheck() {
       state.todayQueue.push(item);
     }
     state.todayIndex++;
-    delete _typingPreference[id]; // reset session pref so next time defaults to recall
     saveState();
     renderDaily();
   }, accuracy === 100 ? 1100 : 2400);
@@ -7444,11 +7440,10 @@ function typingCheck() {
 function typingSkip() {
   if (_typingState.done) return;
   _typingState.done = true;
-  // Skip doesn't grade or count against accuracy. Just move on.
-  delete _typingPreference[_typingState.phraseId];
+  // Skip doesn't grade or count against accuracy. Push the card back
+  // to retry later (it will roll a different variant next time).
+  const item = state.todayQueue[state.todayIndex];
   state.todayIndex++;
-  // Push the card back to retry later in the queue
-  const item = state.todayQueue[state.todayIndex - 1];
   if (item) state.todayQueue.push(item);
   saveState();
   renderDaily();
@@ -9621,9 +9616,9 @@ function renderTypingStatus() {
   const masteredCount = Object.values(state.cards || {}).filter(c => c.typingMastered).length;
   const attemptedCount = Object.values(state.cards || {}).filter(c => Array.isArray(c.typingAttempts) && c.typingAttempts.length > 0).length;
   if (attemptedCount === 0) {
-    el.innerHTML = `Type Arabic script on any recall card to anchor letter recognition. Tap <strong>⌨ Type it instead</strong> below the standard recall actions to switch into typing mode for that phrase.`;
+    el.innerHTML = `Typing exercises appear in your daily flow once <strong>every letter in a phrase is bootcamp-mastered</strong>. They roll in alongside pickMeaning, translate, and listen-pick variants for mature reviews. Strict mode requires correct diacritics for full accuracy.`;
   } else {
-    el.innerHTML = `Typing mastered: <strong>${masteredCount}</strong> of ${attemptedCount} attempted phrases (3 attempts averaging 80%+).`;
+    el.innerHTML = `Typing mastered: <strong>${masteredCount}</strong> of ${attemptedCount} attempted phrases (3 attempts averaging 80%+). Strict mode requires correct diacritics.`;
   }
 }
 
