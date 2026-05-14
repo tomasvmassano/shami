@@ -637,6 +637,28 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
   }
+  .done-extra-btn {
+    margin-top: 32px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--terra);
+    padding: 14px 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .done-extra-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--terra);
+  }
+  .done-extra-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--terra);
+  }
 
   /* CONSOLIDATION CARD — end-of-day chunking */
   .consol-wrap {
@@ -6938,68 +6960,86 @@ function buildBootcampQueue(today) {
     }
   }
 
-  // Step 2: drills — each introduced+due+not-mastered letter gets
-  // multiple drills per day in different formats so the user spends
-  // real time on the cohort instead of two clicks and done. A letter
-  // that was just introduced this call already had one letterSound
-  // drill paired to it; that counts as the first drill of the day.
-  // Caps total drills so the session stays bounded.
+  // Gather every introduced letter across all cohorts, for spot/build lookups.
   const introducedSet = new Set();
   for (const i in (state.bootcampLetters || {})) {
     if (state.bootcampLetters[i].introduced) introducedSet.add(Number(i));
   }
   const knownPhrasesForSpot = PHRASES.filter(p => state.cards[p.id] && state.cards[p.id].learned);
 
-  let drillCount = 0;
-  const DRILL_CAP = 12;
-  for (const idx of activeCohort) {
-    const lc = initBootcampLetter(idx);
-    if (!lc.introduced || lc.mastered) continue;
-    if (lc.due > today) continue;
-
-    // Build the list of formats for this letter today.
-    const formats = introducedThisCall.has(idx)
-      ? ['letterFromSound']  // letterSound was paired with the intro
-      : ['letterSound', 'letterFromSound'];
-
-    // Optional third: spot-the-letter inside a known phrase, but only
-    // if a phrase exists where every letter has been introduced.
+  // Helper: pick a phrase where this letter appears and every letter is
+  // already introduced. Returns a letterSpot drill, or falls back to
+  // letterFromSound if no eligible phrase exists yet.
+  const spotOrFallback = (idx) => {
     const spotPhrase = knownPhrasesForSpot.find(p => {
       const chars = letterCharsInPhrase(p.ar);
       return chars.some(x => x.idx === idx) && chars.every(x => introducedSet.has(x.idx));
     });
-    if (spotPhrase) formats.push({ type: 'letterSpot', ref: { letterIdx: idx, phraseId: spotPhrase.id } });
+    if (spotPhrase) return { type: 'letterSpot', ref: { letterIdx: idx, phraseId: spotPhrase.id } };
+    return { type: 'letterFromSound', ref: idx };
+  };
 
-    for (const fmt of formats) {
-      if (drillCount >= DRILL_CAP) break;
-      if (typeof fmt === 'string') {
-        queue.push({ type: fmt, ref: idx });
-      } else {
-        queue.push(fmt);
-      }
-      drillCount++;
-    }
-    if (drillCount >= DRILL_CAP) break;
+  // Active cohort, introduced, not yet mastered. These get hammered every
+  // day in multiple formats until the cohort moves on. No SRS gate here —
+  // we want repetition, not spacing, during bootcamp.
+  const activeIntroduced = activeCohort.filter(idx => {
+    const lc = initBootcampLetter(idx);
+    return lc.introduced && !lc.mastered;
+  });
+
+  // Round 1: letterSound for every active introduced letter. (Just-introduced
+  // letters already had a letterSound paired with their intro.)
+  for (const idx of activeIntroduced) {
+    if (introducedThisCall.has(idx)) continue;
+    queue.push({ type: 'letterSound', ref: idx });
   }
 
-  // Step 3: 1 retention drill on a previously mastered letter, if any
-  // (only when there's room in the day)
-  const masteredIdxs = [];
-  for (const i in state.bootcampLetters) {
-    if (state.bootcampLetters[i].mastered && (state.bootcampLetters[i].due || today) <= today) {
-      masteredIdxs.push(Number(i));
-    }
-  }
-  if (masteredIdxs.length > 0) {
-    const idx = masteredIdxs[Math.floor(Math.random() * masteredIdxs.length)];
+  // Round 2: letterFromSound (hear it, pick the letter).
+  for (const idx of activeIntroduced) {
     queue.push({ type: 'letterFromSound', ref: idx });
   }
 
-  // Step 4: one new phrase per day for real-language exposure (audio +
-  // translation, no decoding pressure). Use the next unlearned phrase
-  // in curriculum order.
-  const newPhrase = PHRASES.find(p => !state.cards[p.id] || !state.cards[p.id].learned);
-  if (newPhrase) queue.push({ type: 'recall', ref: newPhrase.id });
+  // Round 3: spot the letter inside a real word, shuffled.
+  const shuffled1 = activeIntroduced.slice().sort(() => Math.random() - 0.5);
+  for (const idx of shuffled1) {
+    queue.push(spotOrFallback(idx));
+  }
+
+  // Round 4: a second letterFromSound pass in a new order — the user has
+  // probably forgotten half of round 2 by now, which is the point.
+  const shuffled2 = activeIntroduced.slice().sort(() => Math.random() - 0.5);
+  for (const idx of shuffled2) {
+    queue.push({ type: 'letterFromSound', ref: idx });
+  }
+
+  // Step 3: retention drills on previously mastered letters. Pick up to 5,
+  // shuffled, alternating formats.
+  const masteredIdxs = [];
+  for (const i in state.bootcampLetters) {
+    if (state.bootcampLetters[i].mastered) masteredIdxs.push(Number(i));
+  }
+  const masteredShuffled = masteredIdxs.slice().sort(() => Math.random() - 0.5);
+  masteredShuffled.slice(0, 5).forEach((idx, i) => {
+    queue.push({ type: i % 2 === 0 ? 'letterFromSound' : 'letterSound', ref: idx });
+  });
+
+  // Step 4: two new phrases per day for real-language exposure.
+  const newPhrases = PHRASES
+    .filter(p => !state.cards[p.id] || !state.cards[p.id].learned)
+    .slice(0, 2);
+  for (const p of newPhrases) queue.push({ type: 'recall', ref: p.id });
+
+  // Step 5: review of previously-learned phrases, rotated across variants
+  // so the user keeps meeting old vocabulary in different forms.
+  const learnedPhrases = Object.entries(state.cards)
+    .filter(([id, c]) => c.learned)
+    .map(([id, c]) => ({ id, due: c.due || today, reps: c.reps || 1 }))
+    .sort((a, b) => (a.due > b.due ? 1 : -1));
+  const reviewVariants = ['pickMeaning', 'listenPick', 'arabicToArabizi', 'arabiziToEnglish'];
+  for (const lp of learnedPhrases.slice(0, 5)) {
+    const v = reviewVariants[Math.floor(Math.random() * reviewVariants.length)];
+    queue.push({ type: v, ref: lp.id });
+  }
 
   return queue;
 }
@@ -7147,14 +7187,14 @@ function buildTodayQueue() {
   // New production cards (unlocked but never seen)
   const newProd = state.settings.productionEnabled ? Object.entries(state.prodCards)
     .filter(([id, c]) => c.unlocked && !c.learned)
-    .slice(0, 5) // pace it
+    .slice(0, 8) // pace it
     .map(([id]) => ({ type: 'prod', ref: id })) : [];
 
-  // New recognition cards — 5 per day max
+  // New recognition cards — 8 per day max
   const newRecall = PHRASES
     .filter(p => !state.cards[p.id] || !state.cards[p.id].learned)
     .filter(p => !dueRecall.some(x => x.ref === p.id))
-    .slice(0, 5)
+    .slice(0, 8)
     .map(p => ({ type: 'recall', ref: p.id }));
 
   // Sentence challenges — unlock based on phrases known
@@ -7178,7 +7218,7 @@ function buildTodayQueue() {
         const bDone = state.sentenceProgress[b.idx]?.completed ? 1 : 0;
         return aDone - bDone;
       });
-      sentencesQueue = candidates.slice(0, 2).map(({ idx }) => ({ type: 'sentence', ref: idx }));
+      sentencesQueue = candidates.slice(0, 3).map(({ idx }) => ({ type: 'sentence', ref: idx }));
     }
   }
 
@@ -7211,7 +7251,7 @@ function buildTodayQueue() {
   const knownPhrases = PHRASES.filter(p => state.cards[p.id] && state.cards[p.id].learned);
   const letterDrills = [];
   const drillTypes = ['letterSound', 'letterFromSound', 'letterSpot', 'letterBuild'];
-  for (const idx of drillCandidates.slice(0, 3)) {
+  for (const idx of drillCandidates.slice(0, 8)) {
     let type = drillTypes[Math.floor(Math.random() * drillTypes.length)];
     if (type === 'letterSound' || type === 'letterFromSound') {
       letterDrills.push({ type, ref: idx });
@@ -7296,13 +7336,34 @@ function buildTodayQueue() {
     queue.push(...sentencesQueue);
   }
 
-  // Daily cap — keep beginners from drowning. Lesson cards and due
-  // reviews are protected (kept at the front); slice off the back if too long.
-  const DAILY_CAP = 20;
+  // Daily cap — bumped to ~40 so a session lands closer to 15 minutes.
+  // Lesson cards and due reviews are protected (kept at the front); slice
+  // off the back if too long.
+  const DAILY_CAP = 40;
   const protectedCount = grammarLessons.length + letterIntros.length + matchBatches.length + dueRecall.length + dueProd.length + grammarDrillsDue.length;
   if (queue.length > DAILY_CAP) {
     const minKeep = Math.max(protectedCount, DAILY_CAP);
     queue.length = Math.min(queue.length, minKeep);
+  }
+
+  // Review pass — at the end of the queue, throw in another 6 rotated-variant
+  // drills on previously-learned phrases so the day has real repetition. We
+  // pick from the broader learned pool (not just "due") because more
+  // exposures is what we want, not stricter spacing.
+  const learnedPool = Object.entries(state.cards)
+    .filter(([id, c]) => c.learned)
+    .map(([id]) => id);
+  if (learnedPool.length > 0) {
+    const reviewVariants = ['pickMeaning', 'listenPick', 'arabicToArabizi', 'arabiziToEnglish', 'translate'];
+    const shuffledLearned = learnedPool.slice().sort(() => Math.random() - 0.5).slice(0, 6);
+    for (const id of shuffledLearned) {
+      let v = reviewVariants[Math.floor(Math.random() * reviewVariants.length)];
+      if (v === 'translate') {
+        const p = PHRASES.find(P => P.id === id);
+        if (!p || translatableTokens(p.en).length < 3) v = 'pickMeaning';
+      }
+      queue.push({ type: v, ref: id });
+    }
   }
 
   state.todayQueue = queue;
@@ -7489,7 +7550,8 @@ function renderDaily() {
         <div class="done-state">
           <div class="done-arabic">مبروك</div>
           <div class="done-text">Done for today.</div>
-          <div class="done-sub">${msg} · come back tomorrow for the next drill round</div>
+          <div class="done-sub">${msg}</div>
+          <button class="btn-secondary done-extra-btn" onclick="addExtraPracticeRound()">Add another round</button>
         </div>
       `;
       // Mark streak
@@ -7567,6 +7629,90 @@ function getCurrentDay() {
   return Math.max(1, Math.min(120, daysBetween(state.startDate, todayStr()) + 1));
 }
 
+// Append a batch of fresh exercises to today's queue. Used when the user
+// has finished the planned session but wants to keep practicing — taps
+// "Add another round" on the done screen and gets more reps without
+// having to wait until tomorrow.
+function addExtraPracticeRound() {
+  const today = todayStr();
+  const extra = [];
+
+  if (state.bootcamp) {
+    // Bootcamp extra round: another pass through introduced active-cohort
+    // letters (mixed formats), shuffled, plus a couple of mastered-letter
+    // retention drills.
+    const activeIdx = getActiveCohortIndex();
+    const cohort = BOOTCAMP_COHORTS[activeIdx] || [];
+    const introducedSet = new Set();
+    for (const i in (state.bootcampLetters || {})) {
+      if (state.bootcampLetters[i].introduced) introducedSet.add(Number(i));
+    }
+    const knownForSpot = PHRASES.filter(p => state.cards[p.id] && state.cards[p.id].learned);
+
+    const activeNotMastered = cohort.filter(idx => {
+      const lc = initBootcampLetter(idx);
+      return lc.introduced && !lc.mastered;
+    });
+    const shuffled = activeNotMastered.slice().sort(() => Math.random() - 0.5);
+    const formats = ['letterSound', 'letterFromSound'];
+    shuffled.forEach((idx, i) => {
+      const fmt = formats[i % formats.length];
+      extra.push({ type: fmt, ref: idx });
+    });
+    // Sprinkle a few letterSpots if possible
+    for (const idx of shuffled.slice(0, 3)) {
+      const spot = knownForSpot.find(p => {
+        const chars = letterCharsInPhrase(p.ar);
+        return chars.some(x => x.idx === idx) && chars.every(x => introducedSet.has(x.idx));
+      });
+      if (spot) extra.push({ type: 'letterSpot', ref: { letterIdx: idx, phraseId: spot.id } });
+    }
+    // Retention on mastered letters
+    const mastered = [];
+    for (const i in state.bootcampLetters) {
+      if (state.bootcampLetters[i].mastered) mastered.push(Number(i));
+    }
+    mastered.slice().sort(() => Math.random() - 0.5).slice(0, 3).forEach((idx, i) => {
+      extra.push({ type: i % 2 === 0 ? 'letterFromSound' : 'letterSound', ref: idx });
+    });
+    // Plus a couple of learned-phrase reviews if any exist
+    const learned = Object.entries(state.cards).filter(([id, c]) => c.learned).map(([id]) => id);
+    const reviewVariants = ['pickMeaning', 'listenPick', 'arabicToArabizi', 'arabiziToEnglish'];
+    learned.slice().sort(() => Math.random() - 0.5).slice(0, 3).forEach(id => {
+      const v = reviewVariants[Math.floor(Math.random() * reviewVariants.length)];
+      extra.push({ type: v, ref: id });
+    });
+  } else {
+    // Regular mode extra round: 10 rotated-variant drills on previously
+    // learned phrases.
+    const learnedPool = Object.entries(state.cards)
+      .filter(([id, c]) => c.learned)
+      .map(([id]) => id);
+    const reviewVariants = ['pickMeaning', 'listenPick', 'arabicToArabizi', 'arabiziToEnglish', 'translate'];
+    const shuffled = learnedPool.slice().sort(() => Math.random() - 0.5).slice(0, 10);
+    for (const id of shuffled) {
+      let v = reviewVariants[Math.floor(Math.random() * reviewVariants.length)];
+      if (v === 'translate') {
+        const p = PHRASES.find(P => P.id === id);
+        if (!p || translatableTokens(p.en).length < 3) v = 'pickMeaning';
+      }
+      extra.push({ type: v, ref: id });
+    }
+    // Plus 2 due letter drills if any
+    const drillCandidates = Object.entries(state.letterCards || {})
+      .filter(([idx, c]) => c.introduced && (c.due || today) <= today)
+      .map(([idx]) => Number(idx))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 2);
+    for (const idx of drillCandidates) extra.push({ type: 'letterFromSound', ref: idx });
+  }
+
+  if (extra.length === 0) return;
+  state.todayQueue = state.todayQueue.concat(extra);
+  saveState();
+  renderDaily();
+}
+
 function getConsolidationForDay(day) {
   if (typeof CONSOLIDATIONS === 'undefined') return null;
   return CONSOLIDATIONS.find(c => c.day === day) || null;
@@ -7615,6 +7761,7 @@ function renderConsolidation() {
         ${consol.note ? `<div class="consol-note">${consol.note}</div>` : ''}
         <div class="consol-actions">
           <button class="primary" onclick="playConsolidation()">▶ Play all out loud</button>
+          <button onclick="addExtraPracticeRound()">Add another round</button>
           <button onclick="document.querySelector('.tab[data-panel=\\'progress\\']').click()">See progress</button>
         </div>
       </div>
